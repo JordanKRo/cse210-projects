@@ -5,6 +5,7 @@ class Program
     const float PASSING_THRESHOLD = 70f;
     static void Main(string[] args)
     {
+        // was the input from the last pass valid
         bool validInput = false;
         while(!validInput){
             Console.Write("What is the grade percentage? ");
@@ -21,6 +22,7 @@ class Program
                 string letter = "";
                 string letterGrade = "-";
                 bool passed = false;
+
                 // letter
                 if(value == 100f){
                     letter = "A";
@@ -59,7 +61,7 @@ class Program
                     }
                     
                 }else{
-                    Console.WriteLine($"Sorry, a grade of {letterGrade} is not enough to pass.");
+                    Console.WriteLine($"Sorry, a grade of {letterGrade} is not enough to pass. It happens to the best of us.");
                 }
             }else{
                 Console.WriteLine("Please Enter a valid number!");
