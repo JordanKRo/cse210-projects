@@ -5,38 +5,66 @@ class Program
     const float PASSING_THRESHOLD = 70f;
     static void Main(string[] args)
     {
-        Console.Write("What is the grade percentage? ");
-        Console.WriteLine();
-        string input = Console.ReadLine();
-        float value = -1;
-        if(float.TryParse(input, out float result)){
-            value = result;
+        bool validInput = false;
+        while(!validInput){
+            Console.Write("What is the grade percentage? ");
+            string input = Console.ReadLine();
+            Console.WriteLine();
+            float value = -1;
+            if(float.TryParse(input, out float result)){
+                if(!(result >= 0 && result <= 100)){
+                    Console.WriteLine("Value is out of range (0-100)!");
+                    continue;
+                }
+                validInput = true;
+                value = result;
+                string letter = "";
+                string letterGrade = "-";
+                bool passed = false;
+                // letter
+                if(value == 100f){
+                    letter = "A";
+                }else if(value >= 90f){
+                    letter = "A";
+                }else if(value >= 80f){
+                    letter = "B";
+                }else if(value >= 70f){
+                    letter = "C";
+                }else if(value >= 60f){
+                    letter = "D";
+                }else if(value < 60f){
+                    letter = "F";
+                }
 
-            string letterGrade = "-";
-            bool passed = false;
+                letterGrade = letter;
+                
+                // get sign
+                int firstDigit = (int)(value % 10f);
+                bool minusSign = firstDigit < 3;
+                bool plusSign = firstDigit >= 7;
+                if(minusSign && letterGrade != "F"){
+                    letterGrade += '-';
+                } else if(plusSign && letterGrade != "A" && letterGrade != "F"){
+                    letterGrade += '+';
+                }
 
-            if(value == 100f){
-                letterGrade = "A+";
-            }else if(value >= 90){
-                letterGrade = "A";
-            }else if(value >= 80){
-                letterGrade = "B";
-            }else if(value >= 70){
-                letterGrade = "C";
-            }else if(value >= 60){
-                letterGrade = "D";
-            }else if(value < 60){
-                letterGrade = "F";
-            }
+                Console.WriteLine($"Your letter grade: {letterGrade}");
 
-            passed = value >= PASSING_THRESHOLD;
-            if(passed){
-                Console.WriteLine("Congratulations, You passed!");
+                passed = value >= PASSING_THRESHOLD;
+                if(passed){
+                    if(letter == "A"){
+                        Console.WriteLine($"Congratulations, You passed with an {letterGrade}!");
+                    }else{
+                        Console.WriteLine($"Congratulations, You passed with a {letterGrade}!");
+                    }
+                    
+                }else{
+                    Console.WriteLine($"Sorry, a grade of {letterGrade} is not enough to pass.");
+                }
             }else{
-                Console.WriteLine("Sorry, you did not score high enough to pass.");
+                Console.WriteLine("Please Enter a valid number!");
             }
-        }else{
-            return;
         }
+        
     }
 }
