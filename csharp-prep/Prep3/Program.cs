@@ -8,12 +8,12 @@ class Program
         int guesses = 0;
         int secret_number = 0;
         Random generator = new Random();
-        secret_number = ToolBox.InputValidation.PromptInt("Enter the secret number: ");
+        secret_number = InputValidation.PromptInt("Enter the secret number: ");
 
         int last_guess;
         
         do{
-            last_guess = ToolBox.InputValidation.PromptInt("Enter your guess: ");
+            last_guess = InputValidation.PromptInt("Enter your guess: ");
             guesses++;
             
             if(last_guess > secret_number){
