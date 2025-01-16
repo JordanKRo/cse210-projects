@@ -29,9 +29,9 @@ class Program
 
     }
 
-    static int promptInt(string prompt, string errorMessage = "Please Enter a valid integer"){
-        Console.Write(prompt);
+    static int promptInt(string prompt, string errorMessage = "Please enter a valid integer"){
         while(true){
+            Console.Write(prompt);
             string input = Console.ReadLine();
             if(int.TryParse(input, out int result)){
                 return result;

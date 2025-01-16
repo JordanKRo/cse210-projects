@@ -8,11 +8,27 @@ public class InputValidation
     /// </summary>
     /// <param name="prompt">The text to display ahead of the user's input.</param>
     /// <returns>The integer the user entered</returns>
-    public static int PromptInt(string prompt){
+    public static int PromptInt(string prompt, string errorMessage = "Please enter a valid integer"){
         while(true){
-            Console.Write("");
+            Console.Write(prompt);
+            string input = Console.ReadLine() ?? "";
+            if(int.TryParse(input, out int result)){
+                return result;
+            }else{
+                Console.WriteLine(errorMessage);
+            }
         }
-        
-        
+    }
+    [Unstable("This is not finished yet")]
+    public static int PromptInt(string prompt, int minValue, int maxValue){
+        while(true){
+            Console.Write(prompt);
+            string input = Console.ReadLine() ?? "";
+            if(int.TryParse(input, out int result)){
+                return result;
+            }else{
+                // Console.WriteLine(errorMessage);
+            }
+        }
     }
 }
