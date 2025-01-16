@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-
+using ToolBox;
 class Program
 {
     static void Main(string[] args)
@@ -8,12 +8,12 @@ class Program
         int guesses = 0;
         int secret_number = 0;
         Random generator = new Random();
-        secret_number = promptInt("Enter the secret number: ");
+        secret_number = ToolBox.InputValidation.PromptInt("Enter the secret number: ");
 
         int last_guess;
         
         do{
-            last_guess = promptInt("Enter your guess: ");
+            last_guess = ToolBox.InputValidation.PromptInt("Enter your guess: ");
             guesses++;
             
             if(last_guess > secret_number){
