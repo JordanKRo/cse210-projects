@@ -7,6 +7,7 @@ class Program
     {
         int guesses = 0;
         int secret_number = 0;
+        Random generator = new Random();
         secret_number = promptInt("Enter the secret number: ");
 
         int last_guess;
@@ -19,11 +20,8 @@ class Program
                 Console.WriteLine("Lower!");
             }else if(last_guess < secret_number){
                 Console.WriteLine("Higher!");
-            }else if(last_guess == secret_number){
-                Console.WriteLine($"You guessed the number {secret_number}");
             }else{
-                // some kind of error occurred
-                throw new Exception("Number was outside of expected constraints");
+                Console.WriteLine($"You guessed the number {secret_number} in {guesses} guesses");
             }
 
         }while(last_guess != secret_number);
