@@ -10,7 +10,7 @@ class Program
         Console.WriteLine("Hello Sandbox World!");
         Thingy thing = new Thingy();
         thing.func();
-        int number = InputValidation.PromptInt("Enter a number: ", 0, 5);
+        float number = InputValidation.PromptFloat("Enter a number: ", 0);
         Console.WriteLine(number);
     }
 }

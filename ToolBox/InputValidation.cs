@@ -8,9 +8,8 @@ public class InputValidation
     /// </summary>
     /// <param name="prompt">The text to display ahead of the user's input.</param>
     /// <returns>The integer the user entered</returns>
-    public static int PromptInt(string prompt, string errorMessage = "Please enter a valid integer"){
-
-        // TODO use do while
+    public static int PromptInt(string prompt){
+        string errorMessage = "Please enter a valid integer";
         while(true){
             Console.Write(prompt);
             string input = Console.ReadLine() ?? "";
