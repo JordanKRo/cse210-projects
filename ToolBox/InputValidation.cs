@@ -19,7 +19,8 @@ public class InputValidation
             }
         }
     }
-    [Unstable("This is not finished yet")]
+
+    [Obsolete("Unfinished!!!")]
     public static int PromptInt(string prompt, int minValue, int maxValue){
         while(true){
             Console.Write(prompt);

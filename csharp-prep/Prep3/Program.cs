@@ -11,7 +11,6 @@ class Program
         secret_number = InputValidation.PromptInt("Enter the secret number: ");
 
         int last_guess;
-        
         do{
             last_guess = InputValidation.PromptInt("Enter your guess: ");
             guesses++;
