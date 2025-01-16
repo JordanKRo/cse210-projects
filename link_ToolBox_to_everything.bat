@@ -1,4 +1,4 @@
-:: I used AI to help me make a batch to add ToolBox to everything I want 
+:: I used AI to help me make a batch to add ToolBox to everything. I want 
 :: to have a namespace of helpful classes for doing mundane things like input validation
 
 @echo off
