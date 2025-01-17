@@ -33,11 +33,21 @@ class Program
             }
         }
 
+        Console.WriteLine($"The largest value is {largestValue}");
+
         int smallestValue = numbers[0];
         foreach(int number in numbers){
             if(number >= 0 && number < smallestValue){
                 smallestValue = number;
             }
+        }
+
+        Console.WriteLine($"The smallest non-zero value is {smallestValue}");
+
+        numbers.Sort();
+        Console.WriteLine("The numbers in acceding order: ");
+        foreach(int number in numbers){
+            Console.WriteLine(number);
         }
     }
 
