@@ -5,7 +5,8 @@ class Program
 {
     static void Main(string[] args)
     {
-        
+        DisplayWelcome();
+        DisplayResult(PromptUsername(), promptUserNumber());
     }
 
     static void DisplayWelcome(){
@@ -29,6 +30,6 @@ class Program
     }
 
     static void DisplayResult(string name, int number){
-        Console.WriteLine($"{name} the square of your number is {SquareNumber(number)}");
+        Console.WriteLine($"{name}, the square of your number is {SquareNumber(number)}");
     }
 }
