@@ -93,7 +93,7 @@ public class InputValidation
         }
     }
     /// <summary>
-    /// 
+    /// prompts the user to enter to select a numbered options
     /// </summary>
     /// <param name="prompt"></param>
     /// <param name="options"></param>
