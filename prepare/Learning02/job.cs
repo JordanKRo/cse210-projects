@@ -4,7 +4,7 @@ public class Job{
     public int _startYear;
     public int _endYear;
 
-    public Job(string title, string company, int start, int end){
+    public Job(string title, int start, int end, string company= "None"){
         _jobTitle = title;
         _company = company;
         _startYear = start;
