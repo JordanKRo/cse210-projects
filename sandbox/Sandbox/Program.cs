@@ -7,20 +7,20 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello Sandbox World!");
-        Thingy thing = new Thingy();
-        thing.func();
-        float number = InputValidation.PromptFloat("Enter a number: ", 0);
-        Console.WriteLine(number);
-    }
-}
+        Journal journal = new Journal();
+        Menu menu = new Menu();
+        menu._options = [
+            "Write a new entry",
+            "Display the Journal",
+            "Save Journal",
+            "Load Journal"
+        ];
 
-public class Thingy{
-    public Thingy(){
-        // create a thingy
-    }
 
-    public void func(){
+        bool exit = false;
 
+        while(!exit){
+            menu.PromptOptions();
+        }
     }
 }
