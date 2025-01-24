@@ -21,7 +21,8 @@ class Program
             "Write a new entry",
             "Display the Journal",
             "Save Journal",
-            "Load Journal"
+            "Load Journal",
+            "Exit"
         ];
 
 
@@ -34,6 +35,7 @@ class Program
                     Entry newEntry = new Entry();
                     newEntry._prompt = promptGenerator.GetRandomPrompt();
                     newEntry.Sign();
+                    journal.AddEntry(newEntry);
                     break;
                 case 1:
                     journal.Display();
@@ -43,6 +45,9 @@ class Program
                     break;
                 case 3:
                     journal.Load();
+                    break;
+                case 4:
+                    exit = true;
                     break;
             }
         }

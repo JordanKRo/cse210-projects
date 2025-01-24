@@ -3,8 +3,8 @@ public class Menu{
 
     public int PromptOptions(){
         // display all of the options
-        for(var i = 1;i < _options.Count + 1;i++){
-            Console.WriteLine($"{i} - {_options[i]}");
+        for(var i = 0;i < _options.Count;i++){
+            Console.WriteLine($"{i + 1} - {_options[i]}");
         }
         int? ret = null;
         while(ret == null){
