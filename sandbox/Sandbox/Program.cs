@@ -8,6 +8,14 @@ class Program
     static void Main(string[] args)
     {
         Journal journal = new Journal();
+        PromptGenerator promptGenerator = new PromptGenerator();
+        promptGenerator._prompts = [
+            "Prompt 1",
+            "prompt 2",
+            "prompt 3"
+        ];
+
+
         Menu menu = new Menu();
         menu._options = [
             "Write a new entry",
@@ -20,7 +28,23 @@ class Program
         bool exit = false;
 
         while(!exit){
-            menu.PromptOptions();
+            int option = menu.PromptOptions();
+            switch(option){
+                case 0:
+                    Entry newEntry = new Entry();
+                    newEntry._prompt = promptGenerator.GetRandomPrompt();
+                    newEntry.Sign();
+                    break;
+                case 1:
+                    journal.Display();
+                    break;
+                case 2:
+                    journal.Save();
+                    break;
+                case 3:
+                    journal.Load();
+                    break;
+            }
         }
     }
 }
