@@ -7,7 +7,7 @@ public class Menu{
             Console.WriteLine($"{i + 1} - {_options[i]}");
         }
         int? ret = null;
-        while(ret == null){
+        while (ret == null){
             // get input from the user
             Console.Write("Enter a number from the list above: ");
             string input = Console.ReadLine();

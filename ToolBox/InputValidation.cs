@@ -104,12 +104,12 @@ public class InputValidation
         // string rangeErrorMessage = "Please enter a number between {0} and {1}";
         while(true){
             // display all of the options
-            for(int i = 0;i < options.Count; i++){
+            for (int i = 0;i < options.Count; i++){
                 Console.WriteLine($"{i+1} - {options[i]}");
             }
             Console.Write(prompt);
             string input = Console.ReadLine() ?? "";
-            if(int.TryParse(input, out int result)){
+            if (int.TryParse(input, out int result)){
                 if(result < options.Count && options.Count >= 0){
 
                 }

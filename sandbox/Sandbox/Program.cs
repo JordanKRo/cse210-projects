@@ -28,9 +28,9 @@ class Program
 
         bool exit = false;
 
-        while(!exit){
+        while (!exit){
             int option = menu.PromptOptions();
-            switch(option){
+            switch (option){
                 case 0:
                     Entry newEntry = new Entry();
                     newEntry._prompt = promptGenerator.GetRandomPrompt();
