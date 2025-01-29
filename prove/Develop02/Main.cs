@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using ToolBox;
 // This is so sick!!
 
-class Program
+class JournalManager
 {
     static void Main(string[] args)
     {
