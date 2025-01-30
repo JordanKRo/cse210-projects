@@ -20,6 +20,7 @@ public class Journal{
     public void Save(){
         // StreamWriter outputFile = new StreamWriter($"{_savePath}{_title}");
         
+        
     }
 
     public void AddEntry(Entry entry){

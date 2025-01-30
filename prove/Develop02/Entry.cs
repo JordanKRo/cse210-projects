@@ -21,9 +21,15 @@ public class Entry{
 
     public void Display(){
         Console.WriteLine("=================================");
-        Console.Write($"prompt: {_prompt}");
+        Console.WriteLine($"prompt: {_prompt}");
         Console.WriteLine("---------------------------------");
         Console.WriteLine(_response);
+    }
+
+    public void DisplayPrompt(){
+        Console.WriteLine("---------------------------------");
+        Console.WriteLine(_prompt);
+        Console.WriteLine("---------------------------------");
     }
 
     public void GetResponseFromUser(){
