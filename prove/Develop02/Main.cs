@@ -34,6 +34,7 @@ class JournalManager
                 case 0:
                     Entry newEntry = new Entry();
                     newEntry._prompt = promptGenerator.GetRandomPrompt();
+                    newEntry._response = InputValidation.PromptString("Enter your response to the prompt:\n");
                     newEntry.Sign();
                     currentJournal.AddEntry(newEntry);
                     break;

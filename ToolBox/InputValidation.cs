@@ -4,6 +4,17 @@ using System;
 public class InputValidation
 {
     /// <summary>
+    /// Prompts the user for text input
+    /// </summary>
+    /// <param name="prompt"></param>
+    /// <returns></returns>
+    public static string PromptString(string prompt){
+        string ret = "";
+        Console.Write(prompt);
+        ret = Console.ReadLine() ?? "";
+        return ret;
+    }
+    /// <summary>
     /// Prompts the user for an integer value, does not return until a valid integer is entered
     /// </summary>
     /// <param name="prompt">The text to display ahead of the user's input.</param>

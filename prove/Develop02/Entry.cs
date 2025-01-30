@@ -7,10 +7,23 @@ public class Entry{
         // uses GetResponseFromUser
         
         // stamps the date
+        StampDate();
     }
+    /*
+    =================
+    Prompt: prompt
+    -----------------
+    Response:
+    user's text here
+
+    =================
+    */
 
     public void Display(){
-
+        Console.WriteLine("=================================");
+        Console.Write($"prompt: {_prompt}");
+        Console.WriteLine("---------------------------------");
+        Console.WriteLine(_response);
     }
 
     public void GetResponseFromUser(){
