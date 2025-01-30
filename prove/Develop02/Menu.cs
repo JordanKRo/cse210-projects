@@ -21,4 +21,9 @@ public class Menu{
         // returns the users selection starting from 0 (makes it easier for other layers to use)
         return ret - 1 ?? 1;
     }
+
+    public string promptString(string prompt){
+        Console.Write(prompt);
+        return Console.ReadLine();
+    }
 }

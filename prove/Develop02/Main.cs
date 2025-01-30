@@ -40,13 +40,15 @@ class JournalManager
                     currentJournal.AddEntry(newEntry);
                     break;
                 case 1:
+                    Console.WriteLine();
                     currentJournal.Display();
+                    Console.WriteLine();
                     break;
                 case 2:
                     currentJournal.Save();
                     break;
                 case 3:
-                    currentJournal = Journal.Load();
+                    currentJournal = Journal.Load(menu.promptString("Enter the path to your journal: "));
                     break;
                 case 4:
                     exit = true;

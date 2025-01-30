@@ -20,8 +20,7 @@ public class Entry{
     */
 
     public void Display(){
-        Console.WriteLine("=================================");
-        Console.WriteLine($"prompt: {_prompt}");
+        Console.WriteLine($"Date: {_date}\nprompt: {_prompt}");
         Console.WriteLine("---------------------------------");
         Console.WriteLine(_response);
     }
@@ -38,5 +37,7 @@ public class Entry{
 
     private void StampDate(){
         // set _date to the current date
+        DateTime theCurrentTime = DateTime.Now;
+        _date = theCurrentTime.ToShortDateString();
     }
 }
