@@ -7,8 +7,6 @@ class JournalManager
 {
     static void Main(string[] args)
     {
-        string workingDirectory = null;
-
         PromptGenerator promptGenerator = new PromptGenerator();
         promptGenerator._prompts = [
             "Prompt 1",
@@ -32,7 +30,7 @@ class JournalManager
         Journal currentJournal = new Journal();
 
         while (!exit){
-            int option = menu.PromptOptions();
+            int option = menu.DisplayMain();
             switch (option){
                 case 0:
                     Entry newEntry = new Entry();
@@ -51,9 +49,20 @@ class JournalManager
                     currentJournal.Save();
                     break;
                 case 3:
-                    currentJournal = Journal.Load(menu.promptString("Enter the path to your journal: "));
+                    // currentJournal = Journal.Load(menu.PromptString("Enter the path to your journal: "));
+                    // if the load is null use the current one
+                    Journal loadedJournal = Journal.Load(menu.FileSelectDialogue());
+                    if (loadedJournal == null){
+                        currentJournal = new Journal();
+                    }else{
+                        currentJournal = loadedJournal;
+                        menu.DisplayNotification($"Successfully opened journal: {loadedJournal._title}");
+                    }
                     break;
                 case 4:
+                    menu._workingDirectory = menu.PromptString("Enter the path to your save folder: ");
+                    break;
+                case 5:
                     exit = true;
                     break;
             }

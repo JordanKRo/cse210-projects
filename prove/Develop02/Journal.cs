@@ -8,7 +8,7 @@ public class Journal{
     /// <summary>
     /// The path to the file, null if the file has not been saved or loaded.
     /// </summary>
-    public string _savePath = "D:/Users/Jordan/Documents/BYUI/CSE 210/cse210-projects/prove/Develop02/journals/";
+    public string _savePath = null;
 
     public void Display(){
         // display the entries
@@ -63,13 +63,14 @@ public class Journal{
                 entry._response = items[2];
                 retJournal.AddEntry(entry);
             }
-        }catch(FileNotFoundException notFound){
-            
-        }catch(Exception){
-
+        }catch(FileNotFoundException){
+            Console.WriteLine("Could not open Journal");
+            return null;
+        }catch(Exception e){
+            Console.WriteLine($"Could not open Journal, an error occurred:\n{e}");
+            return null;
         }
         
-
         return retJournal;
     }
 }
