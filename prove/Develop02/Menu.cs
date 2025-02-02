@@ -30,16 +30,14 @@ public class Menu{
             }
         }
         string[] saveFiles = Directory.GetFiles(_workingDirectory, "*.psv");
-        List<string> fileOptions = new List<string>(saveFiles);
-
-        fileOptions.Add("Cancel");
+        List<string> fileOptions = [.. saveFiles, "Cancel"];
         int selection = PromptOptions(fileOptions);
         Console.WriteLine();
+
         if (selection == fileOptions.Count - 1) {
             // user canceled the dialogue
             return null;
         }
-
         return fileOptions[selection];
     }
 
@@ -55,7 +53,7 @@ public class Menu{
             string input = Console.ReadLine();
             // validate the input is a number and parse it
             if (int.TryParse(input, out int result)) {
-                if (result >= 1 && result < options.Count){
+                if (result >= 1 && result <= options.Count){
                     ret = result;
                 }
             } else {

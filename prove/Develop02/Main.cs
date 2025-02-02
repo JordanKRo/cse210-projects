@@ -50,13 +50,20 @@ class JournalManager
                     break;
                 case 3:
                     // currentJournal = Journal.Load(menu.PromptString("Enter the path to your journal: "));
-                    // if the load is null use the current one
-                    Journal loadedJournal = Journal.Load(menu.FileSelectDialogue());
-                    if (loadedJournal == null){
-                        currentJournal = new Journal();
+                    string path = menu.FileSelectDialogue();
+                    Journal loadedJournal;
+                    if (path != null){
+                        loadedJournal = Journal.Load(path);
+
+                        // if load is null make a new one
+                        if (loadedJournal == null){
+                            currentJournal = new Journal();
+                        }else{
+                            currentJournal = loadedJournal;
+                            menu.DisplayNotification($"Successfully opened journal: {loadedJournal._title}");
+                        }
                     }else{
-                        currentJournal = loadedJournal;
-                        menu.DisplayNotification($"Successfully opened journal: {loadedJournal._title}");
+                        // do nothing if a path was not returned
                     }
                     break;
                 case 4:

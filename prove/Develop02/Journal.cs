@@ -22,15 +22,28 @@ public class Journal{
         Console.WriteLine("=================================");
     }
 
-    public void AddEntry(Entry entry){
+    public void AddEntry(Entry entry) {
         _entries.Add(entry);
     }
-    public void Save(){
-        if(_title == null){
-            Console.Write("Please name your Journal: ");
-            _title = Console.ReadLine();
+
+    public void Save() {
+        Menu menu = Menu.GetMenu();
+        if (_title == null) {
+            _title = menu.PromptString("Please name your Journal: ");
         }
-        using (StreamWriter outputFile = new StreamWriter($"{_savePath}{_title}.psv")){
+        if (_savePath == null) {
+            if (menu._workingDirectory != null) {
+                _savePath = menu._workingDirectory;
+            } else {
+                while (true) {
+                    _savePath = menu.PromptString("Enter the save path: ");
+                    if (Directory.Exists(_savePath)) {
+                        break;
+                    }
+                }
+            }
+        }
+        using (StreamWriter outputFile = new StreamWriter($"{_savePath}{_title}.psv")) {
             outputFile.WriteLine("Date|prompt|response");
             foreach(Entry entry in _entries){
                 outputFile.WriteLine($"{entry._date}|{entry._prompt}|{entry._response}");
@@ -38,7 +51,7 @@ public class Journal{
         }
     }
 
-    public static Journal Load(string path){
+    public static Journal Load(string path) {
         
 
         Journal retJournal = new Journal();
@@ -53,7 +66,7 @@ public class Journal{
             retJournal._savePath = path.Substring(0, path.LastIndexOf('\\') + 1);
 
             // begin iterate the lines and create entries
-            for(int i = 1; i < lines.Length;i++){
+            for(int i = 1; i < lines.Length;i++) {
                 string line = lines[i];
                 string[] items = line.Split("|");
 
@@ -63,10 +76,10 @@ public class Journal{
                 entry._response = items[2];
                 retJournal.AddEntry(entry);
             }
-        }catch(FileNotFoundException){
+        } catch (FileNotFoundException) {
             Console.WriteLine("Could not open Journal");
             return null;
-        }catch(Exception e){
+        } catch (Exception e) {
             Console.WriteLine($"Could not open Journal, an error occurred:\n{e}");
             return null;
         }
