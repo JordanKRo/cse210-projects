@@ -21,6 +21,7 @@ class JournalManager
             "Display the Journal",
             "Save Journal",
             "Load Journal",
+            "Create new",
             "Set save path",
             "Exit"
         ];
@@ -67,12 +68,15 @@ class JournalManager
                     }
                     break;
                 case 4:
+                    currentJournal = new Journal();
+                    break;
+                case 5:
                     string cleanPath = Menu.SanitizePath(menu.PromptString("Enter the path to your save folder: "), out bool isDir) ;
                     if (cleanPath != null && isDir){
                         menu._workingDirectory = cleanPath;
                     }
                     break;
-                case 5:
+                case 6:
                     exit = true;
                     break;
             }
