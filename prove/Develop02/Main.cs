@@ -9,9 +9,11 @@ class JournalManager
     {
         PromptGenerator promptGenerator = new PromptGenerator();
         promptGenerator._prompts = [
-            "Prompt 1",
-            "prompt 2",
-            "prompt 3"
+            "Who was the most interesting person I interacted with today?",
+            "What was the best part of my day?",
+            "How did I see the hand of the Lord in my life today?",
+            "What was the strongest emotion I felt today?",
+            "If I had one thing I could do over today, what would it be?"
         ];
 
 
@@ -69,6 +71,7 @@ class JournalManager
                     break;
                 case 4:
                     currentJournal = new Journal();
+                    menu.DisplayNotification("Created a new Untitled Journal");
                     break;
                 case 5:
                     string cleanPath = Menu.SanitizePath(menu.PromptString("Enter the path to your save folder: "), out bool isDir) ;
