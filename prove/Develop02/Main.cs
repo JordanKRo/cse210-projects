@@ -7,6 +7,8 @@ class JournalManager
 {
     static void Main(string[] args)
     {
+        string workingDirectory = null;
+
         PromptGenerator promptGenerator = new PromptGenerator();
         promptGenerator._prompts = [
             "Prompt 1",
@@ -21,6 +23,7 @@ class JournalManager
             "Display the Journal",
             "Save Journal",
             "Load Journal",
+            "Set save path",
             "Exit"
         ];
 

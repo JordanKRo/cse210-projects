@@ -12,9 +12,12 @@ public class Journal{
 
     public void Display(){
         // display the entries
+        Console.WriteLine("=================================");
+        Console.WriteLine(_title);
         foreach(Entry entry in _entries){
             Console.WriteLine("=================================");
             entry.Display();
+            Console.WriteLine();
         }
         Console.WriteLine("=================================");
     }
@@ -36,26 +39,36 @@ public class Journal{
     }
 
     public static Journal Load(string path){
-        string[] lines = File.ReadAllLines(path);
+        
 
         Journal retJournal = new Journal();
+        try{
+            string[] lines = File.ReadAllLines(path);
+            // This part gets the name of the file minus the extension and the path
+            string[] splitPath = path.Split("\\");
+            string fileName = splitPath[splitPath.Length-1];
+            retJournal._title = fileName.Substring(0, fileName.IndexOf('.'));
 
-        // This part gets the name of the file minus the extension and the path
-        string[] splitPath = path.Split("|");
-        string fileName = splitPath[splitPath.Length-1];
-        retJournal._title = fileName.Substring(0, fileName.IndexOf('.'));
+            // Save the path but the filename needs to be removed
+            retJournal._savePath = path.Substring(0, path.LastIndexOf('\\') + 1);
 
-        // begin iterate the lines and create entries
-        for(int i = 1; i < lines.Length;i++){
-            string line = lines[i];
-            string[] items = line.Split("|");
+            // begin iterate the lines and create entries
+            for(int i = 1; i < lines.Length;i++){
+                string line = lines[i];
+                string[] items = line.Split("|");
 
-            Entry entry = new Entry();
-            entry._date = items[0];
-            entry._prompt = items[1];
-            entry._response = items[2];
-            retJournal.AddEntry(entry);
+                Entry entry = new Entry();
+                entry._date = items[0];
+                entry._prompt = items[1];
+                entry._response = items[2];
+                retJournal.AddEntry(entry);
+            }
+        }catch(FileNotFoundException notFound){
+            
+        }catch(Exception){
+
         }
+        
 
         return retJournal;
     }
