@@ -35,8 +35,18 @@ public class Menu{
             }
         }
         string[] saveFiles = Directory.GetFiles(_workingDirectory, "*.psv");
-        List<string> fileOptions = [.. saveFiles, "Cancel"];
-        int selection = PromptOptions(fileOptions);
+        List<string> fileOptions = [.. saveFiles];
+
+        List<string> fileNames = new List<string>();
+
+        // Remove the path from the file to make it easier to read
+        for(int i = 0;i < fileOptions.Count;i++){
+            fileNames.Add(Path.GetFileName(fileOptions[i]));
+        }
+        fileNames.Add("Cancel");
+
+        Console.WriteLine("Please select a save from below: ");
+        int selection = PromptOptions(fileNames);
         Console.WriteLine();
 
         if (selection == fileOptions.Count - 1) {
