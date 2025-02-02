@@ -37,7 +37,7 @@ public class Journal{
             } else {
                 while (true) {
                     _savePath = menu.PromptString("Enter the save path: ");
-                    _savePath = Menu.NormalizePath(_savePath, out bool isDir);
+                    _savePath = Menu.SanitizePath(_savePath, out bool isDir);
 
                     if (_savePath != null && isDir){
                         break;
@@ -45,7 +45,8 @@ public class Journal{
                 }
             }
         }
-        using (StreamWriter outputFile = new StreamWriter($"{_savePath}{_title}.psv")) {
+        string fullPath = Path.Combine(_savePath, $"{_title}.psv");
+        using (StreamWriter outputFile = new StreamWriter(fullPath)) {
             outputFile.WriteLine("Date|prompt|response");
             foreach(Entry entry in _entries){
                 outputFile.WriteLine($"{entry._date}|{entry._prompt}|{entry._response}");
@@ -54,18 +55,15 @@ public class Journal{
     }
 
     public static Journal Load(string path) {
-        
-
         Journal retJournal = new Journal();
-        try{
+        try {
             string[] lines = File.ReadAllLines(path);
-            // This part gets the name of the file minus the extension and the path
-            string[] splitPath = path.Split("\\");
-            string fileName = splitPath[splitPath.Length-1];
-            retJournal._title = fileName.Substring(0, fileName.IndexOf('.'));
+            
+            string fileName = Path.GetFileName(path);
 
-            // Save the path but the filename needs to be removed
-            retJournal._savePath = path.Substring(0, path.LastIndexOf('\\') + 1);
+            retJournal._title = Path.GetFileNameWithoutExtension(path);
+            
+            retJournal._savePath = Path.GetDirectoryName(path) + Path.DirectorySeparatorChar;
 
             // begin iterate the lines and create entries
             for(int i = 1; i < lines.Length;i++) {

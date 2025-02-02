@@ -19,7 +19,7 @@ public class Menu{
             string userPath = PromptString("Enter the path to your save file/folder: ");
             Console.WriteLine();
 
-            string fixedPath = NormalizePath(userPath, out bool isDir);
+            string fixedPath = SanitizePath(userPath, out bool isDir);
 
             // if it was a directory update the working directory
 
@@ -86,7 +86,7 @@ public class Menu{
     /// <param name="path">User provided string</param>
     /// <param name="isDir">If the path entered was a directory</param>
     /// <returns></returns>
-    public static string NormalizePath(string path, out bool isDir) {
+    public static string SanitizePath(string path, out bool isDir) {
         try {
             string normalizedPath = Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar);
 

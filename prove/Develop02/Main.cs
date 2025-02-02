@@ -31,7 +31,7 @@ class JournalManager
 
         while (!exit){
             int option = menu.DisplayMain();
-            switch (option){
+            switch (option) {
                 case 0:
                     Entry newEntry = new Entry();
                     newEntry._prompt = promptGenerator.GetRandomPrompt();
@@ -67,7 +67,10 @@ class JournalManager
                     }
                     break;
                 case 4:
-                    menu._workingDirectory = menu.PromptString("Enter the path to your save folder: ");
+                    string cleanPath = Menu.SanitizePath(menu.PromptString("Enter the path to your save folder: "), out bool isDir) ;
+                    if (cleanPath != null && isDir){
+                        menu._workingDirectory = cleanPath;
+                    }
                     break;
                 case 5:
                     exit = true;

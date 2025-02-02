@@ -3,7 +3,7 @@ public class PromptGenerator{
     private Random _random = new Random();
 
 
-    public string GetRandomPrompt(){
+    public string GetRandomPrompt() {
         int RandomIndex = _random.Next(0,_prompts.Count);
         return _prompts[RandomIndex];
     }
