@@ -10,7 +10,7 @@ public class Journal{
     /// </summary>
     public string _savePath = null;
 
-    public void Display(){
+    public void Display() {
         // display the entries
         Console.WriteLine("=================================");
         Console.WriteLine(_title);
@@ -66,7 +66,7 @@ public class Journal{
             retJournal._savePath = Path.GetDirectoryName(path) + Path.DirectorySeparatorChar;
 
             // begin iterate the lines and create entries
-            for(int i = 1; i < lines.Length;i++) {
+            for (int i = 1; i < lines.Length;i++) {
                 string line = lines[i];
                 string[] items = line.Split("|");
 

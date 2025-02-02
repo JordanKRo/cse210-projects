@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
 using ToolBox;
-// This is so sick!!
 
 class JournalManager
 {
@@ -32,14 +31,14 @@ class JournalManager
         bool exit = false;
         Journal currentJournal = new Journal();
 
-        while (!exit){
+        while (!exit) {
             int option = menu.DisplayMain();
             switch (option) {
                 case 0:
                     Entry newEntry = new Entry();
                     newEntry._prompt = promptGenerator.GetRandomPrompt();
                     newEntry.DisplayPrompt();
-                    newEntry._response = InputValidation.PromptString($"Enter your response to the prompt:\n");
+                    newEntry._response = menu.PromptString($"Enter your response to the prompt:\n");
                     newEntry.Sign();
                     currentJournal.AddEntry(newEntry);
                     break;
@@ -55,17 +54,17 @@ class JournalManager
                     // currentJournal = Journal.Load(menu.PromptString("Enter the path to your journal: "));
                     string path = menu.FileSelectDialogue();
                     Journal loadedJournal;
-                    if (path != null){
+                    if (path != null) {
                         loadedJournal = Journal.Load(path);
 
                         // if load is null make a new one
                         if (loadedJournal == null){
                             currentJournal = new Journal();
-                        }else{
+                        } else {
                             currentJournal = loadedJournal;
                             menu.DisplayNotification($"Successfully opened journal: {loadedJournal._title}");
                         }
-                    }else{
+                    } else {
                         // do nothing if a path was not returned
                     }
                     break;
@@ -75,7 +74,7 @@ class JournalManager
                     break;
                 case 5:
                     string cleanPath = Menu.SanitizePath(menu.PromptString("Enter the path to your save folder: "), out bool isDir) ;
-                    if (cleanPath != null && isDir){
+                    if (cleanPath != null && isDir) {
                         menu._workingDirectory = cleanPath;
                     }
                     break;

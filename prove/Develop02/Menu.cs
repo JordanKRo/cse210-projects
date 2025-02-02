@@ -23,14 +23,14 @@ public class Menu{
 
             // if it was a directory update the working directory
 
-            if (fixedPath == null){
+            if (fixedPath == null) {
                 DisplayNotification("The path specified does not exist or cannot be opened.");
                 return null;
             }
 
-            if (isDir){
+            if (isDir) {
                 _workingDirectory = fixedPath;
-            }else{
+            } else {
                 return fixedPath;
             }
         }
@@ -40,7 +40,7 @@ public class Menu{
         List<string> fileNames = new List<string>();
 
         // Remove the path from the file to make it easier to read
-        for(int i = 0;i < fileOptions.Count;i++){
+        for (int i = 0;i < fileOptions.Count;i++) {
             fileNames.Add(Path.GetFileName(fileOptions[i]));
         }
         fileNames.Add("Cancel");
@@ -62,13 +62,13 @@ public class Menu{
             Console.WriteLine($"{i + 1} - {options[i]}");
         }
         int? ret = null;
-        while (ret == null){
+        while (ret == null) {
             // get input from the user
             Console.Write("Enter a number from the list above: ");
             string input = Console.ReadLine();
             // validate the input is a number and parse it
             if (int.TryParse(input, out int result)) {
-                if (result >= 1 && result <= options.Count){
+                if (result >= 1 && result <= options.Count) {
                     ret = result;
                 }
             } else {
@@ -76,7 +76,7 @@ public class Menu{
             }
         }
         // returns the users selection starting from 0 (makes it easier for other layers to use)
-        return ret - 1 ?? 1;
+        return (ret ?? 1) - 1;
     }
 
     public string PromptString(string prompt) {
