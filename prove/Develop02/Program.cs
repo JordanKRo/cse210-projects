@@ -1,8 +1,16 @@
 using System;
 using System.Runtime.InteropServices;
-using ToolBox;
 
-class JournalManager
+/*
+Showed creativity by making the Journals remember where they 
+are saved. The user can also specify where their saves are so 
+they don't need to type the path out every time.
+
+I just realized an hour ago this was being graded on a mac 
+so i hope it works.
+*/
+
+class Program
 {
     static void Main(string[] args)
     {
