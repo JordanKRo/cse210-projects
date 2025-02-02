@@ -37,7 +37,9 @@ public class Journal{
             } else {
                 while (true) {
                     _savePath = menu.PromptString("Enter the save path: ");
-                    if (Directory.Exists(_savePath)) {
+                    _savePath = Menu.NormalizePath(_savePath, out bool isDir);
+
+                    if (_savePath != null && isDir){
                         break;
                     }
                 }
