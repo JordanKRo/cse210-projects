@@ -30,6 +30,9 @@ public class Fraction{
     }
 
     public void SetDenominator(int denominator) {
+        if (denominator == 0){
+            throw new ArgumentException("Denominator cannot be zero", nameof(denominator));
+        }
         _denominator = denominator;
     }
 
