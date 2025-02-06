@@ -20,5 +20,15 @@ class Program
 
         Console.WriteLine(fourth);
         Console.WriteLine(fourth.GetDecimal());
+
+        first.SetDenominator(3);
+
+        Console.WriteLine(first.Equals(fourth));
+
+        Fraction fifth = new Fraction(6,8);
+
+        Console.WriteLine(fifth.Equals(third));
+
+        Console.WriteLine(second.Equals(third));
     }
 }
