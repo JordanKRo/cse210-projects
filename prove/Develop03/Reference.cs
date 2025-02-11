@@ -1,8 +1,17 @@
+using System.Reflection.Metadata;
+
 public class Reference{
     private string _book = "";
     private int _chapter = -1;
     private int _start = -1;
     private int _end = -1;
+
+    public static readonly Dictionary<string, string> MyDict = new Dictionary<string, string>
+    {
+        {"1nephi", "1 Nephi"},
+        {"2nephi", "2 Nephi"},
+        {"orange", ""}
+    };
 
     public Reference(string book, int chapter, int start, int end){
         _book = book;
@@ -32,7 +41,11 @@ public class Reference{
     }
 
     public int GetEnd(){
-        return _end;
+        if (_end == -1){
+            return _start;
+        } else {
+            return _end;
+        }
     }
 
     public int GetChapter(){
@@ -42,4 +55,6 @@ public class Reference{
     public string GetBook(){
         return _book;
     }
+
+    //
 }
