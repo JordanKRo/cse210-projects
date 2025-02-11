@@ -16,7 +16,7 @@ public class Scripture{
     }
 
     public string GetDisplay(){
-        string ret = "";
+        string ret = _reference + "\n";
         foreach(Verse verse in _verses){
             ret += verse.GetDisplay() + "\n\n";
         }
@@ -27,7 +27,7 @@ public class Scripture{
 
     public void HideWords(int count){
         
-        while(count > 0){
+        for(int i = 0;i < count;i++){
             List<Verse> visibleVerses = GetVersesStillVisible();
 
             if (visibleVerses.Count == 0){

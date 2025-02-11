@@ -22,7 +22,7 @@ public class Reference{
         if(_end == -1){
             return $"{_book} {_chapter} : {_start}]";
         }else{
-            return $"{_book} {_chapter} : {_start}-{_end}]";
+            return $"{_book} {_chapter} : {_start}-{_end}";
         }
         
     }
