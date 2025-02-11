@@ -2,7 +2,7 @@ public class Verse{
     int _verseNumber = -1;
     List<Word> _words = new List<Word>();
 
-    Random randomSeed = new Random();
+    Random _randomSeed = new Random();
 
     public Verse(){
         
@@ -29,15 +29,36 @@ public class Verse{
         }
     }
 
+    public void SetVerseNumber(int number){
+        _verseNumber = number;
+    }
+
+    public void SetWords(List<Word> words){
+        _words = words;
+    }
+
+    public void SetSeed(Random random){
+        _randomSeed = random;
+    }
+
+    public int GetVerseNumber(){
+        return _verseNumber;
+    }
+
+    public List<Word> GetWords(){
+        return _words;
+    }
+
     public void HideWords(int count){
         for(int i = 0;i < count;i++){
             List<Word> visibleWords = GetVisibleWords();
 
+            // there are no more words return
             if(visibleWords.Count == 0){
                 return;
             }
 
-            int chosen = randomSeed.Next(visibleWords.Count);
+            int chosen = _randomSeed.Next(visibleWords.Count);
 
             visibleWords[chosen].SetVisibility(false);
         }
