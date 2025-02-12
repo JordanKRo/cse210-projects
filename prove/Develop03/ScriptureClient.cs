@@ -1,6 +1,9 @@
 using System.Reflection.Metadata;
 using System.Text.Json;
-
+/// <summary>
+/// This client can only get text from the Book of Mormon.
+/// The other volumes are not supported.
+/// </summary>
 public class ScriptureClient{
 
     private const string baseRequestUrl = "https://openscriptureapi.org/api/scriptures/v1/lds/en/volume/bookofmormon";

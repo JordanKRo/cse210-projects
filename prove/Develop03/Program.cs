@@ -6,7 +6,9 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        Console.WriteLine("Hello Develop03 World!");
+        // Library owns the Client
+        Library library = new Library();
+        // check if api is enabled, then check if can obtain book cache.
 
         // string testText = "The quick brown fox jumps, over the lazy dog.";
         // string text2 = "This is the second verse.";
