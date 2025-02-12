@@ -27,7 +27,7 @@ class Program
         await client.GetBooks();
         Console.WriteLine("Got books");
 
-        Scripture result = await client.GetScriptureFromApi(new Reference("3Nephi", 1, 1, 4));
+        Scripture result = await client.GetScriptureFromApi(new Reference("Alma", 3, 2, 4));
 
         if(result != null){
             Console.WriteLine(result.GetDisplay());

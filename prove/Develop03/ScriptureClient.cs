@@ -17,7 +17,7 @@ public class ScriptureClient{
         string bookId = "";
         int verseStart = reference.GetStart();
         int chapter = reference.GetChapter();
-        int numberVerses = reference.GetEnd() - reference.GetStart() + 1;
+
         if (_booksCache.TryGetValue(reference.GetBook(), out string result)){
             bookId = result;
         }else{
@@ -35,7 +35,7 @@ public class ScriptureClient{
             
             JsonElement verses = document.RootElement.GetProperty("chapter").GetProperty("verses");
 
-            for(int i = verseStart - 1;i < numberVerses;i++){
+            for(int i = verseStart - 1;i < reference.GetEnd();i++){
                 JsonElement element = verses[i];
                 verseText.Add(element.GetProperty("text").ToString());
             }
