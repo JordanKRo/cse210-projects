@@ -4,8 +4,8 @@ using System.Text.Json;
 public class ScriptureClient{
 
     private const string baseRequestUrl = "https://openscriptureapi.org/api/scriptures/v1/lds/en/volume/bookofmormon";
-    private const string booksUrl = "https://openscriptureapi.org/api/scriptures/v1/lds/en/volume/bookofmormon";
-    private Dictionary<string,string> books;
+    private const string bomUrl = "https://openscriptureapi.org/api/scriptures/v1/lds/en/volume/bookofmormon";
+    private Dictionary<string,string> _booksCache = new Dictionary<string, string>();
 
     private readonly HttpClient client = new HttpClient();
     
@@ -16,20 +16,31 @@ public class ScriptureClient{
     public async Task<Scripture> GetScriptureFromApi(Reference reference){
         string bookId = "";
         int verseStart = reference.GetStart();
-        int numberVerses = reference.GetEnd() - reference.GetStart();
-        if (books.TryGetValue(reference.GetBook(), out string result)){
+        int chapter = reference.GetChapter();
+        int numberVerses = reference.GetEnd() - reference.GetStart() + 1;
+        if (_booksCache.TryGetValue(reference.GetBook(), out string result)){
             bookId = result;
         }else{
             return null;
         }
+
+        List<string> verseText = new List<string>();
         
         try
         {
-            HttpResponseMessage response = await client.GetAsync(baseRequestUrl);
+            HttpResponseMessage response = await client.GetAsync($"{bomUrl}/{bookId}/{chapter}");
             response.EnsureSuccessStatusCode();
             string plainJson = await response.Content.ReadAsStringAsync();
             JsonDocument document = JsonSerializer.Deserialize<JsonDocument>(plainJson);
-            document
+            
+            JsonElement verses = document.RootElement.GetProperty("chapter").GetProperty("verses");
+
+            for(int i = verseStart - 1;i < numberVerses;i++){
+                JsonElement element = verses[i];
+                verseText.Add(element.GetProperty("text").ToString());
+            }
+
+            return new Scripture(verseText, reference);
         }
         catch (HttpRequestException e)
         {
@@ -48,7 +59,7 @@ public class ScriptureClient{
             JsonDocument document = JsonSerializer.Deserialize<JsonDocument>(plainJson);
             JsonElement books = document.RootElement.GetProperty("books");
             foreach(JsonElement element in books.EnumerateArray()){
-                this.books.Add(element.GetProperty("title").ToString(),element.GetProperty("_id").ToString());
+                this._booksCache.Add(element.GetProperty("title").ToString(),element.GetProperty("_id").ToString());
             }
 
         }
@@ -57,5 +68,9 @@ public class ScriptureClient{
             Console.WriteLine($"Error making GET request: {e.Message}");
             throw;
         }
+    }
+
+    public List<string> GetAvailableBooks(){
+        return _booksCache.Keys.ToList();
     }
 }
