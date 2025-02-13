@@ -5,6 +5,10 @@ public class Library{
 
     }
 
+    public Library(string filePath){
+        
+    }
+
     public Library(bool useApi){
         _enabledApi = useApi;
     }
