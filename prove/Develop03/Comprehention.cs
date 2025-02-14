@@ -14,12 +14,13 @@ public class Comprehension{
 
             Console.WriteLine(_scripture.GetDisplay());
 
+            Console.WriteLine("Press enter to continue or type quit to finish:");
             string input = Console.ReadLine();
-            if (input.ToLower() == "exit"){
+            if (input.ToLower() == "quit") {
                 break;
             }
 
-            if(_scripture.GetVisibleWordCount() == 0){
+            if (_scripture.GetVisibleWordCount() == 0) {
                 break;
             }
             _scripture.HideWords(3);
