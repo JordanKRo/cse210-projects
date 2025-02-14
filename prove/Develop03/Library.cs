@@ -7,6 +7,8 @@ public class Library{
     List<Scripture> _scriptures;
     private bool _enabledApi = false;
 
+    ScriptureClient client;
+
     Random _randomSeed = new Random();
     public Library(){
 
@@ -16,14 +18,22 @@ public class Library{
         _scriptures = LoadScripturesFile(filePath);
     }
 
-    public Library(bool useApi){
+    public Library(bool useApi = false) {
         _enabledApi = useApi;
+
+        if (_enabledApi) {
+            client = new ScriptureClient();
+        }
     }
+
     /// <summary>
     /// Returns a scripture from the api or from the local volume.
     /// </summary>
     /// <returns></returns>
-    public Scripture GetScripture(){
+    public async Task<Scripture> GetScripture() {
+        if (_enabledApi) {
+            await client.GetScriptureFromApi(new Reference("1 Nephi", 1, 2));
+        }
         return _scriptures[_randomSeed.Next(_scriptures.Count)];
     }
     // I intend this to be for adding verses to the library
@@ -33,6 +43,10 @@ public class Library{
 
     public List<Scripture> GetAllScriptures(){
         return _scriptures;
+    }
+
+    public async void CacheAvailableVolume(){
+        await client.GetBooks();
     }
 
     public List<Scripture> LoadScripturesFile(string path){

@@ -5,14 +5,12 @@ using System.Text.Json;
 /// The other volumes are not supported.
 /// </summary>
 public class ScriptureClient{
-
-    private const string baseRequestUrl = "https://openscriptureapi.org/api/scriptures/v1/lds/en/volume/bookofmormon";
     private const string bomUrl = "https://openscriptureapi.org/api/scriptures/v1/lds/en/volume/bookofmormon";
     private Dictionary<string,string> _booksCache = new Dictionary<string, string>();
 
     private readonly HttpClient client = new HttpClient();
     
-    public ScriptureClient(){
+    public ScriptureClient() {
         
     }
 
@@ -55,7 +53,7 @@ public class ScriptureClient{
     public async Task GetBooks(){
         try
         {
-            HttpResponseMessage response = await client.GetAsync(baseRequestUrl);
+            HttpResponseMessage response = await client.GetAsync(bomUrl);
             response.EnsureSuccessStatusCode();
             string plainJson = await response.Content.ReadAsStringAsync();
 
