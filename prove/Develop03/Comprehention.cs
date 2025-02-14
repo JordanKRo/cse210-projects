@@ -14,7 +14,10 @@ public class Comprehension{
 
             Console.WriteLine(_scripture.GetDisplay());
 
-            Console.ReadLine();
+            string input = Console.ReadLine();
+            if (input.ToLower() == "exit"){
+                break;
+            }
 
             if(_scripture.GetVisibleWordCount() == 0){
                 break;

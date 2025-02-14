@@ -2,14 +2,49 @@
     "Scriptures":[
         {
             "reference":{
-                "book":"1 Nephi",
-                "chapter":2,
-                "start":4,
-                "end":5
+                "book":"Doctrine and Covenants",
+                "chapter":18,
+                "start":5
             },
             "verses":[
-                "Verse 1",
-                "Verse 2"
+                "Wherefore, if you shall build up my church, upon the foundation of my gospel and my rock, the gates of hell shall not prevail against you."
+            ]
+
+        },
+        {
+            "reference":{
+                "book":"Acts",
+                "chapter":27,
+                "start":11
+            },
+            "verses":[
+                "Nevertheless the centurion believed the master and the owner of the ship, more than those things which were spoken by Paul."
+            ]
+
+        },
+        {
+            "reference":{
+                "book":"Joseph Smith—History",
+                "chapter":1,
+                "start":11,
+                "end":12
+            },
+            "verses":[
+                "While I was laboring under the extreme difficulties caused by the contests of these parties of religionists, I was one day reading the Epistle of James, first chapter and fifth verse, which reads: If any of you lack wisdom, let him ask of God, that giveth to all men liberally, and upbraideth not; and it shall be given him.",
+                "Never did any passage of scripture come with more power to the heart of man than this did at this time to mine. It seemed to enter with great force into every feeling of my heart. I reflected on it again and again, knowing that if any person needed wisdom from God, I did; for how to act I did not know, and unless I could get more wisdom than I then had, I would never know; for the teachers of religion of the different sects understood the same passages of scripture so differently as to destroy all confidence in settling the question by an appeal to the Bible."
+            ]
+
+        },
+        {
+            "reference":{
+                "book":"Zechariah",
+                "chapter":5,
+                "start":1,
+                "end":2
+            },
+            "verses":[
+                "Then I turned, and lifted up mine eyes, and looked, and behold a flying roll.",
+                "And he said unto me, What seest thou? And I answered, I see a flying roll; the length thereof is twenty cubits, and the breadth thereof ten cubits."
             ]
 
         }

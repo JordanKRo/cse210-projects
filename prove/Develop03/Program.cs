@@ -6,31 +6,22 @@ class Program
 {
     static void Main(string[] args)
     {
+        // OS compliant path
+        string basePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
-        // Console.WriteLine(Path.GetFullPath("scriptureLib.json") + " : path");
+        string projectPath = Path.GetFullPath(Path.Combine(basePath, "..", "..", ".."));
+        string path = Path.Combine(projectPath, "scriptureLib.json");
         // Library owns the Client
-        Library library = new Library(Path.GetFullPath("scriptureLib.json"));
+        Library library = new Library(path);
 
         
         // check if api is enabled, then check if can obtain book cache.
-
-        // string testText = "The quick brown fox jumps, over the lazy dog.";
-        // string text2 = "This is the second verse.";
         
-        // Scripture scripture = new Scripture([testText, text2], new Reference("FakeBook", 2, 5, 6));
+        Scripture scripture = library.GetScripture();
         
-        // Comprehension comprehension = new Comprehension(scripture);
+        Comprehension comprehension = new Comprehension(scripture);
 
-        // comprehension.Start();
-
-        List<Scripture> scr = library.GetAllScriptures();
-
-        foreach(Scripture s in scr){
-            Console.WriteLine(s.GetDisplay());
-            Console.WriteLine();
-        }
-        
-        // await clientTest();
+        comprehension.Start();
     }
 
     private static async Task clientTest(){

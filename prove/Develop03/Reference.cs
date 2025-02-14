@@ -29,7 +29,7 @@ public class Reference{
     public override string ToString()
     {
         if(_end == -1){
-            return $"{_book} {_chapter} : {_start}]";
+            return $"{_book} {_chapter} : {_start}";
         }else{
             return $"{_book} {_chapter} : {_start}-{_end}";
         }

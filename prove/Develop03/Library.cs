@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 public class Library{
     List<Scripture> _scriptures;
     private bool _enabledApi = false;
+
+    Random _randomSeed = new Random();
     public Library(){
 
     }
@@ -22,7 +24,7 @@ public class Library{
     /// </summary>
     /// <returns></returns>
     public Scripture GetScripture(){
-        throw new NotImplementedException();
+        return _scriptures[_randomSeed.Next(_scriptures.Count)];
     }
     // I intend this to be for adding verses to the library
     public void AddToLibraryFromApi(Reference reference){
@@ -35,7 +37,7 @@ public class Library{
 
     public List<Scripture> LoadScripturesFile(string path){
 
-        List<Scripture> scriptures = new List<Scripture>();
+        List<Scripture> ret = new List<Scripture>();
         try{
             using (StreamReader reader = new StreamReader(path))
             {
@@ -43,7 +45,9 @@ public class Library{
                 JsonDocument document = JsonSerializer.Deserialize<JsonDocument>(json);
 
                 JsonElement scripturesElement = document.RootElement.GetProperty("Scriptures");
-
+                
+                
+                
                 for(int i = 0;i < scripturesElement.GetArrayLength();i++){
                     JsonElement r = scripturesElement[i].GetProperty("reference");
                     JsonElement v = scripturesElement[i].GetProperty("verses");
@@ -56,7 +60,7 @@ public class Library{
                     Reference reference = new Reference(r.GetProperty("book").GetString(), r.GetProperty("chapter").GetInt16(), r.GetProperty("start").GetInt16(), end);
                     List<string> verses = new List<string>();
                     
-                    List<Scripture> ret = new List<Scripture>();
+                    
                     for(int j = 0;j < v.GetArrayLength();j++){
                         verses.Add(v[j].GetString());
                     }
@@ -65,7 +69,7 @@ public class Library{
                 }
 
 
-                return scriptures;
+                return ret;
             }
         }catch(IOException ioex){
             Console.WriteLine("Failed to load the library file, an IO exception occurred.\n" + ioex);
