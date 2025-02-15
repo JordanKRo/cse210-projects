@@ -2,7 +2,7 @@ using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 /*
-Exceeds requirements because the library opens a file and picks a random scripture to to display.
+Exceeds requirements because the library opens a file and picks a random scripture to display.
 */
 class Program
 {
