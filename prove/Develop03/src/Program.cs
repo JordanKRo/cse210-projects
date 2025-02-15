@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 class Program
 {
-    static async Task Main(string[] args)
+    static void Main(string[] args)
     {
         // OS compliant path
         string basePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -17,7 +17,7 @@ class Program
         
         // check if api is enabled, then check if can obtain book cache.
         
-        Scripture scripture = await library.GetScripture();
+        Scripture scripture = library.GetScripture();
         
         Comprehension comprehension = new Comprehension(scripture);
 

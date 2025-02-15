@@ -30,10 +30,7 @@ public class Library{
     /// Returns a scripture from the api or from the local volume.
     /// </summary>
     /// <returns></returns>
-    public async Task<Scripture> GetScripture() {
-        if (_enabledApi) {
-            await client.GetScriptureFromApi(new Reference("1 Nephi", 1, 2));
-        }
+    public Scripture GetScripture() {
         return _scriptures[_randomSeed.Next(_scriptures.Count)];
     }
     // I intend this to be for adding verses to the library
