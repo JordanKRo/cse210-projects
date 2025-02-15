@@ -42,10 +42,6 @@ public class Library{
         return _scriptures;
     }
 
-    public async void CacheAvailableVolume(){
-        await client.GetBooks();
-    }
-
     public List<Scripture> LoadScripturesFile(string path){
 
         List<Scripture> ret = new List<Scripture>();

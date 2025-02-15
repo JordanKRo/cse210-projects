@@ -24,19 +24,4 @@ class Program
         comprehension.Start();
     }
 
-    private static async Task clientTest(){
-        ScriptureClient client = new ScriptureClient();
-
-        await client.GetBooks();
-        Console.WriteLine("Got books");
-
-        Scripture result = await client.GetScriptureFromApi(new Reference("Alma", 3, 2, 4));
-
-        if(result != null){
-            Console.WriteLine(result.GetDisplay());
-        } else {
-            Console.WriteLine("SAD");
-        }
-    }
-
 }
