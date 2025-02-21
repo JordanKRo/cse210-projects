@@ -17,7 +17,7 @@ public class Activity{
 
     }
 
-    public static async Task Spinner(double seconds){
+    public static async Task Spinner(string message, double seconds){
 
         char[] frames = ['|','/','-','\\',];
         
@@ -32,16 +32,22 @@ public class Activity{
         Console.Write(new string(' ', Console.WindowWidth));
     }
 
-    public static async Task Timer(double seconds){
+    public static async Task Timer(string message, double seconds){
         DateTime end = DateTime.Now.AddSeconds(seconds);
-        
+
         double secondsLeft = (end - DateTime.Now).Seconds;
-        Console.Write(secondsLeft.ToString());
-        while ((end - DateTime.Now).Seconds > 0) {
-            Console.Write($"\b{(end - DateTime.Now).Seconds}");
+
+        while (secondsLeft > 0) {
+            Console.Write($"{message}{secondsLeft}");
             await Task.Delay(100);
+            clearLine();
             
         }
+        
+    }
+
+    private static void clearLine(){
+        Console.SetCursorPosition(0, Console.CursorTop);
         Console.Write(new string(' ', Console.WindowWidth));
     }
 
