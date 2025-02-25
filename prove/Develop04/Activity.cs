@@ -13,8 +13,16 @@ public class Activity{
         _completionMessage = completionMessage;
     }
 
-    public virtual void Start(){
+    public virtual async Task Start(){
+        await Spinner("Uh oh", 10);
+    }
 
+    protected void DisplayIntro(){
+        Console.WriteLine(_description);
+    }
+
+    protected void DisplayOutro(){
+        Console.WriteLine(_completionMessage);
     }
 
     public static async Task Spinner(string message, double seconds){
