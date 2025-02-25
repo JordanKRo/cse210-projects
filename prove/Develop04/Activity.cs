@@ -24,31 +24,33 @@ public class Activity{
         DateTime end = DateTime.Now.AddSeconds(seconds);
         Console.Write(" ");
         int frame = 0;
+        string lastWrite = "";
         while (DateTime.Now < end) {
             frame++;
-            Console.Write($"\b{frames[frame % 4]}");
+            lastWrite = $"\b{frames[frame % 4]}";
+            Console.Write(lastWrite);
             await Task.Delay(100);
         }
-        Console.Write(new string(' ', Console.WindowWidth));
+        Console.Write($"\r");
+        Console.Write(new string(' ',lastWrite.Length));
+        Console.WriteLine();
     }
 
     public static async Task Timer(string message, double seconds){
         DateTime end = DateTime.Now.AddSeconds(seconds);
 
         double secondsLeft = (end - DateTime.Now).Seconds;
-
+        string lastWrite = "";
         while (secondsLeft > 0) {
-            Console.Write($"{message}{secondsLeft}");
+            secondsLeft = (end - DateTime.Now).Seconds; 
+            string newWrite = $"\r{message}{secondsLeft}";
+            int extra = lastWrite.Length - newWrite.Length;
+            if (extra < 0){
+                extra = 0;
+            }
+            Console.Write(newWrite + new string(' ', extra));
             await Task.Delay(100);
-            clearLine();
-            
+            // Console.Write($"\r" + new string(' ',lastWrite.Length) + "\r");
         }
-        
     }
-
-    private static void clearLine(){
-        Console.SetCursorPosition(0, Console.CursorTop);
-        Console.Write(new string(' ', Console.WindowWidth));
-    }
-
 }
