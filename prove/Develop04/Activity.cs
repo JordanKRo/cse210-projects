@@ -42,6 +42,22 @@ public class Activity{
         return _completionMessage;
     }
 
+    public void SetDelay(double delay){
+        _delay = delay;
+    }
+
+    public void SetIntro(string intro){
+        _intro = intro;
+    }
+
+    public void SetDuration(double duration){
+        _duration = duration;
+    }
+
+    public void SetCompletionMessage(string message){
+        _completionMessage = message;
+    }
+
     public static async Task Spinner(string message, double seconds){
 
         char[] frames = ['|','/','-','\\',];
