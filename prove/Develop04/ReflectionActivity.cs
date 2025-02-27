@@ -1,12 +1,12 @@
 public class ReflectionActivity : Activity{
 
-    private List<string> _prompts;
+    private List<ReflectionPrompt> _prompts;
     private double _followUpDelay;
     private double _ponderTime;
 
-    public ReflectionActivity(double delay, string description, double duration, string completionMessage) : 
-    base(delay, description, duration, completionMessage) {
-
+    public ReflectionActivity(double delay, string description, double duration, string completionMessage, List<ReflectionPrompt> prompts, double followUpDelay, double followUpTime) : 
+        base(delay, description, duration, completionMessage) {
+        
     }
 
     public override async Task Start()

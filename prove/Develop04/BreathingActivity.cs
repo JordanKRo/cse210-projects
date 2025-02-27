@@ -29,4 +29,8 @@ public class BreathingActivity : Activity{
         
     }
 
+    public double GetCycleTime(){
+        return _cycleTime;
+    }
+
 }

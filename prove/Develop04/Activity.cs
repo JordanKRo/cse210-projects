@@ -1,14 +1,15 @@
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 public class Activity{
     protected double _delay;
-    protected string _description;
+    protected string _intro;
     protected double _duration;
     protected string _completionMessage;
 
     protected Activity(double delay, string description, double duration, string completionMessage){
         _delay = delay;
-        _description = description;
+        _intro = description;
         _duration = duration;
         _completionMessage = completionMessage;
     }
@@ -18,11 +19,27 @@ public class Activity{
     }
 
     protected void DisplayIntro(){
-        Console.WriteLine(_description);
+        Console.WriteLine(_intro);
     }
 
     protected void DisplayOutro(){
         Console.WriteLine(_completionMessage);
+    }
+
+    public double GetDelay(){
+        return _delay;
+    }
+
+    public string GetIntro(){
+        return _intro;
+    }
+
+    public double GetDuration(){
+        return _duration;
+    }
+
+    public string GetCompletionMessage(){
+        return _completionMessage;
     }
 
     public static async Task Spinner(string message, double seconds){
