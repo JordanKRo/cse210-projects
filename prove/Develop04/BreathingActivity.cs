@@ -22,7 +22,7 @@ public class BreathingActivity : Activity{
             Console.WriteLine('\n');
             await Timer("Breath Out.. ", _cycleTime);
             Console.WriteLine('\n');
-        }while(timeLeft > 0);
+        } while (timeLeft > 0);
         DisplayOutro();
         Console.WriteLine('\n');
         await Spinner("", _delay);
