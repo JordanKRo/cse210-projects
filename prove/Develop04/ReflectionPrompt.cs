@@ -1,8 +1,7 @@
 public class ReflectionPrompt{
     private string _text;
     private List<string> _followUps = new List<string>();
-
-    private Random _randomSeed = new Random();
+    private int currentIndex = 0;
 
     public ReflectionPrompt(string text, List<string> followUps){
         _text = text;
@@ -21,8 +20,17 @@ public class ReflectionPrompt{
         return _followUps;
     }
 
-    public string GetRandomFollowUp(){
-        return _followUps[_randomSeed.Next(0, _followUps.Count - 1)];
+    public string GetFollowUp(){
+        if (_followUps.Count == 0){
+            return "";
+        }
+        var followUp = _followUps[currentIndex];
+        currentIndex++;
+        return followUp;
+    }
+    /// <returns>True if all of the followups have been cycled</returns>
+    public bool IsDone(){
+        return currentIndex >= _followUps.Count - 1;
     }
 
     public void SetText(string text){
