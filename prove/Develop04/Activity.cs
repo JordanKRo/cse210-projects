@@ -6,6 +6,8 @@ public class Activity{
     protected int _delay = 3;
     protected string _intro = "This is an activity.";
     protected int _duration = 3;
+    private DateTime _endTime = DateTime.Now;
+    private bool _isRunning = false;
 
     protected Activity(int delay, string description, int duration){
         _delay = delay;
@@ -17,6 +19,10 @@ public class Activity{
         await Spinner("", _duration);
     }
 
+    /// <summary>
+    /// Displays the intro message for the activity, gets the duration if not set, and waits for the user to press enter. Then displays the get ready spinner after clearing the screen.
+    /// </summary>
+    /// <returns></returns>
     protected async Task DisplayIntro(){
         Console.WriteLine($"Welcome to the {GetName()}.\n\n{_intro}\n");
         if (_duration <= 0) {
@@ -64,6 +70,17 @@ public class Activity{
 
     public void SetDuration(int duration){
         _duration = duration;
+    }
+
+    protected void SetTimer(){
+        _endTime = DateTime.Now.AddSeconds(_duration);
+        _isRunning = true;
+    }
+
+    protected bool TimerExpired(){
+        var ret = DateTime.Now >= _endTime && _isRunning;
+        _isRunning = false;
+        return ret;
     }
 
 
