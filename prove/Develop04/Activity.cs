@@ -16,7 +16,7 @@ public class Activity{
     }
 
     public virtual async Task Start(){
-        await Spinner("", _duration);
+        await DisplaySpinner("", _duration);
     }
 
     /// <summary>
@@ -32,15 +32,15 @@ public class Activity{
             Console.ReadLine();
         }
         SafeClearConsole();
-        await Spinner("Get Ready... ", _delay);
+        await DisplaySpinner("Get Ready... ", _delay);
     }
 
     protected async Task DisplayOutro(){
 
         Console.WriteLine("Well Done!");
-        await Spinner("", _delay);
+        await DisplaySpinner("", _delay);
         Console.WriteLine($"You have completed another {_duration} seconds of the {GetName()}");
-        await Spinner("", _delay);
+        await DisplaySpinner("", _delay);
         
     }
 
@@ -90,7 +90,7 @@ public class Activity{
     }
 
 
-    public static async Task Spinner(string message, double seconds, int frameTime = 100, bool leaveMessage = true){
+    public static async Task DisplaySpinner(string message, double seconds, int frameTime = 100, bool leaveMessage = true){
 
         char[] frames = ['|','/','—','\\',];
         
@@ -113,7 +113,7 @@ public class Activity{
         Console.WriteLine();
     }
 
-    public static async Task Timer(string message, double seconds){
+    public static async Task DisplayTimer(string message, double seconds){
         DateTime end = DateTime.Now.AddSeconds(seconds);
 
         double secondsLeft = (end - DateTime.Now).Seconds;

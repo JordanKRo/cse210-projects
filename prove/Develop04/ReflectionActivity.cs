@@ -45,12 +45,12 @@ public class ReflectionActivity : Activity{
             Console.WriteLine("When you have something in mind press enter to continue.");
             Console.ReadLine();
             Console.WriteLine("Now ponder on each of the following questions as they relate to your experience.");
-            await Timer("Get ready... ", _followUpDelay);
+            await DisplayTimer("Get ready... ", _followUpDelay);
             SafeClearConsole();
             
             do{
                 // Display all of the followup questions in order until time time runs out or the prompt is done.
-                await Spinner("> " + prompt.GetFollowUp() + " ", _ponderTime, frameTime: 200, leaveMessage: true);
+                await DisplaySpinner("> " + prompt.GetFollowUp() + " ", _ponderTime, frameTime: 200, leaveMessage: true);
                 Console.WriteLine();
             } while (!prompt.IsDone() && TimerRunning());
             // Continue until all prompts are out or time runs out

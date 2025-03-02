@@ -27,7 +27,7 @@ public class ListingActivity : Activity{
         // Display the prompt
         Console.WriteLine($"\n——{prompt}——\n");
         // Give the user time to think
-        await Timer("You make begin in... ", _ponderTime);
+        await DisplayTimer("You make begin in... ", _ponderTime);
         // Set timer and commence the listing activity
         SetTimer();
         do{

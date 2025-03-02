@@ -18,9 +18,9 @@ public class BreathingActivity : Activity{
 
         SetTimer();
         do {
-            await Timer("Breath In.. ", _cycleTime);
+            await DisplayTimer("Breath In.. ", _cycleTime);
             Console.WriteLine('\n');
-            await Timer("Breath Out.. ", _cycleTime);
+            await DisplayTimer("Breath Out.. ", _cycleTime);
             Console.WriteLine('\n');
         } while (TimerRunning());
         await DisplayOutro();
