@@ -33,6 +33,8 @@ class Program
         List<ReflectionPrompt> prompts = new List<ReflectionPrompt> { prompt1, prompt2, prompt3 };
         prompts.ForEach(prompt => prompt.SetFollowUps(followUps));
         while (true){
+            Activity.SafeClearConsole();
+            Console.WriteLine("Menu Options:");
             int option = InputValidation.PromptOptions("Select a choice from the menu above: ", new List<string> { "Start Breathing Activity", "Start Reflection Activity", "Start Listing Activity", "Exit" });
             Activity currentActivity = null;
             switch (option)
@@ -41,15 +43,15 @@ class Program
                     currentActivity = new BreathingActivity(4, "This activity will help you relax by walking your through breathing in and out slowly. Clear your mind and focus on your breathing.", 4);
                     break;
                 case 1:
-                    currentActivity = new ReflectionActivity(4, "This activity will help you reflect on times in your life when you have shown strength and resilience. This will help you recognize the power you have and how you can use it in other aspects of your life.", prompts, 8, 8);
+                    currentActivity = new ReflectionActivity(4, "This activity will help you reflect on times in your life when you have shown strength and resilience. This will help you recognize the power you have and how you can use it in other aspects of your life.", prompts, 4, 8);
                     break;
                 case 2:
                     currentActivity = new ListingActivity(4, "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.", listingActivityPrompts);
                     break;              
             }
             if (option != 3){
-                await currentActivity.Start();
                 Activity.SafeClearConsole();
+                await currentActivity.Start();
             } else {
                 Console.WriteLine("\nGoodbye!");
                 break;

@@ -79,14 +79,14 @@ public class Activity{
 
     protected bool TimerRunning(){
         var ret = DateTime.Now < _endTime && _isRunning;
-        if (ret){
+        if (!ret){
             _isRunning = false;
         }
         return ret;
     }
 
-    protected double GetSecondsLeft(){
-        return (_endTime - DateTime.Now).Seconds;
+    protected int GetSecondsLeft(){
+        return (int)(_endTime - DateTime.Now).TotalSeconds;
     }
 
 
@@ -116,10 +116,10 @@ public class Activity{
     public static async Task DisplayTimer(string message, double seconds){
         DateTime end = DateTime.Now.AddSeconds(seconds);
 
-        double secondsLeft = (end - DateTime.Now).Seconds;
+        double secondsLeft = (end - DateTime.Now).TotalSeconds;
         string lastWrite = "";
         while (secondsLeft > 0) {
-            secondsLeft = (end - DateTime.Now).Seconds; 
+            secondsLeft = (end - DateTime.Now).TotalSeconds; 
             string newWrite = $"\r{message}{secondsLeft}";
             int extra = lastWrite.Length - newWrite.Length;
             if (extra < 0){
