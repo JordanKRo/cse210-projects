@@ -121,11 +121,13 @@ public class InputValidation
             Console.Write(prompt);
             string input = Console.ReadLine() ?? "";
             if (int.TryParse(input, out int result)){
-                if(result < options.Count && options.Count >= 0){
-
+                if(result <= options.Count && options.Count >= 0){
+                    return result - 1;
+                } else {
+                    Console.WriteLine($"Please enter a number between {1} and {options.Count}");
                 }
             }else{
-                Console.WriteLine($"Please enter a value between {1} and {options.Count}");
+                Console.WriteLine($"Please enter a number between {1} and {options.Count}");
             }
         }
 
