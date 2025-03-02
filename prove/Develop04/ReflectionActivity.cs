@@ -63,4 +63,8 @@ public class ReflectionActivity : Activity{
     {
         return "Reflection Activity"; 
     }
+
+    public List<ReflectionPrompt> GetPrompts(){
+        return _prompts;
+    }
 }

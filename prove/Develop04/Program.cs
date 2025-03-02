@@ -35,7 +35,7 @@ class Program
 
         List<ReflectionPrompt> prompts = promptList;
         prompts.ForEach(prompt => prompt.SetFollowUps(followUps));
-        while (true){
+        while (true) {
             Activity.SafeClearConsole();
             Console.WriteLine("Menu Options:");
             int option = InputValidation.PromptOptions("Select a choice from the menu above: ", new List<string> { "Start Breathing Activity", "Start Reflection Activity", "Start Listing Activity", "Exit" });
@@ -52,7 +52,7 @@ class Program
                     currentActivity = new ListingActivity(4, "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.", listingActivityPrompts);
                     break;              
             }
-            if (option != 3){
+            if (option != 3) {
                 Activity.SafeClearConsole();
                 await currentActivity.Start();
             } else {

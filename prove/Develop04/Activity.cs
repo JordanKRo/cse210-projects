@@ -9,13 +9,13 @@ public class Activity{
     private DateTime _endTime = DateTime.Now;
     private bool _isRunning = false;
 
-    protected Activity(int delay, string description, int duration){
+    protected Activity(int delay, string description, int duration) {
         _delay = delay;
         _intro = description;
         _duration = duration;
     }
 
-    public virtual async Task Start(){
+    public virtual async Task Start() {
         await DisplaySpinner("", _duration);
     }
 
@@ -23,7 +23,7 @@ public class Activity{
     /// Displays the intro message for the activity, gets the duration if not set, and waits for the user to press enter. Then displays the get ready spinner after clearing the screen.
     /// </summary>
     /// <returns></returns>
-    protected async Task DisplayIntro(){
+    protected async Task DisplayIntro() {
         Console.WriteLine($"Welcome to the {GetName()}.\n\n{_intro}\n");
         if (_duration <= 0) {
             _duration = InputValidation.PromptInt("How long, in seconds, would you like your session? ");
@@ -35,7 +35,7 @@ public class Activity{
         await DisplaySpinner("Get Ready... ", _delay);
     }
 
-    protected async Task DisplayOutro(){
+    protected async Task DisplayOutro() {
 
         Console.WriteLine("Well Done!");
         await DisplaySpinner("", _delay);
@@ -44,40 +44,40 @@ public class Activity{
         
     }
 
-    public int GetDelay(){
+    public int GetDelay() {
         return _delay;
     }
 
-    public string GetIntro(){
+    public string GetIntro() {
         return _intro;
     }
 
-    public int GetDuration(){
+    public int GetDuration() {
         return _duration;
     }
 
-    public virtual string GetName(){
+    public virtual string GetName() {
         return "Activity";
     }
 
-    public void SetDelay(int delay){
+    public void SetDelay(int delay) {
         _delay = delay;
     }
 
-    public void SetIntro(string intro){
+    public void SetIntro(string intro) {
         _intro = intro;
     }
 
-    public void SetDuration(int duration){
+    public void SetDuration(int duration) {
         _duration = duration;
     }
 
-    protected void SetTimer(){
+    protected void SetTimer() {
         _endTime = DateTime.Now.AddSeconds(_duration);
         _isRunning = true;
     }
 
-    protected bool TimerRunning(){
+    protected bool TimerRunning() {
         var ret = DateTime.Now < _endTime && _isRunning;
         if (!ret){
             _isRunning = false;
@@ -85,12 +85,12 @@ public class Activity{
         return ret;
     }
 
-    protected int GetSecondsLeft(){
+    protected int GetSecondsLeft() {
         return (int)(_endTime - DateTime.Now).TotalSeconds;
     }
 
 
-    public static async Task DisplaySpinner(string message, double seconds, int frameTime = 100, bool leaveMessage = true){
+    public static async Task DisplaySpinner(string message, double seconds, int frameTime = 100, bool leaveMessage = true) {
 
         char[] frames = ['|','/','—','\\',];
         
@@ -113,7 +113,7 @@ public class Activity{
         Console.WriteLine();
     }
 
-    public static async Task DisplayTimer(string message, double seconds){
+    public static async Task DisplayTimer(string message, double seconds) {
         DateTime end = DateTime.Now.AddSeconds(seconds);
 
         int secondsLeft = (int)(end - DateTime.Now).TotalSeconds;
@@ -135,7 +135,7 @@ public class Activity{
     /// <summary>
     /// Clears the console without throwing an exception in debug.
     /// </summary>
-    public static void SafeClearConsole(){
+    public static void SafeClearConsole() {
         try{
             Console.Clear();
         } catch (IOException e){

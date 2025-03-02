@@ -58,14 +58,6 @@ public class ListingActivity : Activity{
         return _ponderTime;
     }
 
-    public void setPrompts(List<string> prompts){
-        _prompts = prompts;
-    }
-
-    public void addPrompt(string prompt){
-        _prompts.Add(prompt);
-    }
-
     public void setPonderTime(int ponderTime){
         _ponderTime = ponderTime;
     }
