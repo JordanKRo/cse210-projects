@@ -5,9 +5,12 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        ReflectionPrompt prompt1 = new ReflectionPrompt("Think of a time when you did something really difficult.");
-        ReflectionPrompt prompt2 = new ReflectionPrompt("Think of a time when you stood up for someone else.");
-        ReflectionPrompt prompt3 = new ReflectionPrompt("Think of a time when you were really proud of yourself.");
+        List<ReflectionPrompt> promptList = new List<ReflectionPrompt>(){
+            new ReflectionPrompt("Think of a time when you stood up for someone else."),
+            new ReflectionPrompt("Think of a time when you did something really difficult."),
+            new ReflectionPrompt("Think of a time when you helped someone in need."),
+            new ReflectionPrompt("Think of a time when you did something truly selfless.")
+        };
 
         List<string> followUps = new List<string>
         {
@@ -30,7 +33,7 @@ class Program
             "Who are some of your personal heroes?"
         };
 
-        List<ReflectionPrompt> prompts = new List<ReflectionPrompt> { prompt1, prompt2, prompt3 };
+        List<ReflectionPrompt> prompts = promptList;
         prompts.ForEach(prompt => prompt.SetFollowUps(followUps));
         while (true){
             Activity.SafeClearConsole();

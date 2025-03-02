@@ -121,13 +121,13 @@ public class Activity{
         while (secondsLeft > 0) {
             secondsLeft = (int)(end - DateTime.Now).TotalSeconds; 
             string newWrite = $"\r{message}{secondsLeft}";
+            // Keep track of the extra chars to clear the line.
             int extra = lastWrite.Length - newWrite.Length;
             if (extra < 0){
                 extra = 0;
             }
             Console.Write(newWrite + new string(' ', extra));
             await Task.Delay(100);
-            // Console.Write($"\r" + new string(' ',lastWrite.Length) + "\r");
         }
         Console.WriteLine();
     }
