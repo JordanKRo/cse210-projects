@@ -17,6 +17,7 @@ public class ReflectionPrompt{
 
     public string GetPrompt() {
         return _text;
+        
     }
 
     public List<string> GetAllFollowUps() {

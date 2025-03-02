@@ -88,7 +88,7 @@ public class Activity{
     }
 
 
-    public static async Task DisplaySpinner(string message, double seconds, int frameTime = 100, bool leaveMessage = true) {
+    protected async Task DisplaySpinner(string message, double seconds, int frameTime = 100, bool leaveMessage = true) {
 
         char[] frames = ['|','/','—','\\',];
         
@@ -111,7 +111,7 @@ public class Activity{
         Console.WriteLine();
     }
 
-    public static async Task DisplayTimer(string message, double seconds) {
+    protected async Task DisplayTimer(string message, double seconds) {
         DateTime end = DateTime.Now.AddSeconds(seconds);
 
         int secondsLeft = (int)(end - DateTime.Now).TotalSeconds;
