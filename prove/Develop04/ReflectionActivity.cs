@@ -33,7 +33,7 @@ public class ReflectionActivity : Activity{
         await DisplayIntro();
 
         // Set timer
-        DateTime end = DateTime.Now.AddSeconds(_duration);
+        SetTimer();
         do{        
             // A random prompt is selected from the hat and removed from the hat
             Console.WriteLine("\nConsider the following Prompt:");
@@ -46,18 +46,15 @@ public class ReflectionActivity : Activity{
             Console.ReadLine();
             Console.WriteLine("Now ponder on each of the following questions as they relate to your experience.");
             await Timer("Get ready... ", _followUpDelay);
-            try{
-                Console.Clear();
-            }catch (IOException e){
-                Console.WriteLine(e.Message);
-            }
+            SafeClearConsole();
             
             do{
                 // Display all of the followup questions in order until time time runs out or the prompt is done.
                 await Spinner("> " + prompt.GetFollowUp() + " ", _ponderTime, frameTime: 200, leaveMessage: true);
                 Console.WriteLine();
-            } while (!(prompt.IsDone() || (end - DateTime.Now).Seconds <= 0));
-        } while ((end - DateTime.Now).Seconds > 0);
+            } while (!prompt.IsDone() && TimerRunning());
+            // Continue until all prompts are out or time runs out
+        } while (TimerRunning() && _promptHat.Count > 0);
         
         await DisplayOutro();
     }

@@ -77,10 +77,16 @@ public class Activity{
         _isRunning = true;
     }
 
-    protected bool TimerExpired(){
-        var ret = DateTime.Now >= _endTime && _isRunning;
-        _isRunning = false;
+    protected bool TimerRunning(){
+        var ret = DateTime.Now < _endTime && _isRunning;
+        if (ret){
+            _isRunning = false;
+        }
         return ret;
+    }
+
+    protected double GetSecondsLeft(){
+        return (_endTime - DateTime.Now).Seconds;
     }
 
 

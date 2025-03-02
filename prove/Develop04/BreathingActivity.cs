@@ -16,15 +16,13 @@ public class BreathingActivity : Activity{
     {
         await DisplayIntro();
 
-        DateTime end = DateTime.Now.AddSeconds(_duration);
-        double timeLeft;
+        SetTimer();
         do {
-            timeLeft = (end - DateTime.Now).Seconds;
             await Timer("Breath In.. ", _cycleTime);
             Console.WriteLine('\n');
             await Timer("Breath Out.. ", _cycleTime);
             Console.WriteLine('\n');
-        } while (timeLeft > 0);
+        } while (TimerRunning());
         await DisplayOutro();
     }
 

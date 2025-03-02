@@ -14,6 +14,8 @@ public class ListingActivity : Activity{
     public override async Task Start()
     {
         await DisplayIntro();
+
+        SetTimer();
     }
 
     public override string GetName()
