@@ -26,10 +26,7 @@ public class ReflectionActivity : Activity{
 
         // Set timer
         DateTime end = DateTime.Now.AddSeconds(_duration);
-        double timeLeft;
-        do{
-            timeLeft = (end - DateTime.Now).Seconds;
-            
+        do{        
             // A random prompt is selected from the hat and removed from the hat
             Console.WriteLine("\nConsider the following Prompt:");
             ReflectionPrompt prompt = _promptHat[_randomSeed.Next(0, _promptHat.Count)];
@@ -37,15 +34,29 @@ public class ReflectionActivity : Activity{
 
             // display the prompt then wait
             Console.WriteLine(prompt.GetPrompt());
-            await Timer("Ponder.. ", _ponderTime);
-
+            Console.WriteLine("When you have something in mind press enter to continue.");
+            Console.ReadLine();
+            Console.WriteLine("Now ponder on each of the following questions as they relate to your experience.");
+            await Timer("Get ready... ", _followUpDelay);
+            try{
+                Console.Clear();
+            }catch (IOException e){
+                Console.WriteLine(e.Message);
+            }
+            
             do{
-                Console.WriteLine(prompt.GetFollowUp());
+                // Display all of the followup questions in order until time time runs out or the prompt is done.
+                await Spinner(prompt.GetFollowUp() + " ", _ponderTime, frameTime: 200, leaveMessage: true);
                 Console.WriteLine();
-                await Spinner("",_ponderTime);
-            } while (!prompt.IsDone() && timeLeft > 0);
-        } while (timeLeft > 0);
+            } while (!(prompt.IsDone() || (end - DateTime.Now).Seconds <= 0));
+        } while ((end - DateTime.Now).Seconds > 0);
 
-        
+        DisplayOutro();
+        await Spinner("", _delay);
+    }
+
+    public override string GetName()
+    {
+        return "Reflection Activity"; 
     }
 }

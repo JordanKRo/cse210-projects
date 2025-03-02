@@ -2,7 +2,6 @@ using System.Formats.Asn1;
 using System.Runtime.CompilerServices;
 
 public class BreathingActivity : Activity{
-
     private double _cycleTime;
 
     public BreathingActivity(double delay, string description, double duration, string completionMessage, double cycleTime) : base(delay, description, duration, completionMessage){
@@ -27,6 +26,11 @@ public class BreathingActivity : Activity{
         Console.WriteLine('\n');
         await Spinner("", _delay);
         
+    }
+
+    public override string GetName()
+    {
+        return "Breathing Activity"; 
     }
 
     public double GetCycleTime(){

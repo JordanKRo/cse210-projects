@@ -23,7 +23,7 @@ public class Activity{
     }
 
     protected void DisplayOutro(){
-        Console.WriteLine(_completionMessage);
+        Console.WriteLine($"You have completed another {_duration} seconds of the {GetName()}");
     }
 
     public double GetDelay(){
@@ -42,6 +42,10 @@ public class Activity{
         return _completionMessage;
     }
 
+    public virtual string GetName(){
+        return "Activity";
+    }
+
     public void SetDelay(double delay){
         _delay = delay;
     }
@@ -58,7 +62,7 @@ public class Activity{
         _completionMessage = message;
     }
 
-    public static async Task Spinner(string message, double seconds){
+    public static async Task Spinner(string message, double seconds, int frameTime = 100, bool leaveMessage = true){
 
         char[] frames = ['|','/','-','\\',];
         
@@ -66,14 +70,18 @@ public class Activity{
         Console.Write(" ");
         int frame = 0;
         string lastWrite = "";
+        Console.Write(message);
         while (DateTime.Now < end) {
             frame++;
-            lastWrite = $"\b{frames[frame % 4]}";
+            lastWrite = $"\r{message}{frames[frame % 4]}";
             Console.Write(lastWrite);
-            await Task.Delay(100);
+            await Task.Delay(frameTime);
         }
         Console.Write($"\r");
         Console.Write(new string(' ',lastWrite.Length));
+        if (leaveMessage) {
+            Console.Write($"\r{message}");
+        }
         Console.WriteLine();
     }
 
@@ -93,5 +101,6 @@ public class Activity{
             await Task.Delay(100);
             // Console.Write($"\r" + new string(' ',lastWrite.Length) + "\r");
         }
+        Console.WriteLine();
     }
 }
