@@ -1,6 +1,6 @@
 public class ReflectionActivity : Activity{
 
-    private List<ReflectionPrompt> _prompts;
+    private List<ReflectionPrompt> _prompts = new List<ReflectionPrompt>();
     private double _followUpDelay;
     private double _ponderTime;
 
