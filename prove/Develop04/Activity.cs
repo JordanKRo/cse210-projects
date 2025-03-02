@@ -116,10 +116,10 @@ public class Activity{
     public static async Task DisplayTimer(string message, double seconds){
         DateTime end = DateTime.Now.AddSeconds(seconds);
 
-        double secondsLeft = (end - DateTime.Now).TotalSeconds;
+        int secondsLeft = (int)(end - DateTime.Now).TotalSeconds;
         string lastWrite = "";
         while (secondsLeft > 0) {
-            secondsLeft = (end - DateTime.Now).TotalSeconds; 
+            secondsLeft = (int)(end - DateTime.Now).TotalSeconds; 
             string newWrite = $"\r{message}{secondsLeft}";
             int extra = lastWrite.Length - newWrite.Length;
             if (extra < 0){
