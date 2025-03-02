@@ -34,7 +34,7 @@ public class ListingActivity : Activity{
 
             
         } while (TimerRunning());
-        Console.WriteLine($"You listed {_responses.Count} items!");
+        Console.WriteLine($"You listed {_responses.Count} items!\n");
 
         await DisplayOutro();
     }
@@ -46,5 +46,17 @@ public class ListingActivity : Activity{
 
     public List<string> getResponses(){
         return _responses;
+    }
+
+    public List<string> getPrompts(){
+        return _prompts;
+    }
+
+    public void setPrompts(List<string> prompts){
+        _prompts = prompts;
+    }
+
+    public void addPrompt(string prompt){
+        _prompts.Add(prompt);
     }
 }
