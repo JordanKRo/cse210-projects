@@ -1,26 +1,29 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
+using ToolBox;
 
 public class Activity{
-    protected double _delay;
-    protected string _intro;
-    protected double _duration;
-    [Obsolete]
-    protected string _completionMessage;
+    protected int _delay = 3;
+    protected string _intro = "This is an activity.";
+    protected int _duration = 3;
 
-    protected Activity(double delay, string description, double duration, string completionMessage){
+    protected Activity(int delay, string description, int duration){
         _delay = delay;
         _intro = description;
         _duration = duration;
-        _completionMessage = completionMessage;
     }
 
     public virtual async Task Start(){
-        await Spinner("Uh oh", 10);
+        await Spinner("", _duration);
     }
 
-    protected void DisplayIntro(){
-        Console.WriteLine(_intro);
+    protected async Task DisplayIntro(){
+        Console.WriteLine($"Welcome to the {GetName()}.\n\n{_intro}");
+        if (_duration <= 0) {
+            _duration = InputValidation.PromptInt("How long, in seconds, would you like your session? ");
+        }
+        SafeClearConsole();
+        await Spinner("Get Ready... ", _delay);
     }
 
     protected async Task DisplayOutro(){
@@ -32,7 +35,7 @@ public class Activity{
         
     }
 
-    public double GetDelay(){
+    public int GetDelay(){
         return _delay;
     }
 
@@ -40,19 +43,15 @@ public class Activity{
         return _intro;
     }
 
-    public double GetDuration(){
+    public int GetDuration(){
         return _duration;
-    }
-    [Obsolete]
-    public string GetCompletionMessage(){
-        return _completionMessage;
     }
 
     public virtual string GetName(){
         return "Activity";
     }
 
-    public void SetDelay(double delay){
+    public void SetDelay(int delay){
         _delay = delay;
     }
 
@@ -60,13 +59,10 @@ public class Activity{
         _intro = intro;
     }
 
-    public void SetDuration(double duration){
+    public void SetDuration(int duration){
         _duration = duration;
     }
 
-    public void SetCompletionMessage(string message){
-        _completionMessage = message;
-    }
 
     public static async Task Spinner(string message, double seconds, int frameTime = 100, bool leaveMessage = true){
 
@@ -108,5 +104,16 @@ public class Activity{
             // Console.Write($"\r" + new string(' ',lastWrite.Length) + "\r");
         }
         Console.WriteLine();
+    }
+
+    /// <summary>
+    /// Clears the console without throwing an exception in debug.
+    /// </summary>
+    public static void SafeClearConsole(){
+        try{
+            Console.Clear();
+        } catch (IOException e){
+            Console.WriteLine(e.Message);
+        }
     }
 }

@@ -8,10 +8,19 @@ public class ReflectionActivity : Activity{
 
     private Random _randomSeed = new Random();
 
-    public ReflectionActivity(double delay, string description, double duration, 
-    string completionMessage, List<ReflectionPrompt> prompts, double followUpDelay, 
+    public ReflectionActivity(int delay, string description, int duration, List<ReflectionPrompt> prompts, double followUpDelay, 
     double ponderTime) : 
-    base(delay, description, duration, completionMessage) {
+    base(delay, description, duration) {
+        _prompts = prompts;
+        _followUpDelay = followUpDelay;
+        _ponderTime = ponderTime;
+
+        _promptHat = new List<ReflectionPrompt>(_prompts);
+    }
+
+    public ReflectionActivity(int delay, string description, List<ReflectionPrompt> prompts, double followUpDelay, 
+    double ponderTime) : 
+    base(delay, description, -1) {
         _prompts = prompts;
         _followUpDelay = followUpDelay;
         _ponderTime = ponderTime;
@@ -21,8 +30,7 @@ public class ReflectionActivity : Activity{
 
     public override async Task Start()
     {
-        DisplayIntro();
-        await Spinner("Get Ready... ", _delay);
+        await DisplayIntro();
 
         // Set timer
         DateTime end = DateTime.Now.AddSeconds(_duration);
@@ -50,10 +58,8 @@ public class ReflectionActivity : Activity{
                 Console.WriteLine();
             } while (!(prompt.IsDone() || (end - DateTime.Now).Seconds <= 0));
         } while ((end - DateTime.Now).Seconds > 0);
-        Console.WriteLine("Well Done!");
-        await Spinner("", _delay);
-        DisplayOutro();
-        await Spinner("", _delay);
+        
+        await DisplayOutro();
     }
 
     public override string GetName()
