@@ -87,7 +87,14 @@ public class Activity{
         return (int)(_endTime - DateTime.Now).TotalSeconds;
     }
 
-
+    /// <summary>
+    /// Displays a spinner with a message for a set number of seconds.
+    /// </summary>
+    /// <param name="message">The message shown before the spinning animation</param>
+    /// <param name="seconds">Amount of time to play the animation</param>
+    /// <param name="frameTime">The time in milliseconds between frames</param>
+    /// <param name="leaveMessage">Leave the message behind when the animation finishes</param>
+    /// <returns></returns>
     protected async Task DisplaySpinner(string message, double seconds, int frameTime = 100, bool leaveMessage = true) {
 
         char[] frames = ['|','/','—','\\',];
