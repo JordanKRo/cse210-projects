@@ -22,7 +22,7 @@ public class ReflectionActivity : Activity{
     public override async Task Start()
     {
         DisplayIntro();
-        await Spinner("Get Ready", _delay);
+        await Spinner("Get Ready... ", _delay);
 
         // Set timer
         DateTime end = DateTime.Now.AddSeconds(_duration);
@@ -33,7 +33,7 @@ public class ReflectionActivity : Activity{
             _promptHat.Remove(prompt);
 
             // display the prompt then wait
-            Console.WriteLine(prompt.GetPrompt());
+            Console.WriteLine($"\n——{prompt.GetPrompt()}——\n");
             Console.WriteLine("When you have something in mind press enter to continue.");
             Console.ReadLine();
             Console.WriteLine("Now ponder on each of the following questions as they relate to your experience.");
@@ -46,11 +46,12 @@ public class ReflectionActivity : Activity{
             
             do{
                 // Display all of the followup questions in order until time time runs out or the prompt is done.
-                await Spinner(prompt.GetFollowUp() + " ", _ponderTime, frameTime: 200, leaveMessage: true);
+                await Spinner("> " + prompt.GetFollowUp() + " ", _ponderTime, frameTime: 200, leaveMessage: true);
                 Console.WriteLine();
             } while (!(prompt.IsDone() || (end - DateTime.Now).Seconds <= 0));
         } while ((end - DateTime.Now).Seconds > 0);
-
+        Console.WriteLine("Well Done!");
+        await Spinner("", _delay);
         DisplayOutro();
         await Spinner("", _delay);
     }

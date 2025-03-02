@@ -5,6 +5,7 @@ public class Activity{
     protected double _delay;
     protected string _intro;
     protected double _duration;
+    [Obsolete]
     protected string _completionMessage;
 
     protected Activity(double delay, string description, double duration, string completionMessage){
@@ -22,8 +23,13 @@ public class Activity{
         Console.WriteLine(_intro);
     }
 
-    protected void DisplayOutro(){
+    protected async Task DisplayOutro(){
+
+        Console.WriteLine("Well Done!");
+        await Spinner("", _delay);
         Console.WriteLine($"You have completed another {_duration} seconds of the {GetName()}");
+        await Spinner("", _delay);
+        
     }
 
     public double GetDelay(){
@@ -37,7 +43,7 @@ public class Activity{
     public double GetDuration(){
         return _duration;
     }
-
+    [Obsolete]
     public string GetCompletionMessage(){
         return _completionMessage;
     }
@@ -64,7 +70,7 @@ public class Activity{
 
     public static async Task Spinner(string message, double seconds, int frameTime = 100, bool leaveMessage = true){
 
-        char[] frames = ['|','/','-','\\',];
+        char[] frames = ['|','/','—','\\',];
         
         DateTime end = DateTime.Now.AddSeconds(seconds);
         Console.Write(" ");
