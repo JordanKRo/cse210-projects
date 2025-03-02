@@ -18,9 +18,12 @@ public class Activity{
     }
 
     protected async Task DisplayIntro(){
-        Console.WriteLine($"Welcome to the {GetName()}.\n\n{_intro}");
+        Console.WriteLine($"Welcome to the {GetName()}.\n\n{_intro}\n");
         if (_duration <= 0) {
             _duration = InputValidation.PromptInt("How long, in seconds, would you like your session? ");
+        } else {
+            Console.WriteLine($"This session will last {_duration} seconds.\nPress enter to continue.");
+            Console.ReadLine();
         }
         SafeClearConsole();
         await Spinner("Get Ready... ", _delay);

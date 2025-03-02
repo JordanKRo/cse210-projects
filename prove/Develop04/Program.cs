@@ -24,7 +24,11 @@ class Program
         List<ReflectionPrompt> prompts = new List<ReflectionPrompt> { prompt1, prompt2, prompt3 };
         prompts.ForEach(prompt => prompt.SetFollowUps(followUps));
 
-        Activity breathing = new ReflectionActivity(4, "This activity will help you reflect on times in your life you have shown strength and resilience.", prompts, 4, 4);
+        Activity breathing = new BreathingActivity(4, "This activity will help you relax and clear your mind. This activity will walk you through each breathing cycle.", 12, 4);
+
         await breathing.Start();
+       
+        Activity reflection = new ReflectionActivity(4, "This activity will help you reflect on times in your life you have shown strength and resilience.", prompts, 4, 4);
+        await reflection.Start();
     }
 }
