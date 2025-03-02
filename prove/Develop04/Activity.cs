@@ -1,5 +1,3 @@
-using System.Reflection;
-using System.Runtime.InteropServices;
 using ToolBox;
 
 public class Activity{
@@ -123,7 +121,7 @@ public class Activity{
             string newWrite = $"\r{message}{secondsLeft}";
             // Keep track of the extra chars to clear the line.
             int extra = lastWrite.Length - newWrite.Length;
-            if (extra < 0){
+            if (extra < 0) {
                 extra = 0;
             }
             Console.Write(newWrite + new string(' ', extra));

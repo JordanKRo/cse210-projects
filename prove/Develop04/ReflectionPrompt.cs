@@ -8,20 +8,20 @@ public class ReflectionPrompt{
         _followUps = followUps;
     }
 
-    public ReflectionPrompt(string text){
+    public ReflectionPrompt(string text) {
         _text = text;
     }
 
-    public string GetPrompt(){
+    public string GetPrompt() {
         return _text;
     }
 
-    public List<string> GetAllFollowUps(){
+    public List<string> GetAllFollowUps() {
         return _followUps;
     }
 
-    public string GetFollowUp(){
-        if (_followUps.Count == 0){
+    public string GetFollowUp() {
+        if (_followUps.Count == 0) {
             return "";
         }
         var followUp = _followUps[currentIndex];
@@ -29,19 +29,19 @@ public class ReflectionPrompt{
         return followUp;
     }
     /// <returns>True if all of the followups have been cycled</returns>
-    public bool IsDone(){
+    public bool IsDone() {
         return currentIndex >= _followUps.Count - 1;
     }
 
-    public void SetText(string text){
+    public void SetText(string text) {
         _text = text;
     }
 
-    public void SetFollowUps(List<string> followUps){
+    public void SetFollowUps(List<string> followUps) {
         _followUps = followUps;
     }
 
-    public void AddFollowUp(string followUp){
+    public void AddFollowUp(string followUp) {
         _followUps.Add(followUp);
     }
 }
