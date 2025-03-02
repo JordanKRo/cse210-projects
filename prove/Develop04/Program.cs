@@ -21,14 +21,24 @@ class Program
             "How can you keep this experience in mind in the future?"
         };
 
+        List<string> listingActivityPrompts = new List<string> {
+            "Who are people that you appreciate?",
+            "What are personal strengths of yours?",
+            "Who are people that you have helped this week?",
+            "When have you felt the Holy Ghost this month?",
+            "Who are some of your personal heroes?"
+        };
+
         List<ReflectionPrompt> prompts = new List<ReflectionPrompt> { prompt1, prompt2, prompt3 };
         prompts.ForEach(prompt => prompt.SetFollowUps(followUps));
 
         Activity breathing = new BreathingActivity(4, "This activity will help you relax and clear your mind. This activity will walk you through each breathing cycle.", 12, 4);
-
         await breathing.Start();
        
         Activity reflection = new ReflectionActivity(4, "This activity will help you reflect on times in your life you have shown strength and resilience.", prompts, 4, 4);
         await reflection.Start();
+
+        Activity listing = new ListingActivity(4, "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.", listingActivityPrompts);
+        await listing.Start();
     }
 }
