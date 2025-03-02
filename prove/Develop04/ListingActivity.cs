@@ -2,6 +2,8 @@ using ToolBox;
 
 public class ListingActivity : Activity{
     private List<string> _prompts = new List<string>();
+
+    private int _ponderTime = 6;
     
     private List<string> _responses = new List<string>();
 
@@ -25,7 +27,7 @@ public class ListingActivity : Activity{
         // Display the prompt
         Console.WriteLine($"\n——{prompt}——\n");
         // Give the user time to think
-        await Timer("You make begin in... ", _delay);
+        await Timer("You make begin in... ", _ponderTime);
         // Set timer and commence the listing activity
         SetTimer();
         do{
@@ -52,11 +54,19 @@ public class ListingActivity : Activity{
         return _prompts;
     }
 
+    public int getPonderTime(){
+        return _ponderTime;
+    }
+
     public void setPrompts(List<string> prompts){
         _prompts = prompts;
     }
 
     public void addPrompt(string prompt){
         _prompts.Add(prompt);
+    }
+
+    public void setPonderTime(int ponderTime){
+        _ponderTime = ponderTime;
     }
 }
