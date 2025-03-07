@@ -1,55 +1,128 @@
 using System;
 using System.Runtime.InteropServices;
 using ToolBox;
-// This is so sick!!
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 class Program
 {
     static void Main(string[] args)
     {
-        PromptGenerator promptGenerator = new PromptGenerator();
-        promptGenerator._prompts = [
-            "Prompt 1",
-            "prompt 2",
-            "prompt 3"
-        ];
+        SerializeInheritance();
+    }
+
+    public static void SerializeInheritance()
+    {
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+
+        // Add polymorphic type handling
+        options.Converters.Add(new JsonStringEnumConverter());
+        options.Converters.Add(new DerivedTypeJsonConverter<Animal>());
+
+        // Create a derived class instance
+        Animal myPet = new Dog { Name = "Rex", Breed = "German Shepherd" };
+
+        // Serialize with type information
+        string json = JsonSerializer.Serialize(myPet, options);
+        Console.WriteLine(json);
+
+        // Deserialize back to the correct type
+        Animal deserializedPet = JsonSerializer.Deserialize<Animal>(json, options);
+        Console.WriteLine($"Type: {deserializedPet.GetType().Name}");
+    }
+}
+
+// Base class
+public class Animal
+{
+    public string Name { get; set; }
+
+    [JsonIgnore]
+    public string InternalId { get; set; } // Excluded from serialization
+}
+
+// Derived classes
+public class Dog : Animal
+{
+    public string Breed { get; set; }
+    public bool IsGoodBoy { get; set; } = true;
+}
+
+public class Cat : Animal
+{
+    public int LivesRemaining { get; set; } = 9;
+}
 
 
-        Menu menu = new Menu();
-        menu._options = [
-            "Write a new entry",
-            "Display the Journal",
-            "Save Journal",
-            "Load Journal",
-            "Exit"
-        ];
 
-
-        bool exit = false;
-        Journal currentJournal = new Journal();
-
-        while (!exit){
-            int option = menu.PromptOptions();
-            switch (option){
-                case 0:
-                    Entry newEntry = new Entry();
-                    newEntry._prompt = promptGenerator.GetRandomPrompt();
-                    newEntry.Sign();
-                    currentJournal.AddEntry(newEntry);
-                    break;
-                case 1:
-                    currentJournal.Display();
-                    break;
-                case 2:
-                    currentJournal.Save();
-                    break;
-                case 3:
-
-                    break;
-                case 4:
-                    exit = true;
-                    break;
+// Custom converter for handling derived types
+public class DerivedTypeJsonConverter<TBase> : JsonConverter<TBase> where TBase : class
+{
+    public override TBase Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        // Create new options without this converter to avoid infinite recursion
+        var newOptions = new JsonSerializerOptions(options);
+        for (int i = newOptions.Converters.Count - 1; i >= 0; i--)
+        {
+            if (newOptions.Converters[i] is DerivedTypeJsonConverter<TBase>)
+            {
+                newOptions.Converters.Remove(newOptions.Converters[i]);
             }
+        }
+
+        // Read the JSON document
+        using var jsonDoc = JsonDocument.ParseValue(ref reader);
+        var rootElement = jsonDoc.RootElement;
+
+        // Try to get the $type property
+        if (rootElement.TryGetProperty("$type", out var typeProperty))
+        {
+            var typeName = typeProperty.GetString();
+            var type = Type.GetType(typeName);
+
+            if (type != null && type.IsAssignableTo(typeof(TBase)))
+            {
+                // Deserialize to the actual type
+                var json = rootElement.GetRawText();
+                return (TBase)JsonSerializer.Deserialize(json, type, newOptions);
+            }
+        }
+
+        // Fall back to deserializing as the base type
+        return JsonSerializer.Deserialize<TBase>(rootElement.GetRawText(), newOptions);
+    }
+
+    public override void Write(Utf8JsonWriter writer, TBase value, JsonSerializerOptions options)
+    {
+        // Create new options without this converter to avoid infinite recursion
+        var newOptions = new JsonSerializerOptions(options);
+        for (int i = newOptions.Converters.Count - 1; i >= 0; i--)
+        {
+            if (newOptions.Converters[i] is DerivedTypeJsonConverter<TBase>)
+            {
+                newOptions.Converters.Remove(newOptions.Converters[i]);
+            }
+        }
+
+        // Create a temporary dictionary to add the type information
+        var valueJson = JsonSerializer.Serialize(value, value.GetType(), newOptions);
+        var jsonObject = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(valueJson, newOptions);
+
+        // Add the type information
+        if (jsonObject != null)
+        {
+            jsonObject["$type"] = JsonSerializer.SerializeToElement(value.GetType().AssemblyQualifiedName, newOptions);
+            JsonSerializer.Serialize(writer, jsonObject, newOptions);
+        }
+        else
+        {
+            // Fallback if the above approach fails
+            JsonSerializer.Serialize(writer, value, value.GetType(), newOptions);
         }
     }
 }
+
