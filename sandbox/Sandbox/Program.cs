@@ -9,7 +9,33 @@ class Program
 {
     static void Main(string[] args)
     {
-        SerializeInheritance();
+        // SerializeInheritance();
+        List<Animal> animals = new List<Animal>
+        {
+            new Dog { Name = "Rex", Breed = "German Shepherd" },
+            new Cat { Name = "Whiskers", LivesRemaining = 7 }
+        };
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+
+        // Special Converter is needed for their type to remain in tact
+        options.Converters.Add(new JsonStringEnumConverter());
+        options.Converters.Add(new DerivedTypeJsonConverter<Animal>());
+
+        // Serialize the list of animals
+        string json = JsonSerializer.Serialize(animals, options);
+        Console.WriteLine(json);
+
+        // Deserialize back to the list of animals
+        List<Animal> deserializedAnimals = JsonSerializer.Deserialize<List<Animal>>(json, options);
+        Console.WriteLine("Animals reconstituted");
+        foreach (var animal in deserializedAnimals)
+        {
+            Console.WriteLine($"Type: {animal.GetType().Name}, Name: {animal.Name}\n{animal.Speak()}");
+        }
     }
 
     public static void SerializeInheritance()
@@ -37,12 +63,14 @@ class Program
 }
 
 // Base class
-public class Animal
+public abstract class Animal
 {
     public string Name { get; set; }
 
     [JsonIgnore]
     public string InternalId { get; set; } // Excluded from serialization
+
+    public abstract string Speak();
 }
 
 // Derived classes
@@ -50,11 +78,26 @@ public class Dog : Animal
 {
     public string Breed { get; set; }
     public bool IsGoodBoy { get; set; } = true;
+
+    public override string Speak()
+    {
+        if(IsGoodBoy){
+            return "I am good boy";
+        } else {
+            return $"I am a {Breed}";
+        }
+    }
+
 }
 
 public class Cat : Animal
 {
     public int LivesRemaining { get; set; } = 9;
+
+    public override string Speak()
+    {
+        return $"I have {LivesRemaining} lives left";
+    }
 }
 
 

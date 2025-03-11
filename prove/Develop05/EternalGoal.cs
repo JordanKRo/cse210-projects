@@ -1,16 +1,20 @@
+using System.Drawing;
+
 public class EternalGoal : BaseGoal {
+    private int _times = 0;
+
     public EternalGoal(string name, string description, int points) : base(name, description, points){
 
     }
 
     public override int Evaluate()
     {
-        throw new NotImplementedException();
+        return _times * _points;
     }
 
     public override bool IsComplete()
     {
-        throw new NotImplementedException();
+        return false;
     }
 
     public override void Mark()

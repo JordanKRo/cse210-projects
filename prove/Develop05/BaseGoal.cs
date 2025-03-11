@@ -2,12 +2,15 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 public abstract class BaseGoal{
-    protected string _name;
+    // I know it's not supposed to be public but as long as it says Get it cannot be written to
+    public string _name {get;}
     protected string _description;
     protected int _points;
 
     public BaseGoal(string name, string description, int points){
-        
+        _name = name;
+        _description = description;
+        _points = points;
     }
     /// <summary>
     /// Returns if this goal should be marked off
