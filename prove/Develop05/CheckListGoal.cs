@@ -2,8 +2,11 @@ public class CheckListGoal : BaseGoal{
     private int _requiredTimes;
     private int _times = 0;
 
-    public CheckListGoal(string name, string description, int points, int requiredTimes) : base(name, description, points){
+    private int _bonusPoints;
+
+    public CheckListGoal(string name, string description, int points, int requiredTimes, int bonusPoints) : base(name, description, points){
         _requiredTimes = requiredTimes;
+        _bonusPoints = bonusPoints;
     }
 
     public override bool IsComplete()
@@ -13,16 +16,16 @@ public class CheckListGoal : BaseGoal{
 
     public override int Evaluate()
     {
-        throw new NotImplementedException();
-    }
-
-    public override string GetString()
-    {
-        throw new NotImplementedException();
+        return _times * _points + (IsComplete() ? _bonusPoints : 0);
     }
 
     public override void Mark()
     {
-        throw new NotImplementedException();
+        _times += 1;
+    }
+
+    public override string GetString()
+    {
+        return base.GetString() + $"(Completed {_times}/{_requiredTimes})";
     }
 }

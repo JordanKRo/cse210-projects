@@ -19,11 +19,6 @@ public class EternalGoal : BaseGoal {
 
     public override void Mark()
     {
-        throw new NotImplementedException();
-    }
-
-    public override string GetString()
-    {
-        throw new NotImplementedException();
+        _times += 1;
     }
 }

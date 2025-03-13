@@ -20,9 +20,4 @@ public class SimpleGoal : BaseGoal{
     {
         _done = true;
     }
-    // TODO remove the override and hand it to the base class
-    public override string GetString()
-    {
-        throw new NotImplementedException();
-    }
 }

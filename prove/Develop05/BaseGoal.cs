@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 public abstract class BaseGoal{
-    // I know it's not supposed to be public but as long as it says Get it cannot be written to
+    // I know it's not supposed to be public but it needs to be accessible to the serializer.
     public string _name {get;}
     protected string _description;
     protected int _points;
@@ -27,5 +27,8 @@ public abstract class BaseGoal{
     /// 
     /// </summary>
     /// <returns>The list display of this goal.</returns>
-    public abstract string GetString();
+    public virtual string GetString(){
+        string check = IsComplete() ? "X" : " ";
+        return $"[ {check} ] {_name} ({_description})";
+    }
 }
