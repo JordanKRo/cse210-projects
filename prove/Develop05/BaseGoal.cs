@@ -3,9 +3,12 @@ using System.Text.Json.Serialization;
 
 public abstract class BaseGoal{
     // I know it's not supposed to be public but it needs to be accessible to the serializer.
-    public string _name {get;}
-    protected string _description;
-    protected int _points;
+    [JsonPropertyName("name")]
+    public string _name { get; private set; }
+    [JsonPropertyName("description")]
+    public string _description { get; private set; }
+    [JsonPropertyName("points")]
+    public int _points { get; private set; }
 
     public BaseGoal(string name, string description, int points){
         _name = name;

@@ -1,10 +1,12 @@
 using System.Drawing;
+using System.Text.Json.Serialization;
 
 public class EternalGoal : BaseGoal {
-    private int _times = 0;
+    [JsonPropertyName("times")]
+    public int _times { get; private set; }
 
-    public EternalGoal(string name, string description, int points) : base(name, description, points){
-
+    public EternalGoal(string name, string description, int points, int times = 0) : base(name, description, points){
+        _times = times;
     }
 
     public override int Evaluate()

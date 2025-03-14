@@ -1,12 +1,18 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+/// <summary>
+/// Converts objects of an ambiguous type into JSON
+/// </summary>
+/// <typeparam name="TBase"></typeparam>
 public class JsonConverter<TBase> : System.Text.Json.Serialization.JsonConverter<TBase> where TBase : class
 {
     public override TBase Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        // Create new options without this converter to avoid infinite recursion
-        var newOptions = new JsonSerializerOptions(options);
+        var newOptions = new JsonSerializerOptions(options)
+        {
+            PropertyNameCaseInsensitive = true  // Add this to help with matching
+        };
         for (int i = newOptions.Converters.Count - 1; i >= 0; i--)
         {
             if (newOptions.Converters[i] is JsonConverter<TBase>)
@@ -19,7 +25,7 @@ public class JsonConverter<TBase> : System.Text.Json.Serialization.JsonConverter
         using var jsonDoc = JsonDocument.ParseValue(ref reader);
         var rootElement = jsonDoc.RootElement;
 
-        // Try to get the $type property
+        // Try to get type
         if (rootElement.TryGetProperty("$type", out var typeProperty))
         {
             var typeName = typeProperty.GetString();

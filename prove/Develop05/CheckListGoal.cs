@@ -1,12 +1,17 @@
+using System.Text.Json.Serialization;
+
 public class CheckListGoal : BaseGoal{
-    private int _requiredTimes;
-    private int _times = 0;
+    [JsonPropertyName("requiredTimes")]
+    public int _requiredTimes { get; private set; }
+    [JsonPropertyName("times")]
+    public int _times { get; private set; } = 0;
+    [JsonPropertyName("bonusPoints")]
+    public int _bonusPoints { get; private set; }
 
-    private int _bonusPoints;
-
-    public CheckListGoal(string name, string description, int points, int requiredTimes, int bonusPoints) : base(name, description, points){
+    public CheckListGoal(string name, string description, int points, int requiredTimes, int bonusPoints, int times = 0) : base(name, description, points){
         _requiredTimes = requiredTimes;
         _bonusPoints = bonusPoints;
+        _times = times;
     }
 
     public override bool IsComplete()

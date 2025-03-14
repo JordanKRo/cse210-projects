@@ -7,23 +7,35 @@ class Program
 {
     static void Main(string[] args)
     {
-        List<BaseGoal> goals = new List<BaseGoal> {
-            new SimpleGoal("GoalName", "GoalDescription", 3),
-            new CheckListGoal("Math", "GoalDescriptionMath", 3, 10, 30),
-            new EternalGoal("Attend the temple", "Description", 10)
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            IncludeFields = true
         };
 
-        goals[0].Mark();
+        options.Converters.Add(new JsonStringEnumConverter());
+        options.Converters.Add(new JsonConverter<BaseGoal>());
+
+        List<BaseGoal> goals = new List<BaseGoal>{
+            new SimpleGoal("Simple", "Short Description", 20),
+            new EternalGoal("Eternal", "Eternal Description", 100)
+        };
         goals[0].Mark();
         goals[1].Mark();
-        goals[2].Mark();
-        int pointsTotal = 0;
+        goals[1].Mark();
 
-        for(var i = 0; i < goals.Count;i++){
-            Console.WriteLine($"{i + 1}. {goals[i].GetString()}");
-            pointsTotal += goals[i].Evaluate();
+        string json = JsonSerializer.Serialize(goals, options);
+        Console.WriteLine(json);
+
+        List<BaseGoal> loadedGoals = new List<BaseGoal>();
+
+        loadedGoals = JsonSerializer.Deserialize<List<BaseGoal>>(json, options);
+        int total = 0;
+        foreach(BaseGoal gol in loadedGoals){
+            Console.WriteLine(gol.GetString());
+            total += gol.Evaluate();
         }
-        Console.WriteLine(pointsTotal);
+        Console.WriteLine("Total: " + total);
 
         
     }
