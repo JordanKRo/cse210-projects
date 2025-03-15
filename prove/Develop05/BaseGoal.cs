@@ -37,6 +37,6 @@ public abstract class BaseGoal{
     /// <returns>The list display of this goal.</returns>
     public virtual string GetString(){
         string check = IsComplete() ? "X" : " ";
-        return $"[ {check} ] {name} ({description}) Total: {Evaluate()} points";
+        return $"[ {check} ] {name} ({description}) Points Earned: {Evaluate()} points";
     }
 }

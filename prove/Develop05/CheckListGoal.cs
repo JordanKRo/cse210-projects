@@ -26,12 +26,14 @@ public class CheckListGoal : BaseGoal{
 
     public override void Mark()
     {
-        times += 1;
+        if (times < requiredTimes) {
+            times += 1;
+        }
     }
 
     public override string GetString()
     {
         string check = IsComplete() ? "X" : " ";
-        return $"[ {check} ] {name} ({description}) (Completed {times}/{requiredTimes}) Total: {Evaluate()} points";
+        return $"[ {check} ] {name} ({description}) (Completed {times}/{requiredTimes}) Points Earned: {Evaluate()} points";
     }
 }
