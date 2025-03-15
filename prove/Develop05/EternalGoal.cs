@@ -2,16 +2,16 @@ using System.Drawing;
 using System.Text.Json.Serialization;
 
 public class EternalGoal : BaseGoal {
-    [JsonPropertyName("times")]
-    public int _times { get; private set; }
+
+    public int times { get; private set; }
 
     public EternalGoal(string name, string description, int points, int times = 0) : base(name, description, points){
-        _times = times;
+        this.times = times;
     }
 
     public override int Evaluate()
     {
-        return _times * _points;
+        return times * points;
     }
 
     public override bool IsComplete()
@@ -21,6 +21,6 @@ public class EternalGoal : BaseGoal {
 
     public override void Mark()
     {
-        _times += 1;
+        times += 1;
     }
 }

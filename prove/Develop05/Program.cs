@@ -14,7 +14,6 @@ class Program
         };
 
         options.Converters.Add(new JsonStringEnumConverter());
-        options.Converters.Add(new JsonConverter<BaseGoal>());
 
         List<BaseGoal> goals = new List<BaseGoal>{
             new SimpleGoal("Simple", "Short Description", 20),
