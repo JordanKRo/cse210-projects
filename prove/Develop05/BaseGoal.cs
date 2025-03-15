@@ -6,8 +6,9 @@ using System.Text.Json.Serialization;
 [JsonDerivedType(typeof(EternalGoal), typeDiscriminator: "Eternal")]
 [JsonDerivedType(typeof(CheckListGoal), typeDiscriminator: "Checklist")]
 public abstract class BaseGoal{
-    // I know it's not supposed to be public but it needs to be accessible to the serializer.
 
+    // I know it's not supposed to be public but it needs to be discoverable to the serializer.
+    // I could not find a way to make it use Getters.
     public string name { get; private set; }
 
     public string description { get; private set; }
@@ -36,6 +37,6 @@ public abstract class BaseGoal{
     /// <returns>The list display of this goal.</returns>
     public virtual string GetString(){
         string check = IsComplete() ? "X" : " ";
-        return $"[ {check} ] {name} ({description})";
+        return $"[ {check} ] {name} ({description}) Total: {Evaluate()} points";
     }
 }

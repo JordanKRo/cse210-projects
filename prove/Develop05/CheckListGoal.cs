@@ -31,6 +31,7 @@ public class CheckListGoal : BaseGoal{
 
     public override string GetString()
     {
-        return base.GetString() + $"(Completed {times}/{requiredTimes})";
+        string check = IsComplete() ? "X" : " ";
+        return $"[ {check} ] {name} ({description}) (Completed {times}/{requiredTimes}) Total: {Evaluate()} points";
     }
 }

@@ -23,6 +23,7 @@ class Program
             Console.WriteLine();
             switch (selectedMenu){
                 case 0:
+                    Console.WriteLine("Select an option from the menu");
                     var selectedType = InputValidation.PromptOptions("Which type of goal would you like to create: ", ["Simple Goal", "Eternal Goal", "Checklist Goal"]);
                     BaseGoal newGoal = null;
                     string name = InputValidation.PromptString("Enter the goal name: ");
@@ -79,10 +80,11 @@ class Program
             WriteIndented = true,
             IncludeFields = true
         };
-
+        // This is really convenient, would you agree
         string json = JsonSerializer.Serialize(goals, options);
 
         string fileName = InputValidation.PromptString("Enter the file name: ");
+        // Saved in a saves folder by the .exe
         string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "saves", fileName + ".json");
 
         File.WriteAllText(filePath, json);
