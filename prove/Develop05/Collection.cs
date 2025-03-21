@@ -1,8 +1,12 @@
 public class Collection{
-    private List<Card> cards;
+    protected List<Card> cards = new List<Card>();
 
     public Collection(List<Card> cards){
         this.cards = cards;
+    }
+
+    public Collection(){
+        
     }
     /// <summary>
     /// Finds ever unique combination of cards that produce a run

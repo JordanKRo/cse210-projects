@@ -1,13 +1,12 @@
-public class Deck {
+public class Deck : Collection {
     /// <summary>
-    /// Contains a the list of cards in this deck. Can accept varying levels of variation.
+    /// Creates an empty deck
     /// </summary>
-    List<Card> cards;
+    public Deck(){
+        // Do nothing
+    }
 
-    /// <summary>
-    /// Creates a normal deck with 1 of every card fully defined.
-    /// </summary>
-    public Deck() {
+    public Deck(List<Card> cards) : base(cards) {
 
     }
     /// <summary>
