@@ -1,15 +1,10 @@
 public class Event{
     protected string text;
     protected List<Option> options = new List<Option>();
+    protected bool hideOptions;
     protected Event? nextEvent;
     protected int time = 0;
-
-    bool checkpoint = false;
-
     protected static List<Option> globalOptions = new List<Option>();
-    /// <summary>
-    /// All events have choosers in them but the options can be hidden
-    /// </summary>
     public Event(){
         text = "Default Text";
     }
