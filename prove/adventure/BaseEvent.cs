@@ -1,4 +1,5 @@
 public abstract class BaseEvent{
+    public string id {get; private set;}
     protected bool autoAdvance = false;
     protected bool isDone = false;
     protected int forceWait = 0;
@@ -6,16 +7,18 @@ public abstract class BaseEvent{
 
     }
     /// <summary>
-    /// Called locally to display content
+    /// Each event calls the main of the other.
     /// </summary>
     /// <returns></returns>
     public virtual async Task Main(){
         Console.WriteLine(GetContent());
         await Task.Delay(forceWait);
-        _ = GetNextEvent().Main();
+
+        await GetNextEvent().Main();
     }
 
     public abstract string GetContent();
+    // If this event is a chooser it will call options first
     public abstract BaseEvent GetNextEvent();
 
     public virtual bool IsDone(){
