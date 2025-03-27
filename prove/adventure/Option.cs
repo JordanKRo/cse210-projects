@@ -1,20 +1,26 @@
+using System.Buffers.Text;
+
 public class Option {
     protected string name;
     protected bool hidden;
-    protected int desiredOrder;
-    protected Event trigger;
+    protected BaseEvent trigger;
+    protected char? identifier;
 
     /// <summary>
     /// Create an option with a name
     /// </summary>
     /// <param name="name"></param>
     /// <param name="hidden"></param>
-    /// <param name="orderPriority"></param>
-    public Option(string name, bool hidden, int orderPriority, Event trigger) {
+    public Option(string name, bool hidden, BaseEvent trigger) {
         this.name = name;
         this.hidden = hidden;
-        this.desiredOrder = orderPriority;
         this.trigger = trigger;
+    }
+    public Option(string name, bool hidden, BaseEvent trigger, char identifier) {
+        this.name = name;
+        this.hidden = hidden;
+        this.trigger = trigger;
+        this.identifier = identifier;
     }
 
     public string Name {
@@ -27,9 +33,12 @@ public class Option {
         set { hidden = value; }
     }
 
-    public int OrderPriority {
-        get { return desiredOrder; }
-        set { desiredOrder = value; }
+    public char? Identifier {
+        get {return identifier;}
+    }
+
+    public BaseEvent Node{
+        get {return trigger;}
     }
 
     public override string ToString() {
