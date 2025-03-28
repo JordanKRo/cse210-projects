@@ -1,0 +1,53 @@
+{
+    "nodes": [
+      {
+        "id": "start",
+        "type": "TextEvent",
+        "content": "Welcome to the adventure!",
+        "sleepMils": 1000,
+        "autoAdvance": true,
+        "displayProceedMessage": true,
+        "nextId": "choice1"
+      },
+      {
+        "id": "choice1",
+        "type": "Chooser",
+        "content": "What would you like to do?",
+        "options": [
+          {
+            "name": "Go left",
+            "hidden": false,
+            "nextId": "left_path",
+            "identifier": "L"
+          },
+          {
+            "name": "Go right",
+            "hidden": false,
+            "nextId": "right_path"
+          }
+        ]
+      },
+      {
+        "id": "left_path",
+        "type": "TextEvent",
+        "content": "You chose to go left. The path leads to a dark forest.",
+        "nextId": "forest"
+      },
+      {
+        "id": "right_path",
+        "type": "TextEvent",
+        "content": "You chose to go right. The path leads to a sunny meadow.",
+        "nextId": "meadow"
+      },
+      {
+        "id": "forest",
+        "type": "TextEvent",
+        "content": "The end of the forest path."
+      },
+      {
+        "id": "meadow",
+        "type": "TextEvent",
+        "content": "The end of the meadow path."
+      }
+    ]
+  }

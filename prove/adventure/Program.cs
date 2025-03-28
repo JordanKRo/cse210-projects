@@ -3,34 +3,26 @@
     public static void Main(string[] args)
     {
         Console.Clear();
-        Console.WriteLine("=================================");
-        Console.WriteLine("       THE FORGOTTEN RUINS       ");
-        Console.WriteLine("      A Text Adventure Demo      ");
-        Console.WriteLine("=================================\n");
-        
         // Create the game tree
-        BaseNode mainTree = CreateGameTree();
+        BaseNode mainTree = CreateDemoTree();
         mainTree.Main();
-        
-        Console.WriteLine("\n=================================");
-        Console.WriteLine("           GAME OVER            ");
-        Console.WriteLine("=================================");
     }
     
-    private static BaseNode CreateGameTree()
+    private static BaseNode CreateDemoTree()
     {
         // We need to build the game tree from bottom to top, since events need
         // their next events passed in the constructor
 
         // === ENDINGS (LEAF NODES) ===
+        DecoratedTextEvent gameOver = new DecoratedTextEvent("game over", "Game Over\nother line?", null, autoAdvance: true, false, 200);
         
         // Crystal path endings
         TextEvent crystalEscape = new TextEvent(
             "crystal_escape",
             "Using the light of the crystal, you navigate through the collapsing ruins and make it outside just in time.\n" +
             "As you catch your breath, you notice the crystal has changed color. You've discovered a powerful artifact that will make you famous!",
-            null,
-            false,
+            gameOver,
+            autoAdvance: true,
             true,
             1000
         );
@@ -39,8 +31,8 @@
             "find_mechanism",
             "You search the room and find a slot in the wall that matches the crystal's shape. This must be the mechanism shown in the carving.\n" +
             "Curious, you return to the pedestal, carefully take the crystal, and place it in the slot. The wall slides open, revealing a hidden library of ancient knowledge!",
-            null,
-            false,
+            gameOver,
+            autoAdvance: true,
             true,
             1000
         );
@@ -50,8 +42,8 @@
             "recovered_memory",
             "With your memory restored, you realize the ruins contain dangerous knowledge that was sealed away for a reason.\n" +
             "You decide to leave and report your findings to the university, ensuring these ruins are protected from those who might misuse their power.",
-            null,
-            false,
+            gameOver,
+            autoAdvance: true,
             true,
             1000
         );
@@ -60,8 +52,8 @@
             "treasure_hunter",
             "The treasure chamber contains artifacts beyond your wildest dreams. Gold, jewels, and priceless historical items.\n" +
             "You gather what you can carry and find a hidden exit that leads back to the jungle. Your life will never be the same!",
-            null,
-            false,
+            gameOver,
+            autoAdvance: true,
             true,
             1000
         );
@@ -71,8 +63,8 @@
             "follow_journal",
             "The journal contains detailed notes about a hidden temple deeper in the ruins, where Professor Hamilton discovered something extraordinary.\n" +
             "The rusty key must open the way. With the journal as your guide, you set out to find your mentor and uncover what he discovered.",
-            null,
-            false,
+            gameOver,
+            autoAdvance: true,
             true,
             1000
         );
@@ -81,8 +73,8 @@
             "secret_study",
             "The study belongs to Professor Hamilton. His notes reveal he found evidence of an advanced ancient civilization with technology beyond our understanding.\n" +
             "Among his papers, you find a map marking the location of other ruins around the world. This could be the archaeological discovery of the century!",
-            null,
-            false,
+            gameOver,
+            autoAdvance: true,
             true,
             1000
         );
@@ -92,8 +84,8 @@
             "rescue",
             "The locals tell you that you came to explore the ruins but never returned to the village. They've been searching for days.\n" +
             "They take you back to their village where you recover from your ordeal. You promise to return someday to continue your exploration with proper preparations.",
-            null,
-            false,
+            gameOver,
+            autoAdvance: true,
             true,
             1000
         );
@@ -102,8 +94,8 @@
             "reunion",
             "Professor Hamilton explains that the ruins contain powerful ancient technology that someone is trying to exploit.\n" +
             "He's been hiding since discovering the truth. Together, you make a plan to protect the ruins and expose the conspiracy.",
-            null,
-            false,
+            gameOver,
+            autoAdvance: true,
             true,
             1000
         );
@@ -334,7 +326,9 @@
             true,
             1000
         );
+
+        DecoratedTextEvent title = new DecoratedTextEvent("title", "THE FORGOTTEN RUINS\nA Text Adventure Demo", intro, true, false, 200);
         
-        return intro;
+        return title;
     }
 }
