@@ -1,0 +1,1096 @@
+{
+    "Nodes": [
+      {
+        "Id": "start",
+        "Type": "DecoratedTextEvent",
+        "Content": "SPACE STATION EPSILON\nCrisis Protocol",
+        "NextId": "initialize_game",
+        "checkpoint": true
+      },
+      {
+        "Id": "initialize_game",
+        "Type": "WriteNode",
+        "Content": "Initializing game state...",
+        "Variable": "has_keycard",
+        "WriteValue": false,
+        "NextId": "initialize_medkit"
+      },
+      {
+        "Id": "initialize_medkit",
+        "Type": "WriteNode",
+        "Content": "Setting up inventory...",
+        "Variable": "has_medkit",
+        "WriteValue": false,
+        "NextId": "initialize_reactor"
+      },
+      {
+        "Id": "initialize_reactor",
+        "Type": "WriteNode",
+        "Content": "Setting station systems...",
+        "Variable": "reactor_stable",
+        "WriteValue": false,
+        "NextId": "initialize_comms"
+      },
+      {
+        "Id": "initialize_comms",
+        "Type": "WriteNode",
+        "Content": "Setting communications...",
+        "Variable": "comms_active",
+        "WriteValue": false,
+        "NextId": "initialize_escape_pod"
+      },
+      {
+        "Id": "initialize_escape_pod",
+        "Type": "WriteNode",
+        "Content": "Setting escape systems...",
+        "Variable": "escape_pod_ready",
+        "WriteValue": false,
+        "NextId": "initialize_captain_alive"
+      },
+      {
+        "Id": "initialize_captain_alive",
+        "Type": "WriteNode",
+        "Content": "Setting NPC states...",
+        "Variable": "captain_alive",
+        "WriteValue": true,
+        "NextId": "initialize_met_engineer"
+      },
+      {
+        "Id": "initialize_met_engineer",
+        "Type": "WriteNode",
+        "Content": "Setting more NPC states...",
+        "Variable": "met_engineer",
+        "WriteValue": false,
+        "NextId": "initialize_oxygen"
+      },
+      {
+        "Id": "initialize_oxygen",
+        "Type": "WriteNode",
+        "Content": "Setting life support status...",
+        "Variable": "oxygen_level",
+        "WriteValue": "critical",
+        "NextId": "initialize_talked_to_captain"
+      },
+      {
+        "Id": "initialize_talked_to_captain",
+        "Type": "WriteNode",
+        "Content": "Setting conversation history...",
+        "Variable": "talked_to_captain",
+        "WriteValue": false,
+        "NextId": "initialize_fixed_coolant"
+      },
+      {
+        "Id": "initialize_fixed_coolant",
+        "Type": "WriteNode",
+        "Content": "Setting repair history...",
+        "Variable": "fixed_coolant",
+        "WriteValue": false,
+        "NextId": "initialize_activated_escape"
+      },
+      {
+        "Id": "initialize_activated_escape",
+        "Type": "WriteNode",
+        "Content": "Setting more system status...",
+        "Variable": "activated_escape",
+        "WriteValue": false,
+        "NextId": "initialize_fixed_comms"
+      },
+      {
+        "Id": "initialize_fixed_comms",
+        "Type": "WriteNode",
+        "Content": "Setting final system status...",
+        "Variable": "fixed_comms",
+        "WriteValue": false,
+        "NextId": "intro"
+      },
+      {
+        "Id": "intro",
+        "Type": "TextEvent",
+        "Content": "You jolt awake to blaring alarms and flashing red emergency lights. Your head pounds as you sit up from your sleeping pod. The artificial gravity feels off - something is terribly wrong on Space Station Epsilon.\n\nThe last thing you remember is going to sleep after your regular shift as the station's Security Officer. Now, everything is chaos.",
+        "NextId": "intro_voice",
+        "DisplayProceedMessage": true,
+        "checkpoint": true
+      },
+      {
+        "Id": "intro_voice",
+        "Type": "TextEvent",
+        "Content": "A distorted voice comes over the intercom: \"Emergency protocols activated. Station has suffered critical damage. Life support systems failing. All personnel report to emergency stations immediately.\"",
+        "NextId": "crew_quarters",
+        "DisplayProceedMessage": true
+      },
+      {
+        "Id": "crew_quarters",
+        "Type": "TextEvent",
+        "Content": "CREW QUARTERS\n\nYou're in the crew quarters section. Several sleeping pods have been damaged. Emergency lights cast an eerie red glow over everything. The air feels thin - oxygen levels must be dropping. A digital display on the wall flashes \"OXYGEN: CRITICAL\" confirming your suspicion.\n\nYour security locker is nearby. The door leading to the main corridor is to your right.",
+        "NextId": "crew_quarters_options",
+        "checkpoint": true
+      },
+      {
+        "Id": "crew_quarters_options",
+        "Type": "Chooser",
+        "Content": "What would you like to do?",
+        "Options": [
+          {"Name": "Check your security locker", "NextId": "locker_switcher"},
+          {"Name": "Head to the main corridor", "NextId": "main_corridor"}
+        ]
+      },
+      {
+        "Id": "locker_switcher",
+        "Type": "Switcher",
+        "Content": "Checking if you've already opened your locker...",
+        "Variable": "has_stunner",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "check_locker",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "locker_already_checked",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "locker_already_checked",
+        "Type": "TextEvent",
+        "Content": "You've already checked your locker and taken what you needed.",
+        "NextId": "crew_quarters_options"
+      },
+      {
+        "Id": "check_locker",
+        "Type": "TextEvent",
+        "Content": "You approach your security locker and input your personal code. The locker opens with a hiss. Inside, you find your standard-issue stunner, a small flashlight, and your personal tablet.",
+        "NextId": "locker_options"
+      },
+      {
+        "Id": "locker_options",
+        "Type": "Chooser",
+        "Content": "What would you like to take?",
+        "Options": [
+          {"Name": "Take everything", "NextId": "take_all_items"},
+          {"Name": "Just take the stunner", "NextId": "take_stunner"},
+          {"Name": "Take nothing and go to the corridor", "NextId": "main_corridor"}
+        ]
+      },
+      {
+        "Id": "take_all_items",
+        "Type": "TextEvent",
+        "Content": "You gather all the items from your locker. The stunner feels reassuring in your hand, and the flashlight might come in handy. Your tablet shows severe damage to the station but provides no further details on what caused it.",
+        "NextId": "initialize_items"
+      },
+      {
+        "Id": "initialize_items",
+        "Type": "WriteNode",
+        "Content": "Taking items...",
+        "Variable": "has_stunner",
+        "WriteValue": true,
+        "NextId": "initialize_flashlight"
+      },
+      {
+        "Id": "initialize_flashlight",
+        "Type": "WriteNode",
+        "Content": "Taking flashlight...",
+        "Variable": "has_flashlight",
+        "WriteValue": true,
+        "NextId": "initialize_tablet"
+      },
+      {
+        "Id": "initialize_tablet",
+        "Type": "WriteNode",
+        "Content": "Taking tablet...",
+        "Variable": "has_tablet",
+        "WriteValue": true,
+        "NextId": "main_corridor"
+      },
+      {
+        "Id": "take_stunner",
+        "Type": "TextEvent",
+        "Content": "You grab just the stunner, leaving the other items behind. Better to travel light in an emergency situation.",
+        "NextId": "initialize_stunner_only"
+      },
+      {
+        "Id": "initialize_stunner_only",
+        "Type": "WriteNode",
+        "Content": "Taking stunner...",
+        "Variable": "has_stunner",
+        "WriteValue": true,
+        "NextId": "main_corridor"
+      },
+      {
+        "Id": "main_corridor",
+        "Type": "TextEvent",
+        "Content": "MAIN CORRIDOR\n\nYou step into the main corridor. Emergency sirens continue to wail. The station's artificial gravity fluctuates, causing your stomach to lurch. Sparks fly from damaged circuitry in the ceiling. The corridor extends in three directions.\n\nTo your left is the Command Center, straight ahead lies the Engineering Section, and to your right is the Medical Bay.",
+        "NextId": "check_tablet_status",
+        "checkpoint": true
+      },
+      {
+        "Id": "check_tablet_status",
+        "Type": "Switcher",
+        "Content": "Checking if you have your tablet...",
+        "Variable": "has_tablet",
+        "DefaultValue": false,
+        "SwitchOptions": [
+            {
+                "DesiredValue": true,
+                "PathId": "check_tablet_info",
+                "Domain": "EQUAL"
+            },
+            {
+                "DesiredValue": false,
+                "PathId": "main_corridor_options",
+                "Domain": "EQUAL"
+            }
+        ]
+      },
+      {
+        "Id": "check_tablet_info",
+        "Type": "TextEvent",
+        "Content": "Your tablet lights up with an automated emergency message: \"ALERT: Reactor destabilizing. Oxygen reserves compromised. Communications array damaged. Evacuation recommended.\"",
+        "NextId": "main_corridor_options"
+      },
+      {
+        "Id": "main_corridor_options",
+        "Type": "Chooser",
+        "Content": "Where would you like to go?",
+        "Options": [
+          {"Name": "Go to the Command Center", "NextId": "command_center"},
+          {"Name": "Head to Engineering", "NextId": "engineering_section"},
+          {"Name": "Visit the Medical Bay", "NextId": "medical_bay"}
+        ]
+      },
+      {
+        "Id": "command_center",
+        "Type": "TextEvent",
+        "Content": "COMMAND CENTER\n\nYou enter the Command Center. The large viewscreen shows the exterior of the station - there's visible damage to one section. Captain Reeves is slumped over the central console, injured but conscious. Emergency lights flash as systems report critical failures throughout the station.",
+        "NextId": "command_status_check",
+        "checkpoint": true
+      },
+      {
+        "Id": "command_status_check",
+        "Type": "Switcher",
+        "Content": "Checking if you've already received the keycard...",
+        "Variable": "has_keycard",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "initial_command_options",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "return_command_options",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "initial_command_options",
+        "Type": "Chooser",
+        "Content": "What would you like to do?",
+        "Options": [
+          {"Name": "Speak to Captain Reeves", "NextId": "check_captain_conversation"},
+          {"Name": "Check the station's status on the main console", "NextId": "check_console"},
+          {"Name": "Return to the main corridor", "NextId": "main_corridor"}
+        ]
+      },
+      {
+        "Id": "check_captain_conversation",
+        "Type": "Switcher",
+        "Content": "Checking if you've spoken to the captain before...",
+        "Variable": "talked_to_captain",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "speak_to_captain",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "speak_to_captain_again",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "speak_to_captain_again",
+        "Type": "TextEvent",
+        "Content": "\"Please hurry,\" Captain Reeves urges weakly. \"The station doesn't have much time.\"",
+        "NextId": "initial_command_options"
+      },
+      {
+        "Id": "return_command_options",
+        "Type": "Chooser",
+        "Content": "What would you like to do?",
+        "Options": [
+          {"Name": "Check on Captain Reeves", "NextId": "check_on_captain"},
+          {"Name": "Check the station's status on the main console", "NextId": "check_console"},
+          {"Name": "Return to the main corridor", "NextId": "main_corridor_check_progress"}
+        ]
+      },
+      {
+        "Id": "check_on_captain",
+        "Type": "TextEvent",
+        "Content": "Captain Reeves is conscious but clearly in pain. \"Have you made progress on the emergency protocols?\" she asks. \"We need all systems operational for a safe evacuation.\"",
+        "NextId": "return_command_options"
+      },
+      {
+        "Id": "speak_to_captain",
+        "Type": "TextEvent",
+        "Content": "You approach Captain Reeves. She looks up at you, blood trickling from a wound on her forehead. \"Officer... thank god someone's alive. We've been hit... some kind of meteor shower. Reactor's destabilizing and we're losing oxygen. We need to initiate evacuation protocols.\"",
+        "NextId": "captain_continues"
+      },
+      {
+        "Id": "captain_continues",
+        "Type": "TextEvent",
+        "Content": "She coughs painfully. \"Listen carefully. We need three things to evacuate: The reactor needs to be stabilized or we'll never make it out of the blast radius. Communications need to be restored to call for help. And the emergency escape pod systems need to be activated from Engineering.\"",
+        "NextId": "captain_keycard"
+      },
+      {
+        "Id": "captain_keycard",
+        "Type": "TextEvent",
+        "Content": "The captain pulls a keycard from her uniform pocket. \"Take my command keycard. It'll give you access to all areas of the station. I'd go myself, but...\" She winces in pain. \"I don't think I can walk. My medkit is empty - if you find medical supplies, I could use them.\"",
+        "NextId": "receive_keycard"
+      },
+      {
+        "Id": "receive_keycard",
+        "Type": "WriteNode",
+        "Content": "You take the captain's keycard and put it securely in your pocket.",
+        "Variable": "has_keycard",
+        "WriteValue": true,
+        "NextId": "update_talked_to_captain"
+      },
+      {
+        "Id": "update_talked_to_captain",
+        "Type": "WriteNode",
+        "Content": "Recording that you've spoken with the captain...",
+        "Variable": "talked_to_captain",
+        "WriteValue": true,
+        "NextId": "initial_command_options"
+      },
+      {
+        "Id": "check_console",
+        "Type": "TextEvent",
+        "Content": "You examine the main console. The damage report is extensive:\n- Reactor: Critical. Coolant system failure.\n- Life Support: Oxygen levels at 18% and falling.\n- Communications: Offline. Array physically damaged.\n- Escape Systems: Offline. Manual activation required.\n\nTime to catastrophic reactor failure: approximately 30 minutes.",
+        "NextId": "command_status_check"
+      },
+      {
+        "Id": "main_corridor_check_progress",
+        "Type": "Switcher",
+        "Content": "Checking if you've made enough progress to access central hub...",
+        "Variable": "reactor_stable",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "main_with_hub",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "main_corridor",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "main_with_hub",
+        "Type": "TextEvent",
+        "Content": "MAIN CORRIDOR\n\nYou're back in the main corridor. With the reactor stabilized, the emergency lighting has switched from red to amber, indicating reduced threat level. You can now access the Central Hub - a key junction point for coordinating station operations.",
+        "NextId": "main_corridor_with_hub",
+        "checkpoint": true
+      },
+      {
+        "Id": "main_corridor_with_hub",
+        "Type": "Chooser",
+        "Content": "Where would you like to go?",
+        "Options": [
+          {"Name": "Go to the Command Center", "NextId": "command_center"},
+          {"Name": "Head to Engineering", "NextId": "engineering_section"},
+          {"Name": "Visit the Medical Bay", "NextId": "medical_bay"},
+          {"Name": "Access the Central Hub", "NextId": "central_hub"}
+        ]
+      },
+      {
+        "Id": "engineering_section",
+        "Type": "TextEvent",
+        "Content": "ENGINEERING SECTION\n\nYou enter the Engineering Section. It's dimly lit, with steam hissing from damaged pipes. The reactor core glows an unstable red behind its containment field. Warning lights flash on numerous consoles.",
+        "NextId": "check_for_engineer",
+        "checkpoint": true
+      },
+      {
+        "Id": "check_for_engineer",
+        "Type": "Switcher",
+        "Content": "Checking if you've met the engineer...",
+        "Variable": "met_engineer",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "meet_engineer",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "check_reactor_status",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "meet_engineer",
+        "Type": "TextEvent",
+        "Content": "A voice calls out from beneath a console. \"Hey! Over here!\" Chief Engineer Chen slides out, covered in grease and looking exhausted. \"You're security, right? Thank goodness. I've been trying to stabilize the reactor, but I need help.\"",
+        "NextId": "engineer_explains"
+      },
+      {
+        "Id": "engineer_explains",
+        "Type": "TextEvent",
+        "Content": "\"The meteor impact damaged our coolant systems,\" Chen explains. \"I need to reroute the backup coolant, but I can't reach the manual override. It's in the maintenance duct over there.\" She points to a narrow opening. \"I'm too big to fit, but you might be able to.\"",
+        "NextId": "record_met_engineer"
+      },
+      {
+        "Id": "record_met_engineer",
+        "Type": "WriteNode",
+        "Content": "Recording that you've met the engineer...",
+        "Variable": "met_engineer",
+        "WriteValue": true,
+        "NextId": "check_reactor_status"
+      },
+      {
+        "Id": "check_reactor_status",
+        "Type": "Switcher",
+        "Content": "Checking reactor status...",
+        "Variable": "reactor_stable",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "engineering_options",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "check_escape_pod_status",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "check_escape_pod_status",
+        "Type": "Switcher",
+        "Content": "Checking escape pod status...",
+        "Variable": "escape_pod_ready",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "engineering_options_reactor_fixed",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "engineering_all_done",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "engineering_all_done",
+        "Type": "TextEvent",
+        "Content": "Engineer Chen gives you a thumbs up. \"Great work! Both the reactor and escape pod systems are operational. Is there anything else you need help with?\"",
+        "NextId": "engineering_options_all_done"
+      },
+      {
+        "Id": "engineering_options_all_done",
+        "Type": "Chooser",
+        "Content": "What would you like to do in Engineering?",
+        "Options": [
+          {"Name": "Return to the main corridor", "NextId": "main_corridor_check_progress"}
+        ]
+      },
+      {
+        "Id": "engineering_options_reactor_fixed",
+        "Type": "Chooser",
+        "Content": "What would you like to do in Engineering?",
+        "Options": [
+          {"Name": "Check the escape pod systems", "NextId": "check_keycard_for_escape"},
+          {"Name": "Return to the main corridor", "NextId": "main_corridor_check_progress"}
+        ]
+      },
+      {
+        "Id": "engineering_options",
+        "Type": "Chooser",
+        "Content": "What would you like to do in Engineering?",
+        "Options": [
+          {"Name": "Enter the maintenance duct to fix the coolant system", "NextId": "check_keycard_for_duct"},
+          {"Name": "Check the escape pod systems", "NextId": "check_keycard_for_escape"},
+          {"Name": "Return to the main corridor", "NextId": "main_corridor"}
+        ]
+      },
+      {
+        "Id": "check_keycard_for_duct",
+        "Type": "Switcher",
+        "Content": "Checking if you have the keycard...",
+        "Variable": "has_keycard",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "check_if_fixed_coolant",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "need_keycard",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "check_if_fixed_coolant",
+        "Type": "Switcher",
+        "Content": "Checking if you've already fixed the coolant system...",
+        "Variable": "fixed_coolant",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "fix_coolant",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "coolant_already_fixed",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "coolant_already_fixed",
+        "Type": "TextEvent",
+        "Content": "The coolant system is already operational. The maintenance duct has been sealed after your repairs.",
+        "NextId": "check_reactor_status"
+      },
+      {
+        "Id": "need_keycard",
+        "Type": "TextEvent",
+        "Content": "You try to access the maintenance duct, but it's sealed with a security lock. You'll need a command-level keycard to open it.",
+        "NextId": "check_reactor_status"
+      },
+      {
+        "Id": "fix_coolant",
+        "Type": "TextEvent",
+        "Content": "You swipe the captain's keycard and the maintenance duct opens. You squeeze inside, following Chen's instructions through your earpiece. The space is tight and hot, but you manage to reach the manual override valve.",
+        "NextId": "coolant_fixed"
+      },
+      {
+        "Id": "coolant_fixed",
+        "Type": "TextEvent",
+        "Content": "With great effort, you turn the heavy valve. Immediately, you hear a rush of coolant flowing through the pipes. Chen's voice comes through your earpiece: \"It's working! The reactor temperature is dropping. Keep going!\"",
+        "NextId": "update_fixed_coolant"
+      },
+      {
+        "Id": "update_fixed_coolant",
+        "Type": "WriteNode",
+        "Content": "Updating that you've fixed the coolant system...",
+        "Variable": "fixed_coolant",
+        "WriteValue": true,
+        "NextId": "stabilize_reactor"
+      },
+      {
+        "Id": "stabilize_reactor",
+        "Type": "WriteNode",
+        "Content": "After several tense minutes, you complete the procedure. You crawl back out of the duct, sweating profusely. Chen looks at her console and nods with relief. \"We did it. The reactor's stabilizing.\"",
+        "Variable": "reactor_stable",
+        "WriteValue": true,
+        "NextId": "stabilize_oxygen"
+      },
+      {
+        "Id": "stabilize_oxygen",
+        "Type": "WriteNode",
+        "Content": "\"This should help with life support too,\" Chen adds. \"Oxygen generation is coming back online, but levels are still low.\"",
+        "Variable": "oxygen_level",
+        "WriteValue": "low",
+        "NextId": "check_reactor_status"
+      },
+      {
+        "Id": "check_keycard_for_escape",
+        "Type": "Switcher",
+        "Content": "Checking if you have the keycard...",
+        "Variable": "has_keycard",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "check_activated_escape",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "need_keycard_escape",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "check_activated_escape",
+        "Type": "Switcher",
+        "Content": "Checking if you've already activated the escape pod systems...",
+        "Variable": "activated_escape",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "activate_escape_pods",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "escape_already_activated",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "escape_already_activated",
+        "Type": "TextEvent",
+        "Content": "The escape pod systems are already online and ready for evacuation.",
+        "NextId": "check_reactor_status"
+      },
+      {
+        "Id": "need_keycard_escape",
+        "Type": "TextEvent",
+        "Content": "You try to access the escape pod control systems, but they're locked behind a command-level security panel. You'll need a command keycard to proceed.",
+        "NextId": "check_reactor_status"
+      },
+      {
+        "Id": "activate_escape_pods",
+        "Type": "TextEvent",
+        "Content": "You swipe the captain's keycard and access the escape pod control panel. Following the emergency procedures, you initiate the pre-launch sequence for the station's escape pods.",
+        "NextId": "update_activated_escape"
+      },
+      {
+        "Id": "update_activated_escape",
+        "Type": "WriteNode",
+        "Content": "Updating that you've activated the escape pod systems...",
+        "Variable": "activated_escape",
+        "WriteValue": true,
+        "NextId": "escape_pods_ready"
+      },
+      {
+        "Id": "escape_pods_ready",
+        "Type": "WriteNode",
+        "Content": "The console flashes green: \"ESCAPE SYSTEMS ACTIVATED. PODS READY FOR LAUNCH.\"",
+        "Variable": "escape_pod_ready",
+        "WriteValue": true,
+        "NextId": "check_reactor_status"
+      },
+      {
+        "Id": "medical_bay",
+        "Type": "TextEvent",
+        "Content": "MEDICAL BAY\n\nYou enter the Medical Bay. It's in disarray, with supplies scattered across the floor. Medical equipment beeps erratically. There's no one here - the medical staff must have been called elsewhere or were injured in the impact.",
+        "NextId": "medical_bay_options_check",
+        "checkpoint": true
+      },
+      {
+        "Id": "medical_bay_options_check",
+        "Type": "Switcher",
+        "Content": "Checking if you've already found the medkit...",
+        "Variable": "has_medkit",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "medical_bay_options",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "medical_bay_options_no_medkit",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "medical_bay_options",
+        "Type": "Chooser",
+        "Content": "What would you like to do in the Medical Bay?",
+        "Options": [
+          {"Name": "Search for medical supplies", "NextId": "search_for_medkit"},
+          {"Name": "Check the medical computer", "NextId": "check_medical_computer"},
+          {"Name": "Return to the main corridor", "NextId": "main_corridor_check_progress"}
+        ]
+      },
+      {
+        "Id": "medical_bay_options_no_medkit",
+        "Type": "Chooser",
+        "Content": "What would you like to do in the Medical Bay?",
+        "Options": [
+          {"Name": "Check the medical computer", "NextId": "check_medical_computer"},
+          {"Name": "Return to the main corridor", "NextId": "main_corridor_check_progress"}
+        ]
+      },
+      {
+        "Id": "search_for_medkit",
+        "Type": "TextEvent",
+        "Content": "You search through the scattered supplies, looking for anything useful. After a minute of searching, you find an emergency medkit that wasn't damaged in the chaos.",
+        "NextId": "take_medkit"
+      },
+      {
+        "Id": "take_medkit",
+        "Type": "WriteNode",
+        "Content": "You take the medkit, thinking it might come in handy later.",
+        "Variable": "has_medkit",
+        "WriteValue": true,
+        "NextId": "medical_bay_options_check"
+      },
+      {
+        "Id": "check_medical_computer",
+        "Type": "TextEvent",
+        "Content": "You access the medical computer. It shows that several crew members were treated for injuries shortly after the impact. A medical alert indicates that oxygen levels are dangerously low throughout the station, and hypoxia is a serious risk for all personnel.",
+        "NextId": "medical_bay_options_check"
+      },
+      {
+        "Id": "central_hub",
+        "Type": "TextEvent",
+        "Content": "CENTRAL HUB\n\nYou're in the Central Hub, the heart of Space Station Epsilon. From here, you can access all major sections of the station. The situation remains critical, but you're making progress on the emergency protocols.",
+        "NextId": "check_all_systems",
+        "checkpoint": true
+      },
+      {
+        "Id": "check_all_systems",
+        "Type": "Switcher",
+        "Content": "Checking reactor status...",
+        "Variable": "reactor_stable",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "check_comms_status",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "central_hub_options",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "check_comms_status",
+        "Type": "Switcher",
+        "Content": "Checking communications status...",
+        "Variable": "comms_active",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "check_escape_status",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "central_hub_options",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "check_escape_status",
+        "Type": "Switcher",
+        "Content": "Checking escape pod status...",
+        "Variable": "escape_pod_ready",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "all_systems_ready",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "central_hub_options",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "all_systems_ready",
+        "Type": "TextEvent",
+        "Content": "The central display shows that all emergency systems are now operational. The station's AI announces: \"All critical systems restored. Evacuation protocols ready. Awaiting final authorization.\"",
+        "NextId": "return_to_captain"
+      },
+      {
+        "Id": "central_hub_options",
+        "Type": "Chooser",
+        "Content": "Where would you like to go from the Central Hub?",
+        "Options": [
+          {"Name": "Go to the Command Center", "NextId": "command_center"},
+          {"Name": "Head to Engineering", "NextId": "engineering_section"},
+          {"Name": "Visit the Medical Bay", "NextId": "medical_bay"},
+          {"Name": "Go to Communications", "NextId": "communications_section"}
+        ]
+      },
+      {
+        "Id": "communications_section",
+        "Type": "TextEvent",
+        "Content": "COMMUNICATIONS SECTION\n\nYou enter the Communications Section. The large satellite dish control panel shows significant damage. Part of the ceiling has collapsed, exposing the room to the vacuum of space, but emergency force fields have contained the breach.",
+        "NextId": "comms_check_status",
+        "checkpoint": true
+      },
+      {
+        "Id": "comms_check_status",
+        "Type": "Switcher",
+        "Content": "Checking if communications have been repaired...",
+        "Variable": "fixed_comms",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "communications_options",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "comms_already_fixed",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "comms_already_fixed",
+        "Type": "TextEvent",
+        "Content": "The communications array is now operational. The emergency signal is being broadcast continuously, and you've already received confirmation from rescue vessel Hyperion.",
+        "NextId": "communications_fixed_options"
+      },
+      {
+        "Id": "communications_fixed_options",
+        "Type": "Chooser",
+        "Content": "What would you like to do?",
+        "Options": [
+          {"Name": "Return to the Central Hub", "NextId": "central_hub"}
+        ]
+      },
+      {
+        "Id": "communications_options",
+        "Type": "Chooser",
+        "Content": "What would you like to do in Communications?",
+        "Options": [
+          {"Name": "Try to repair the communications array", "NextId": "check_repair_equipment"},
+          {"Name": "Return to the Central Hub", "NextId": "central_hub"}
+        ]
+      },
+      {
+        "Id": "check_repair_equipment",
+        "Type": "Switcher",
+        "Content": "Checking if you have a tablet...",
+        "Variable": "has_tablet",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "use_tablet",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "check_flashlight",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "check_flashlight",
+        "Type": "Switcher",
+        "Content": "Checking if you have a flashlight...",
+        "Variable": "has_flashlight",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "use_flashlight",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "need_equipment",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "need_equipment",
+        "Type": "TextEvent",
+        "Content": "You examine the damaged communications array, but it's too complex to repair without proper equipment. You need either a diagnostic tool like a tablet or at least a flashlight to see the damaged components clearly.",
+        "NextId": "communications_options"
+      },
+      {
+        "Id": "use_tablet",
+        "Type": "TextEvent",
+        "Content": "You connect your tablet to the communications console. The diagnostic software identifies the damaged components and guides you through an emergency repair procedure. After several tense minutes of rerouting circuits and bypassing damaged sections, the communications array flickers back to life.",
+        "NextId": "update_fixed_comms"
+      },
+      {
+        "Id": "use_flashlight",
+        "Type": "TextEvent",
+        "Content": "Using your flashlight, you carefully examine the damaged communications array. It's challenging without proper diagnostic tools, but your security training included basic technical repairs. You identify the key damaged components and manage to improvise repairs using spare parts from less critical systems.",
+        "NextId": "update_fixed_comms"
+      },
+      {
+        "Id": "update_fixed_comms",
+        "Type": "WriteNode",
+        "Content": "Updating that you've fixed the communications array...",
+        "Variable": "fixed_comms",
+        "WriteValue": true,
+        "NextId": "comms_repaired"
+      },
+      {
+        "Id": "comms_repaired",
+        "Type": "WriteNode",
+        "Content": "The communications console lights up, showing connection to the emergency frequency. A burst transmission is automatically sent with the station's distress signal and coordinates.",
+        "Variable": "comms_active",
+        "WriteValue": true,
+        "NextId": "comms_confirmation"
+      },
+      {
+        "Id": "comms_confirmation",
+        "Type": "TextEvent",
+        "Content": "The console chirps as a reply comes in: \"Epsilon Station, this is rescue vessel Hyperion. We've received your distress call and are en route. ETA 40 minutes. Prepare for evacuation.\"",
+        "NextId": "comms_check_status"
+      },
+      {
+        "Id": "return_to_captain",
+        "Type": "TextEvent",
+        "Content": "With all critical systems restored, you return to the Command Center to report your success to Captain Reeves.",
+        "NextId": "check_captain_medkit"
+      },
+      {
+        "Id": "check_captain_medkit",
+        "Type": "Switcher",
+        "Content": "Checking if you have a medkit for the captain...",
+        "Variable": "has_medkit",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "help_captain",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "captain_worse",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "help_captain",
+        "Type": "TextEvent",
+        "Content": "You find Captain Reeves still at her post, looking worse than before. You quickly administer first aid using the medkit you found. She regains some of her strength as the pain medication takes effect.",
+        "NextId": "captain_evacuation"
+      },
+      {
+        "Id": "captain_worse",
+        "Type": "TextEvent",
+        "Content": "You find Captain Reeves still at her post, but she's deteriorated. Her breathing is labored and she's barely conscious.",
+        "NextId": "captain_dies"
+      },
+      {
+        "Id": "captain_dies",
+        "Type": "WriteNode",
+        "Content": "Despite your efforts to wake her, Captain Reeves doesn't respond. She's gone - likely from her injuries combined with the low oxygen conditions.",
+        "Variable": "captain_alive",
+        "WriteValue": false,
+        "NextId": "captain_dead_evacuation"
+      },
+      {
+        "Id": "captain_dead_evacuation",
+        "Type": "TextEvent",
+        "Content": "With heavy heart, you take command of the evacuation. The station's AI recognizes your authority with the captain's keycard. \"All personnel proceed to escape pods immediately,\" you announce over the intercom. \"Rescue vessel ETA 30 minutes.\"",
+        "NextId": "final_decision"
+      },
+      {
+        "Id": "captain_evacuation",
+        "Type": "TextEvent",
+        "Content": "\"Well done, Officer,\" Captain Reeves says with newfound strength. \"You've saved us all.\" She activates the station-wide intercom: \"All personnel proceed to escape pods immediately. Rescue vessel ETA 30 minutes.\"",
+        "NextId": "final_decision"
+      },
+      {
+        "Id": "final_decision",
+        "Type": "Chooser",
+        "Content": "As evacuation begins, you have time for one last action:",
+        "Options": [
+          {"Name": "Help escort injured crew to the escape pods", "NextId": "escort_crew"},
+          {"Name": "Check for any crew members who might be trapped", "NextId": "search_for_trapped"}
+        ]
+      },
+      {
+        "Id": "escort_crew",
+        "Type": "TextEvent",
+        "Content": "You help the injured crew members make their way to the escape pods. Engineer Chen assists you, guiding people safely aboard. The station continues to deteriorate around you as systems fail one by one.",
+        "NextId": "final_escape"
+      },
+      {
+        "Id": "search_for_trapped",
+        "Type": "TextEvent",
+        "Content": "You conduct a final sweep of the accessible areas of the station, searching for anyone who might be trapped or left behind. In a storage area, you find a junior technician pinned under fallen debris. With Engineer Chen's help, you free them and escort them to the escape pods.",
+        "NextId": "final_escape"
+      },
+      {
+        "Id": "final_escape",
+        "Type": "TextEvent",
+        "Content": "With everyone accounted for, you board the last escape pod. The automated launch sequence initiates, and the pod detaches from the failing station. Through the viewport, you watch as Space Station Epsilon recedes in the distance, its once-proud structure now battle-damaged but stable enough to be salvaged later.",
+        "NextId": "ending_choice"
+      },
+      {
+        "Id": "ending_choice",
+        "Type": "Switcher",
+        "Content": "Determining ending based on captain's status...",
+        "Variable": "captain_alive",
+        "DefaultValue": true,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "good_ending",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "bittersweet_ending",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "good_ending",
+        "Type": "TextEvent",
+        "Content": "The rescue vessel Hyperion approaches, its docking lights guiding your escape pod to safety. As the airlock opens, you help Captain Reeves to the medical bay where the ship's doctor is waiting. She grasps your hand, \"Officer, your quick thinking saved the entire crew. I'll be recommending you for promotion when we return to Earth.\"",
+        "NextId": "final_good_ending"
+      },
+      {
+        "Id": "final_good_ending",
+        "Type": "DecoratedTextEvent",
+        "Content": "MISSION SUCCESSFUL\n\nFour weeks later, you stand at attention as Fleet Admiral Yao pins the Medal of Valor to your uniform. \"For exceptional bravery and leadership during the Space Station Epsilon crisis, saving twenty-eight lives and preserving a critical research facility.\" \n\nCaptain Reeves, now recovered, smiles proudly from the audience. Your next assignment: Security Chief on the new deep space research vessel Horizon. The universe awaits.\n\nTHE END",
+        "NextId": null,
+        "checkpoint": true
+      },
+      {
+        "Id": "bittersweet_ending",
+        "Type": "TextEvent",
+        "Content": "The rescue vessel Hyperion approaches, its docking lights guiding your escape pod to safety. Engineer Chen sits beside you, both of you silent in the knowledge that Captain Reeves didn't make it. As the senior surviving officer, the responsibility of reporting the disaster falls to you.",
+        "NextId": "final_bittersweet_ending"
+      },
+      {
+        "Id": "final_bittersweet_ending",
+        "Type": "DecoratedTextEvent",
+        "Content": "MISSION PARTIALLY SUCCESSFUL\n\nOne month later, you stand before the memorial wall at Fleet Headquarters. Captain Reeves' name has been added alongside other officers who gave their lives in service. Admiral Yao approaches you. \"The inquiry has concluded. You did everything possible under impossible circumstances.\" \n\nHe hands you new orders. \"The rebuilt Epsilon Station needs someone who knows its systems inside and out. Someone who has proven themselves under pressure.\" You look down at the assignment: Acting Commander, Space Station Epsilon. \n\nA chance to honor the captain's memory.\n\nTHE END",
+        "NextId": null,
+        "checkpoint": true
+      }
+    ]
+}

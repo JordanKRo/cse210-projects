@@ -1,0 +1,384 @@
+{
+  "Nodes": [
+    {
+      "Id": "start",
+      "Type": "DecoratedTextEvent",
+      "Content": "THE ABANDONED MANSION\nA text adventure game",
+      "NextId": "initialize_game",
+      "checkpoint": true
+    },
+    {
+      "Id": "initialize_game",
+      "Type": "WriteNode",
+      "Content": "Initializing game state...",
+      "Variable": "has_key",
+      "WriteValue": false,
+      "NextId": "initialize_door"
+    },
+    {
+      "Id": "initialize_door",
+      "Type": "WriteNode",
+      "Content": "Setting initial door state...",
+      "Variable": "door_unlocked",
+      "WriteValue": false,
+      "NextId": "entrance_hall"
+    },
+    {
+      "Id": "entrance_hall",
+      "Type": "TextEvent",
+      "Content": "You stand in the grand entrance hall of an abandoned mansion. The air is thick with dust and the scent of old books. Moonlight filters through tall windows, casting long shadows across the marble floor.",
+      "NextId": "entrance_hall_options",
+      "DisplayProceedMessage": true,
+      "checkpoint": true
+    },
+    {
+      "Id": "entrance_hall_options",
+      "Type": "Switcher",
+      "Content": "Checking if door has been unlocked...",
+      "Variable": "door_unlocked",
+      "DefaultValue": false,
+      "SwitchOptions": [
+        {
+          "DesiredValue": true,
+          "PathId": "entrance_options_door_unlocked",
+          "Domain": "EQUAL"
+        },
+        {
+          "DesiredValue": false,
+          "PathId": "entrance_options_door_locked",
+          "Domain": "EQUAL"
+        }
+      ]
+    },
+    {
+      "Id": "entrance_options_door_locked",
+      "Type": "Chooser",
+      "Content": "Where would you like to go?",
+      "Options": [
+        {
+          "Name": "Explore the Library",
+          "NextId": "library"
+        },
+        {
+          "Name": "Go to the Kitchen",
+          "NextId": "kitchen"
+        },
+        {
+          "Name": "Check the Mysterious Door",
+          "NextId": "check_door"
+        }
+      ]
+    },
+    {
+      "Id": "entrance_options_door_unlocked",
+      "Type": "Chooser",
+      "Content": "Where would you like to go?",
+      "Options": [
+        {
+          "Name": "Explore the Library",
+          "NextId": "library"
+        },
+        {
+          "Name": "Go to the Kitchen",
+          "NextId": "kitchen"
+        },
+        {
+          "Name": "Enter the Secret Chamber",
+          "NextId": "secret_chamber"
+        }
+      ]
+    },
+    {
+      "Id": "library",
+      "Type": "TextEvent",
+      "Content": "You enter a vast library. Rows of bookshelves stretch from floor to ceiling, filled with ancient tomes. The room smells of old paper and leather bindings. A reading desk sits in the center, illuminated by a shaft of moonlight from a skylight above.",
+      "NextId": "library_options"
+    },
+    {
+      "Id": "library_options",
+      "Type": "Chooser",
+      "Content": "What would you like to do in the library?",
+      "Options": [
+        {
+          "Name": "Search the reading desk",
+          "NextId": "search_desk"
+        },
+        {
+          "Name": "Examine the bookshelves",
+          "NextId": "examine_bookshelves"
+        },
+        {
+          "Name": "Return to the entrance hall",
+          "NextId": "entrance_hall"
+        }
+      ]
+    },
+    {
+      "Id": "search_desk",
+      "Type": "Switcher",
+      "Content": "Checking if key was already found...",
+      "Variable": "has_key",
+      "DefaultValue": false,
+      "SwitchOptions": [
+        {
+          "DesiredValue": false,
+          "PathId": "find_key",
+          "Domain": "EQUAL"
+        },
+        {
+          "DesiredValue": true,
+          "PathId": "desk_empty",
+          "Domain": "EQUAL"
+        }
+      ]
+    },
+    {
+      "Id": "find_key",
+      "Type": "TextEvent",
+      "Content": "You search the reading desk carefully, opening each drawer. In the bottom drawer, hidden beneath some old papers, you find a large brass key! It looks ancient and important.",
+      "NextId": "store_key"
+    },
+    {
+      "Id": "store_key",
+      "Type": "WriteNode",
+      "Content": "You pocket the key, thinking it might be useful later.",
+      "Variable": "has_key",
+      "WriteValue": true,
+      "NextId": "return_to_library"
+    },
+    {
+      "Id": "desk_empty",
+      "Type": "TextEvent",
+      "Content": "You search the reading desk again, but find nothing of interest that you haven't already discovered.",
+      "NextId": "return_to_library"
+    },
+    {
+      "Id": "return_to_library",
+      "Type": "TextEvent",
+      "Content": "You step back from the desk and look around the library again.",
+      "NextId": "library_options"
+    },
+    {
+      "Id": "examine_bookshelves",
+      "Type": "TextEvent",
+      "Content": "You examine the bookshelves closely. Many of the books are in languages you don't recognize, with strange symbols embossed on their spines. Some appear to be about alchemy, astrology, and other arcane subjects. Nothing seems immediately useful, though the collection is fascinating.",
+      "NextId": "library_options"
+    },
+    {
+      "Id": "kitchen",
+      "Type": "TextEvent",
+      "Content": "You enter an old-fashioned kitchen. Cast iron pots and pans hang from hooks, and a large stone fireplace dominates one wall. The counters are dusty, and cobwebs stretch across the corners of the room. Through a small window, you can see an overgrown garden outside.",
+      "NextId": "kitchen_options"
+    },
+    {
+      "Id": "kitchen_options",
+      "Type": "Chooser",
+      "Content": "What would you like to do in the kitchen?",
+      "Options": [
+        {
+          "Name": "Check the cupboards",
+          "NextId": "check_cupboards"
+        },
+        {
+          "Name": "Look inside the fireplace",
+          "NextId": "look_fireplace"
+        },
+        {
+          "Name": "Return to the entrance hall",
+          "NextId": "entrance_hall"
+        }
+      ]
+    },
+    {
+      "Id": "check_cupboards",
+      "Type": "TextEvent",
+      "Content": "You open the cupboards one by one. They contain dusty dishes, some cracked teacups, and a few jars with unidentifiable contents that have long since dried up. Nothing useful for your current situation.",
+      "NextId": "kitchen_options"
+    },
+    {
+      "Id": "look_fireplace",
+      "Type": "TextEvent",
+      "Content": "You peer into the large stone fireplace. The hearth is cold, with ashes from the last fire burned many years ago. You notice some strange symbols carved into the back wall of the fireplace, but you can't decipher their meaning.",
+      "NextId": "kitchen_options"
+    },
+    {
+      "Id": "check_door",
+      "Type": "TextEvent",
+      "Content": "You approach a heavy oak door at the far end of the entrance hall. It's ornately carved with strange symbols and appears to be locked. There's a large keyhole that looks like it requires a specific key.",
+      "NextId": "door_check"
+    },
+    {
+      "Id": "door_check",
+      "Type": "Switcher",
+      "Content": "Checking door state...",
+      "Variable": "door_unlocked",
+      "DefaultValue": false,
+      "SwitchOptions": [
+        {
+          "DesiredValue": true,
+          "PathId": "secret_chamber",
+          "Domain": "EQUAL"
+        },
+        {
+          "DesiredValue": false,
+          "PathId": "check_for_key",
+          "Domain": "EQUAL"
+        }
+      ]
+    },
+    {
+      "Id": "check_for_key",
+      "Type": "Switcher",
+      "Content": "Checking if you have the key...",
+      "Variable": "has_key",
+      "DefaultValue": false,
+      "SwitchOptions": [
+        {
+          "DesiredValue": true,
+          "PathId": "unlock_door_sequence",
+          "Domain": "EQUAL"
+        },
+        {
+          "DesiredValue": false,
+          "PathId": "door_locked",
+          "Domain": "EQUAL"
+        }
+      ]
+    },
+    {
+      "Id": "door_locked",
+      "Type": "TextEvent",
+      "Content": "You try the handle, but the door is firmly locked. You'll need to find a key that fits this lock if you want to see what's behind this door.",
+      "NextId": "return_to_hall"
+    },
+    {
+      "Id": "unlock_door_sequence",
+      "Type": "TextEvent",
+      "Content": "You approach the mysterious door. Remembering the brass key you found in the library, you take it out and insert it into the lock. It fits perfectly! With a satisfying click, the mechanism turns, and the door unlocks.",
+      "NextId": "mark_door_unlocked"
+    },
+    {
+      "Id": "mark_door_unlocked",
+      "Type": "WriteNode",
+      "Content": "The door swings open, revealing a hidden chamber beyond.",
+      "Variable": "door_unlocked",
+      "WriteValue": true,
+      "NextId": "secret_chamber"
+    },
+    {
+      "Id": "return_to_hall",
+      "Type": "TextEvent",
+      "Content": "You step back from the mysterious door and return to the center of the entrance hall.",
+      "NextId": "entrance_hall_options"
+    },
+    {
+      "Id": "secret_chamber",
+      "Type": "TextEvent",
+      "Content": "You step into a small, circular chamber with a domed ceiling. In the center stands a pedestal with a glowing crystal orb. The walls are covered with intricate murals depicting strange cosmic scenes. The air feels charged with some unknown energy.",
+      "NextId": "secret_chamber_options"
+    },
+    {
+      "Id": "secret_chamber_options",
+      "Type": "Chooser",
+      "Content": "What would you like to do in the secret chamber?",
+      "Options": [
+        {
+          "Name": "Examine the crystal orb",
+          "NextId": "examine_orb"
+        },
+        {
+          "Name": "Study the wall murals",
+          "NextId": "study_murals"
+        },
+        {
+          "Name": "Return to the entrance hall",
+          "NextId": "return_to_hall_from_chamber"
+        }
+      ]
+    },
+    {
+      "Id": "examine_orb",
+      "Type": "TextEvent",
+      "Content": "You approach the crystal orb cautiously. As you get closer, the glow intensifies, and you feel a strange warmth emanating from it. Within the orb, you see swirling mists that seem to form images - glimpses of distant places and perhaps even other times. This is clearly an artifact of great power and mystery.",
+      "NextId": "orb_glows_brighter"
+    },
+    {
+      "Id": "orb_glows_brighter",
+      "Type": "TextEvent",
+      "Content": "As you continue to gaze into the orb, the light within pulses and grows brighter. The swirling mists begin to coalesce into a more distinct image. You see the mansion as it once was - full of life and activity, with people in antiquated clothing moving about. One figure stands out - a distinguished gentleman with intense eyes who seems to be looking directly at you through time.",
+      "NextId": "orb_reveals_truth"
+    },
+    {
+      "Id": "orb_reveals_truth",
+      "Type": "TextEvent",
+      "Content": "Suddenly, knowledge floods into your mind. This mansion belonged to an eccentric occultist who spent his life studying the boundaries between worlds. The orb was his greatest creation - a window to other times and places. As your fingers hover near the crystal surface, you feel a strange connection forming.",
+      "NextId": "orb_choice"
+    },
+    {
+      "Id": "orb_choice",
+      "Type": "Chooser",
+      "Content": "The orb seems to be offering you a choice. What will you do?",
+      "Options": [
+        {
+          "Name": "Touch the orb",
+          "NextId": "touch_orb"
+        },
+        {
+          "Name": "Step back from the orb",
+          "NextId": "reject_orb"
+        }
+      ]
+    },
+    {
+      "Id": "touch_orb",
+      "Type": "TextEvent",
+      "Content": "You place your hand on the crystal surface. The world around you dissolves in a blinding flash of light. When your vision clears, you find yourself standing in the same room, but it's different - clean, well-lit, and full of strange equipment. The distinguished gentleman you saw in the vision stands before you, smiling.",
+      "NextId": "ending_accept"
+    },
+    {
+      "Id": "ending_accept",
+      "Type": "DecoratedTextEvent",
+      "Content": "THE GUARDIAN'S LEGACY\n\n\"Welcome, traveler,\" the gentleman says. \"I've waited a long time for someone with the curiosity and courage to find my sanctum. \nThe orb has chosen you as my successor, to continue my work exploring the mysteries of existence. There is so much I have to teach you...\"\n\nYour adventure in this world has ended, but a new one has just begun across the boundaries of time and space.\n\nTHE END",
+      "NextId": null,
+      "checkpoint": true
+    },
+    {
+      "Id": "reject_orb",
+      "Type": "TextEvent",
+      "Content": "You take a step back from the orb, respecting the power of forces you don't fully understand. The glow dims slightly, as if acknowledging your decision. You sense that the orb will remain here, waiting for someone who is ready to accept its offer. For now, you have your own path to follow.",
+      "NextId": "ending_reject"
+    },
+    {
+      "Id": "ending_reject",
+      "Type": "DecoratedTextEvent",
+      "Content": "THE SEEKER'S CHOICE\n\nWith one last look at the mysterious orb, you leave the secret chamber and the mansion behind. The experience has changed you, opening your eyes to worlds and possibilities you never imagined existed. Though you chose not to take the orb's power today, you know that the knowledge of its existence will guide your future journeys.\n\nSometimes, wisdom lies in recognizing when you're not ready for certain mysteries.\n\nTHE END",
+      "NextId": null,
+      "checkpoint": true
+    },
+    {
+      "Id": "study_murals",
+      "Type": "TextEvent",
+      "Content": "You examine the murals that cover the walls. They depict celestial bodies, strange creatures, and humans performing what appear to be magical rituals. Some scenes show the mansion itself, suggesting it was built for some specific arcane purpose. The more you study the images, the more you feel there are deeper mysteries to uncover in this place.",
+      "NextId": "murals_insight"
+    },
+    {
+      "Id": "murals_insight",
+      "Type": "TextEvent",
+      "Content": "As you continue studying the murals, you notice that many of them feature the crystal orb at the center of the chamber. In one scene, a robed figure holds the orb aloft while standing in a circle of light. In another, the same figure appears to be looking through the orb at other worlds. The final mural in the sequence shows the figure transforming into pure light.",
+      "NextId": "secret_chamber_options"
+    },
+    {
+      "Id": "return_to_hall_from_chamber",
+      "Type": "TextEvent",
+      "Content": "You leave the secret chamber, stepping back into the entrance hall.",
+      "NextId": "entrance_hall_options"
+    },
+    {
+      "Id": "ending",
+      "Type": "DecoratedTextEvent",
+      "Content": "THE END\nYou've discovered one of the mansion's secrets, but many more remain...",
+      "NextId": null,
+      "checkpoint": true
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "Save": {
+    "NodeID": "entrance_options_no_tower",
+    "vars": {
+      "has_lantern": true,
+      "ghost_appeased": false,
+      "found_diary": false,
+      "visited_entrance": 4,
+      "visited_kitchen": 1,
+      "visited_quarters": 2,
+      "tower_accessible": false
+    }
+  }
+}

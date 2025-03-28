@@ -1,0 +1,48 @@
+{
+    "Nodes": [
+        
+        {
+            "id": "start",
+            "Type": "TextEvent",
+            "Content": "Content",
+            "NextId": "test write"
+        },
+        {
+            "Id": "test write",
+            "Type": "WriteNode",
+            "Content": "Initializing game state...",
+            "Variable": "number",
+            "WriteValue": 2,
+            "NextId": "m1"
+        },
+        {
+            "id": "m1",
+            "Type": "TextEvent",
+            "Content": "Content",
+            "NextId": "initialize_door"
+        },
+        {
+            "Id": "initialize_door",
+            "Type": "WriteNode",
+            "Content": "Setting initial door state...",
+            "Variable": "number",
+            "WriteValue": "$abc",
+            "NextId": "m2"
+        },
+        {
+            "id": "m2",
+            "Type": "TextEvent",
+            "Content": "Content",
+            "NextId": "entrance_hall"
+        },
+        {
+            "Id": "entrance_hall",
+            "Type": "WriteNode",
+            "Content": "e",
+            "NextId": "entrance_hall_options",
+            "Variable": "number",
+            "WriteValue": "$-2"
+        }
+        
+    ]
+}

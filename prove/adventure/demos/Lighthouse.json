@@ -1,0 +1,717 @@
+{
+    "Nodes": [
+      {
+        "Id": "start",
+        "Type": "DecoratedTextEvent",
+        "Content": "THE FORGOTTEN LIGHTHOUSE\nA text adventure game",
+        "NextId": "initialize_game",
+        "checkpoint": true
+      },
+      {
+        "Id": "initialize_game",
+        "Type": "WriteNode",
+        "Content": "Initializing game state...",
+        "Variable": "has_lantern",
+        "WriteValue": false,
+        "NextId": "initialize_ghost"
+      },
+      {
+        "Id": "initialize_ghost",
+        "Type": "WriteNode",
+        "Content": "Setting ghost state...",
+        "Variable": "ghost_appeased",
+        "WriteValue": false,
+        "NextId": "initialize_diary"
+      },
+      {
+        "Id": "initialize_diary",
+        "Type": "WriteNode",
+        "Content": "Setting diary state...",
+        "Variable": "found_diary",
+        "WriteValue": false,
+        "NextId": "initialize_visited"
+      },
+      {
+        "Id": "initialize_visited",
+        "Type": "WriteNode",
+        "Content": "Setting visited counters...",
+        "Variable": "visited_entrance",
+        "WriteValue": 0,
+        "NextId": "initialize_kitchen_visits"
+      },
+      {
+        "Id": "initialize_kitchen_visits",
+        "Type": "WriteNode",
+        "Content": "Setting kitchen visit counter...",
+        "Variable": "visited_kitchen",
+        "WriteValue": 0,
+        "NextId": "initialize_quarters_visits"
+      },
+      {
+        "Id": "initialize_quarters_visits",
+        "Type": "WriteNode",
+        "Content": "Setting quarters visit counter...",
+        "Variable": "visited_quarters",
+        "WriteValue": 0,
+        "NextId": "initialize_tower"
+      },
+      {
+        "Id": "initialize_tower",
+        "Type": "WriteNode",
+        "Content": "Setting tower access...",
+        "Variable": "tower_accessible",
+        "WriteValue": false,
+        "NextId": "beach_intro"
+      },
+      {
+        "Id": "beach_intro",
+        "Type": "TextEvent",
+        "Content": "The storm came out of nowhere. Your coastal hike turned into a desperate sprint as thunder cracked overhead and rain lashed across your face. Through sheets of rain, you spotted it: an old lighthouse perched on the rocky headland. Shelter.",
+        "NextId": "lighthouse_exterior",
+        "DisplayProceedMessage": true,
+        "checkpoint": true
+      },
+      {
+        "Id": "lighthouse_exterior",
+        "Type": "TextEvent",
+        "Content": "You stand before the weathered lighthouse door, rain cascading down your back. The structure looks abandoned, windows dark despite the raging storm. The wooden door is partially ajar, creaking in the wind. Waves crash violently against the rocks below.",
+        "NextId": "exterior_options",
+        "DisplayProceedMessage": true
+      },
+      {
+        "Id": "exterior_options",
+        "Type": "Chooser",
+        "Content": "What will you do?",
+        "Options": [
+          {
+            "Name": "Enter the lighthouse",
+            "NextId": "entrance_hall"
+          },
+          {
+            "Name": "Check around the exterior first",
+            "NextId": "exterior_search"
+          }
+        ]
+      },
+      {
+        "Id": "exterior_search",
+        "Type": "TextEvent",
+        "Content": "Fighting against the wind, you circle the lighthouse base. You find little of interest except for an old metal lantern half-buried in the rocky soil. It's rusty but seems functional, and might provide some light inside the dark structure.",
+        "NextId": "take_lantern_choice"
+      },
+      {
+        "Id": "take_lantern_choice",
+        "Type": "Chooser",
+        "Content": "What will you do?",
+        "Options": [
+          {
+            "Name": "Take the lantern",
+            "NextId": "get_lantern"
+          },
+          {
+            "Name": "Leave it and enter the lighthouse",
+            "NextId": "entrance_hall"
+          }
+        ]
+      },
+      {
+        "Id": "get_lantern",
+        "Type": "WriteNode",
+        "Content": "You pick up the old lantern. Upon closer inspection, you find it still contains some oil and the wick seems usable. With a few strikes of the starter, it flickers to life, casting a warm glow against the stormy darkness.",
+        "Variable": "has_lantern",
+        "WriteValue": true,
+        "NextId": "entrance_hall"
+      },
+      {
+        "Id": "entrance_hall",
+        "Type": "Switcher",
+        "Content": "Checking if first visit...",
+        "Variable": "visited_entrance",
+        "DefaultValue": 0,
+        "SwitchOptions": [
+          {
+            "DesiredValue": 0,
+            "PathId": "entrance_first_visit",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": 0,
+            "PathId": "entrance_return",
+            "Domain": "GREATER"
+          }
+        ]
+      },
+      {
+        "Id": "entrance_first_visit",
+        "Type": "TextEvent",
+        "Content": "You push the creaking door open and step inside. The entrance hall is cold and damp, with peeling wallpaper and a thick layer of dust on the floor. A staircase spirals upward, but appears blocked by fallen debris. There are doorways leading to what appears to be a kitchen and a keeper's quarters.",
+        "NextId": "increment_entrance_visit",
+        "checkpoint": true
+      },
+      {
+        "Id": "increment_entrance_visit",
+        "Type": "WriteNode",
+        "Content": "Noting the layout of the entrance hall...",
+        "Variable": "visited_entrance",
+        "WriteValue": "$1",
+        "NextId": "entrance_hall_check"
+      },
+      {
+        "Id": "entrance_return",
+        "Type": "TextEvent",
+        "Content": "You're back in the entrance hall. The blocked staircase spirals upward, with doorways leading to the kitchen and keeper's quarters.",
+        "NextId": "entrance_hall_check"
+      },
+      {
+        "Id": "entrance_hall_check",
+        "Type": "Switcher",
+        "Content": "Checking lighting conditions...",
+        "Variable": "has_lantern",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "entrance_lantern",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "entrance_dark",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "entrance_lantern",
+        "Type": "TextEvent",
+        "Content": "Your lantern illuminates faded photographs on the wall – generations of lighthouse keepers standing proudly before the tower. In one corner, you notice a trail of water leading from the blocked stairs, despite the fact that the roof appears intact.",
+        "NextId": "entrance_check_tower"
+      },
+      {
+        "Id": "entrance_dark",
+        "Type": "TextEvent",
+        "Content": "In the dim light filtering through grimy windows, you can barely make out shapes of furniture. A cold draft sweeps through the room, bringing with it the faint sound of weeping from somewhere above.",
+        "NextId": "entrance_check_tower"
+      },
+      {
+        "Id": "entrance_check_tower",
+        "Type": "Switcher",
+        "Content": "Checking tower access...",
+        "Variable": "tower_accessible",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "entrance_options_tower",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "entrance_options_no_tower",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "entrance_options_no_tower",
+        "Type": "Chooser",
+        "Content": "Where would you like to go?",
+        "Options": [
+          {
+            "Name": "Try to climb the spiral staircase",
+            "NextId": "stairs_blocked"
+          },
+          {
+            "Name": "Explore the kitchen",
+            "NextId": "kitchen"
+          },
+          {
+            "Name": "Enter the keeper's quarters",
+            "NextId": "quarters"
+          }
+        ]
+      },
+      {
+        "Id": "entrance_options_tower",
+        "Type": "Chooser",
+        "Content": "Where would you like to go?",
+        "Options": [
+          {
+            "Name": "Use the secret passage to the tower",
+            "NextId": "stairs_climb"
+          },
+          {
+            "Name": "Explore the kitchen",
+            "NextId": "kitchen"
+          },
+          {
+            "Name": "Enter the keeper's quarters",
+            "NextId": "quarters"
+          }
+        ]
+      },
+      {
+        "Id": "stairs_blocked",
+        "Type": "TextEvent",
+        "Content": "You approach the spiral staircase, but the way is blocked by a collapse of debris. Heavy wooden beams and chunks of masonry make passage impossible. You'll need to find another way to access the upper levels, if there is one.",
+        "NextId": "entrance_options_no_tower"
+      },
+      {
+        "Id": "kitchen",
+        "Type": "Switcher",
+        "Content": "Checking if first kitchen visit...",
+        "Variable": "visited_kitchen",
+        "DefaultValue": 0,
+        "SwitchOptions": [
+          {
+            "DesiredValue": 0,
+            "PathId": "kitchen_first_visit",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": 0,
+            "PathId": "kitchen_return",
+            "Domain": "GREATER"
+          }
+        ]
+      },
+      {
+        "Id": "kitchen_first_visit",
+        "Type": "TextEvent",
+        "Content": "The small kitchen is in disarray, with rusted utensils and moldy foodstuffs scattered about. A pot sits on the old stove, filled with what might have been soup, now a congealed mass. The cupboards hang open, mostly empty save for some preserved goods in dusty jars.",
+        "NextId": "increment_kitchen_visit"
+      },
+      {
+        "Id": "increment_kitchen_visit",
+        "Type": "WriteNode",
+        "Content": "Noting the kitchen layout...",
+        "Variable": "visited_kitchen",
+        "WriteValue": "$1",
+        "NextId": "kitchen_options"
+      },
+      {
+        "Id": "kitchen_return",
+        "Type": "TextEvent",
+        "Content": "You're back in the abandoned kitchen with its rusted utensils and old stove.",
+        "NextId": "kitchen_options"
+      },
+      {
+        "Id": "kitchen_options",
+        "Type": "Chooser",
+        "Content": "What would you like to do?",
+        "Options": [
+          {
+            "Name": "Search the cupboards thoroughly",
+            "NextId": "kitchen_search"
+          },
+          {
+            "Name": "Check behind the stove",
+            "NextId": "stove_check"
+          },
+          {
+            "Name": "Return to the entrance hall",
+            "NextId": "entrance_hall"
+          }
+        ]
+      },
+      {
+        "Id": "kitchen_search",
+        "Type": "TextEvent",
+        "Content": "You carefully search through the cupboards. Among the cobwebs and dust, you find several cans of preserved food that might still be edible in an emergency. Behind a row of empty jars, you notice a folded piece of paper.",
+        "NextId": "kitchen_note"
+      },
+      {
+        "Id": "kitchen_note",
+        "Type": "TextEvent",
+        "Content": "Unfolding the yellowed paper reveals a hastily scribbled note: 'The light must never go out. She finds her way by it. God help us if the darkness comes again.' The handwriting is shaky, as if written by someone in great distress.",
+        "NextId": "kitchen_options"
+      },
+      {
+        "Id": "stove_check",
+        "Type": "TextEvent",
+        "Content": "You squeeze behind the heavy iron stove. Scratched into the wall are the words: 'The lever in the fireplace leads to her.' Below this is a crude drawing of what appears to be the lighthouse keeper's quarters.",
+        "NextId": "kitchen_options"
+      },
+      {
+        "Id": "quarters",
+        "Type": "Switcher",
+        "Content": "Checking if first quarters visit...",
+        "Variable": "visited_quarters",
+        "DefaultValue": 0,
+        "SwitchOptions": [
+          {
+            "DesiredValue": 0,
+            "PathId": "quarters_first_visit",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": 0,
+            "PathId": "quarters_return",
+            "Domain": "GREATER"
+          }
+        ]
+      },
+      {
+        "Id": "quarters_first_visit",
+        "Type": "TextEvent",
+        "Content": "The keeper's quarters is a modest room with a simple bed, a writing desk, and a small fireplace. A thick layer of dust covers everything, except for a series of footprints that lead from the doorway to the fireplace and back – footprints that are wet, as if made recently.",
+        "NextId": "increment_quarters_visit"
+      },
+      {
+        "Id": "increment_quarters_visit",
+        "Type": "WriteNode",
+        "Content": "Noting the quarters layout...",
+        "Variable": "visited_quarters",
+        "WriteValue": "$1",
+        "NextId": "quarters_options"
+      },
+      {
+        "Id": "quarters_return",
+        "Type": "TextEvent",
+        "Content": "You're back in the keeper's quarters with its bed, writing desk, and fireplace. The wet footprints leading to the fireplace remain visible in the dust.",
+        "NextId": "quarters_options"
+      },
+      {
+        "Id": "quarters_options",
+        "Type": "Chooser",
+        "Content": "What would you like to do?",
+        "Options": [
+          {
+            "Name": "Examine the writing desk",
+            "NextId": "desk_check"
+          },
+          {
+            "Name": "Investigate the fireplace",
+            "NextId": "fireplace_check"
+          },
+          {
+            "Name": "Return to the entrance hall",
+            "NextId": "entrance_hall"
+          }
+        ]
+      },
+      {
+        "Id": "desk_check",
+        "Type": "Switcher",
+        "Content": "Checking if diary was found...",
+        "Variable": "found_diary",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "find_diary",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "desk_empty",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "find_diary",
+        "Type": "TextEvent",
+        "Content": "The desk drawer slides open with effort. Inside, you find a leather-bound diary. The final entries detail the keeper's growing fear of a woman he describes only as 'she who drowned.' He writes about hearing her voice calling to him from the waves, and seeing her pale face in the tower windows during storms.",
+        "NextId": "record_diary"
+      },
+      {
+        "Id": "record_diary",
+        "Type": "WriteNode",
+        "Content": "The final entry reads: 'She wants me to join her. Says she's lonely. The light keeps her at bay, but the storm approaches and I fear the fuel won't last the night.'",
+        "Variable": "found_diary",
+        "WriteValue": true,
+        "NextId": "quarters_options"
+      },
+      {
+        "Id": "desk_empty",
+        "Type": "TextEvent",
+        "Content": "You check the desk again, but find nothing new beyond the diary you already discovered.",
+        "NextId": "quarters_options"
+      },
+      {
+        "Id": "fireplace_check",
+        "Type": "Switcher",
+        "Content": "Checking if passage is already open...",
+        "Variable": "tower_accessible",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": false,
+            "PathId": "fireplace_closed",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": true,
+            "PathId": "fireplace_open",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "fireplace_closed",
+        "Type": "TextEvent",
+        "Content": "The fireplace is cold, with old ashes spread across the hearth. As you examine it closer, you notice that one of the decorative iron panels on the back wall seems loose. It appears to be a cleverly disguised lever mechanism.",
+        "NextId": "fireplace_choice"
+      },
+      {
+        "Id": "fireplace_open",
+        "Type": "TextEvent",
+        "Content": "The fireplace stands with its secret panel drawn aside, revealing the narrow passage that leads up to the tower. The hidden path remains open, waiting for you to ascend.",
+        "NextId": "passage_choice"
+      },
+      {
+        "Id": "fireplace_choice",
+        "Type": "Chooser",
+        "Content": "What will you do?",
+        "Options": [
+          {
+            "Name": "Pull the lever",
+            "NextId": "secret_passage"
+          },
+          {
+            "Name": "Leave it alone",
+            "NextId": "quarters_options"
+          }
+        ]
+      },
+      {
+        "Id": "secret_passage",
+        "Type": "TextEvent",
+        "Content": "The iron panel slides aside with a grinding noise, revealing a narrow passage hewn into the rock. A damp draft carries the scent of salt water and decay. Stone steps lead upward, apparently providing another way to reach the tower.",
+        "NextId": "open_passage"
+      },
+      {
+        "Id": "open_passage",
+        "Type": "WriteNode",
+        "Content": "The hidden passage seems to bypass the collapsed stairwell you saw earlier.",
+        "Variable": "tower_accessible",
+        "WriteValue": true,
+        "NextId": "passage_choice"
+      },
+      {
+        "Id": "passage_choice",
+        "Type": "Chooser",
+        "Content": "What will you do?",
+        "Options": [
+          {
+            "Name": "Enter the secret passage",
+            "NextId": "stairs_climb"
+          },
+          {
+            "Name": "Return to the quarters",
+            "NextId": "quarters_options"
+          }
+        ]
+      },
+      {
+        "Id": "stairs_climb",
+        "Type": "TextEvent",
+        "Content": "You begin climbing the winding stairs. The higher you go, the stronger the sound of the storm becomes. The walls are damp with condensation, and occasionally you hear what sounds like a woman's voice carried on the wind, though the words are indistinct.",
+        "NextId": "midway_event",
+        "checkpoint": true
+      },
+      {
+        "Id": "midway_event",
+        "Type": "TextEvent",
+        "Content": "Halfway up the tower, you pause to catch your breath. Suddenly, the temperature drops dramatically. A cold hand seems to brush against your cheek, though no one is there. Through a small window, you glimpse movement – a pale female figure climbing the exterior of the lighthouse, impossibly defying gravity.",
+        "NextId": "continue_climb"
+      },
+      {
+        "Id": "continue_climb",
+        "Type": "TextEvent",
+        "Content": "With growing unease, you continue your ascent. The staircase finally opens to the lantern room at the top of the lighthouse. The massive Fresnel lens sits dark and cold in the center, its glass surfaces reflecting the lightning that flashes through the windows encircling the room.",
+        "NextId": "lantern_room",
+        "DisplayProceedMessage": true
+      },
+      {
+        "Id": "lantern_room",
+        "Type": "Switcher",
+        "Content": "Checking if you have the lantern...",
+        "Variable": "has_lantern",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "lantern_room_with_lantern",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "lantern_room_without_lantern",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "lantern_room_without_lantern",
+        "Type": "TextEvent",
+        "Content": "The lantern room is dark except for brief flashes of lightning. You can make out the silhouette of the giant lens in the center, and maintenance equipment scattered about. A logbook sits open on a small desk, its pages fluttering in the draft. Suddenly, you hear a woman's voice behind you, sobbing softly.",
+        "NextId": "ghost_appears_dark"
+      },
+      {
+        "Id": "lantern_room_with_lantern",
+        "Type": "TextEvent",
+        "Content": "You hold up your lantern, illuminating the lantern room. The giant lens glimmers, throwing fractured light across the walls. On the small desk, you notice a logbook left open, its last entry dating back decades. As you approach the desk, your lantern flame suddenly grows taller, burning with unusual brightness.",
+        "NextId": "ghost_appears_light"
+      },
+      {
+        "Id": "ghost_appears_dark",
+        "Type": "TextEvent",
+        "Content": "You turn to find a woman in a sodden dress standing by the window. Water pours from her clothing and hair, forming a pool at her feet. Her skin is deathly pale, her eyes dark hollows. 'You let the light go out,' she whispers, her voice like broken shells grinding together. 'Now we're both lost in the dark.'",
+        "NextId": "ghost_interaction_dark"
+      },
+      {
+        "Id": "ghost_appears_light",
+        "Type": "TextEvent",
+        "Content": "A flash of lightning illuminates a woman standing by the windows. She wears a soaked dress, her hair dripping with seawater. Her form wavers like a reflection on troubled water. She regards your lantern with a mixture of fear and longing. 'You brought the light,' she says, her voice distant as fog. 'But is it enough to find my way home?'",
+        "NextId": "ghost_interaction_light"
+      },
+      {
+        "Id": "ghost_interaction_dark",
+        "Type": "Chooser",
+        "Content": "What will you do?",
+        "Options": [
+          {
+            "Name": "Run back down the stairs",
+            "NextId": "flee_ending"
+          },
+          {
+            "Name": "Ask who she is",
+            "NextId": "question_ghost_dark"
+          }
+        ]
+      },
+      {
+        "Id": "ghost_interaction_light",
+        "Type": "Chooser",
+        "Content": "What will you do?",
+        "Options": [
+          {
+            "Name": "Offer to light the main lighthouse lamp",
+            "NextId": "check_diary_knowledge"
+          },
+          {
+            "Name": "Ask who she is",
+            "NextId": "question_ghost_light"
+          }
+        ]
+      },
+      {
+        "Id": "check_diary_knowledge",
+        "Type": "Switcher",
+        "Content": "Checking if you found the diary...",
+        "Variable": "found_diary",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "informed_decision",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "uninformed_decision",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "question_ghost_dark",
+        "Type": "TextEvent",
+        "Content": "She drifts closer, cold water spattering your face as she moves. 'I am Margaret. I waited for him to light the way home, but the light failed. My ship struck the rocks in darkness.' Her hand reaches for you, inhumanly cold. 'Will you join me? The sea is lonely.'",
+        "NextId": "ghost_decision_dark"
+      },
+      {
+        "Id": "ghost_decision_dark",
+        "Type": "Chooser",
+        "Content": "What will you do?",
+        "Options": [
+          {
+            "Name": "Flee down the stairs",
+            "NextId": "flee_ending"
+          },
+          {
+            "Name": "Tell her you're not the lighthouse keeper",
+            "NextId": "truth_ending_dark"
+          }
+        ]
+      },
+      {
+        "Id": "question_ghost_light",
+        "Type": "TextEvent",
+        "Content": "She keeps her distance, eyes fixed on your lantern. 'I am Margaret. I was to marry the keeper, but my ship struck the rocks during the great storm. He blamed himself for letting the light fail.' Her form flickers like a candle about to go out. 'I've been lost in the dark ever since, unable to find rest.'",
+        "NextId": "ghost_decision_light"
+      },
+      {
+        "Id": "ghost_decision_light",
+        "Type": "Chooser",
+        "Content": "What will you do?",
+        "Options": [
+          {
+            "Name": "Offer to light the main lighthouse lamp",
+            "NextId": "check_diary_knowledge"
+          },
+          {
+            "Name": "Tell her it's time to move on",
+            "NextId": "confrontation_ending"
+          }
+        ]
+      },
+      {
+        "Id": "uninformed_decision",
+        "Type": "TextEvent",
+        "Content": "You approach the massive lens, using your lantern to light the main oil reservoir. The flame catches, growing quickly until the powerful light shines out into the storm. For a moment, everything seems well as Margaret watches with hopeful eyes. Then her expression turns to horror as the light reveals dozens of pale figures climbing the exterior of the lighthouse – more lost souls drawn to the beacon.",
+        "NextId": "uninformed_ending"
+      },
+      {
+        "Id": "informed_decision",
+        "Type": "TextEvent",
+        "Content": "Remembering the diary's warning, you hesitate. 'The light draws them in,' you say. 'It doesn't guide you home – it traps more souls here.' Instead, you carefully place your lantern in her hands. 'This light is for you alone. Follow it to find your peace.'",
+        "NextId": "appease_ghost"
+      },
+      {
+        "Id": "appease_ghost",
+        "Type": "WriteNode",
+        "Content": "Margaret takes the lantern, her cold fingers brushing yours. For an instant, her form becomes more solid, more human. She smiles – warm, grateful, and finally at peace.",
+        "Variable": "ghost_appeased",
+        "WriteValue": true,
+        "NextId": "true_ending"
+      },
+      {
+        "Id": "flee_ending",
+        "Type": "DecoratedTextEvent",
+        "Content": "LOST IN THE DARK\n\nYou flee down the stairs in terror, heart pounding in your chest. Behind you, her sobs turn to wails, then to rage. The storm intensifies as you burst out of the lighthouse door, but the beach is gone – only churning waves surround the lighthouse now, cutting off all escape.\n\nAs you stare in horror at the impossible waters, pale hands reach up from the waves. The drowned have come, and they are hungry for company.\n\nTHE END",
+        "NextId": null,
+        "checkpoint": true
+      },
+      {
+        "Id": "truth_ending_dark",
+        "Type": "DecoratedTextEvent",
+        "Content": "MISTAKEN IDENTITY\n\n'I'm not the keeper,' you explain, backing toward the stairs. 'I'm just a traveler seeking shelter.'\n\nHer expression shifts from sorrow to fury. 'LIAR!' she screams, her voice shaking the windows. 'You let the light go out! You let us all drown!'\n\nHer form lunges forward, passing through you like ice water. The cold seizes your heart, and darkness fills your vision. The last thing you hear is the crash of waves against rocks far below.\n\nTHE END",
+        "NextId": null,
+        "checkpoint": true
+      },
+      {
+        "Id": "confrontation_ending",
+        "Type": "DecoratedTextEvent",
+        "Content": "HARSH TRUTH\n\n'You need to move on,' you tell her firmly. 'This happened long ago. The keeper is gone, and you need to let go too.'\n\nMargaret's face contorts with grief and rage. 'He promised to guide me home! If I cannot have peace, neither shall you!'\n\nThe windows shatter inward as the storm howls. The last thing you see is her outstretched hands as she pushes you through the broken glass, into the waiting arms of the tempest.\n\nTHE END",
+        "NextId": null,
+        "checkpoint": true
+      },
+      {
+        "Id": "uninformed_ending",
+        "Type": "DecoratedTextEvent",
+        "Content": "BEACON OF DOOM\n\n'What have you done?' Margaret cries as the pale figures reach the windows. 'The light doesn't save us – it calls to us! It's a beacon that keeps us bound to this place!'\n\nThe windows shatter as dozens of drowned souls pour into the lantern room, their cold hands reaching for you both. Margaret gives you one last sorrowful look before the tide of lost souls sweeps over you, dragging you into their eternal, watery limbo.\n\nTHE END",
+        "NextId": null,
+        "checkpoint": true
+      },
+      {
+        "Id": "true_ending",
+        "Type": "DecoratedTextEvent",
+        "Content": "GUIDING LIGHT\n\nMargaret cradles the lantern, its warm glow transforming her. 'All this time,' she whispers, 'I thought I needed the great light to find my way, but I only needed a light that was meant for me.'\n\nShe walks to the window and looks out at the storm. 'Thank you for freeing me.' With those words, she steps forward – not falling, but walking on air, following a path only she can see, until she and her light vanish into the night.\n\nBy morning, the storm has passed. As you leave the lighthouse, you notice the waves have revealed something on the beach: an old, weathered gravestone bearing Margaret's name, finally visible after decades beneath the sand.\n\nTHE END",
+        "NextId": null,
+        "checkpoint": true
+      }
+    ]
+  }
