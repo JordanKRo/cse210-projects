@@ -24,17 +24,19 @@ public class Chooser : TextEvent
     /// <returns></returns>
     protected BaseNode PromptOptions(){
         Dictionary<char, BaseNode> interpretedNodes = new Dictionary<char, BaseNode>();
+        // TODO display the numbers before the custom ids
         for (int i = 0; i < options.Count; i++){
             // Identifier is just the option number unless the id is null
-            char identifier = options[i].Identifier.HasValue ? options[i].Identifier!.Value : (i + 1).ToString()[0];
-            Console.WriteLine($"{(i + 1)} - {options[i]}");
+            // char identifier = options[i].Identifier.HasValue ? options[i].Identifier ?? 'd' : (i + 1).ToString()[0];
+            char identifier = char.ToUpper(options[i].Identifier ?? (i + 1).ToString()[0]);
+            Console.WriteLine($"{identifier} - {options[i]}");
             interpretedNodes.Add(identifier, options[i].Node);
         }
         
         char entry;
         do {
             Console.Write("Enter an option: ");
-            entry = Console.ReadLine()?.FirstOrDefault() ?? '\0';
+            entry = Console.ReadLine()?.ToUpper()?.FirstOrDefault() ?? '\0';
             if (!interpretedNodes.ContainsKey(entry)) {
                 Console.WriteLine("\nInvalid option. Please try again.");
             }

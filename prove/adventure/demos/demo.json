@@ -18,12 +18,13 @@
             "name": "Go left",
             "hidden": false,
             "nextId": "left_path",
-            "identifier": "L"
+            "identifier": "l"
           },
           {
             "name": "Go right",
             "hidden": false,
-            "nextId": "right_path"
+            "nextId": "right_path",
+            "identifier":"r"
           }
         ]
       },
@@ -50,6 +51,11 @@
         "type": "TextEvent",
         "autoAdvance": true,
         "content": "The end of the meadow path."
+      },
+      {
+        "id": "right_path",
+        "type": "TextEvent",
+        "content": "This is the alternate path"
       }
       
     ]
