@@ -3,7 +3,7 @@ using System.Buffers.Text;
 public class Option {
     protected string name;
     protected bool hidden;
-    protected BaseEvent trigger;
+    protected BaseNode trigger;
     protected char? identifier;
 
     /// <summary>
@@ -11,12 +11,12 @@ public class Option {
     /// </summary>
     /// <param name="name"></param>
     /// <param name="hidden"></param>
-    public Option(string name, bool hidden, BaseEvent trigger) {
+    public Option(string name, bool hidden, BaseNode trigger) {
         this.name = name;
         this.hidden = hidden;
         this.trigger = trigger;
     }
-    public Option(string name, bool hidden, BaseEvent trigger, char identifier) {
+    public Option(string name, bool hidden, BaseNode trigger, char identifier) {
         this.name = name;
         this.hidden = hidden;
         this.trigger = trigger;
@@ -37,7 +37,7 @@ public class Option {
         get {return identifier;}
     }
 
-    public BaseEvent Node{
+    public BaseNode Node{
         get {return trigger;}
     }
 

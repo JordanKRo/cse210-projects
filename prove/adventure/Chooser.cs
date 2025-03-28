@@ -6,13 +6,14 @@ public class Chooser : TextEvent
     {
         this.prompt = prompt;
         this.options = options;
+        autoAdvance = true;
     }
-    public override void DisplayContent()
+    public override void OnExecute()
     {
         Console.WriteLine(prompt);
     }
 
-    public override BaseEvent? GetNextEvent()
+    public override BaseNode? GetNextEvent()
     {
         return PromptOptions();
         
@@ -21,20 +22,21 @@ public class Chooser : TextEvent
     /// Displays the options and prompts the user to select one
     /// </summary>
     /// <returns></returns>
-    protected BaseEvent PromptOptions(){
-        Dictionary<char, BaseEvent> interpretedNodes = new Dictionary<char, BaseEvent>();
+    protected BaseNode PromptOptions(){
+        Dictionary<char, BaseNode> interpretedNodes = new Dictionary<char, BaseNode>();
         for (int i = 0; i < options.Count; i++){
             // Identifier is just the option number unless the id is null
-            char identifier = options[i].Identifier.HasValue ? options[i].Identifier!.Value : (char)(i + 1);
-            Console.WriteLine($"{identifier} - {options[i]}");
+            char identifier = options[i].Identifier.HasValue ? options[i].Identifier!.Value : (i + 1).ToString()[0];
+            Console.WriteLine($"{(i + 1)} - {options[i]}");
             interpretedNodes.Add(identifier, options[i].Node);
         }
-        Console.Write("Enter an option: ");
+        
         char entry;
         do {
+            Console.Write("Enter an option: ");
             entry = Console.ReadLine()?.FirstOrDefault() ?? '\0';
             if (!interpretedNodes.ContainsKey(entry)) {
-                Console.WriteLine("Invalid option. Please try again.");
+                Console.WriteLine("\nInvalid option. Please try again.");
             }
         } while (!interpretedNodes.ContainsKey(entry));
 

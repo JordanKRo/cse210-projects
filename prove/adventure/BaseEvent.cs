@@ -1,12 +1,12 @@
-public abstract class BaseEvent{
+public abstract class BaseNode{
     public string id {get; private set;}
     protected bool autoAdvance = false;
-    protected bool displayProceedMessage = false;
+    protected bool displayProceedMessage = true;
     protected int sleepMils;
     protected bool replayable = false;
     protected bool hasRun = false;
-    const string PROCEED_MESSAGE = "Press Enter";
-    public BaseEvent(string id, int sleepMils = 0){
+    const string PROCEED_MESSAGE = "\nPress Enter";
+    public BaseNode(string id, int sleepMils = 0){
         this.id = id;
         this.sleepMils = sleepMils;
     }
@@ -16,7 +16,8 @@ public abstract class BaseEvent{
     /// <returns></returns>
     public virtual void Main(){
         // Display my content
-        DisplayContent();
+        OnExecute();
+        hasRun = true;
         Thread.Sleep(sleepMils);
         if (!autoAdvance){
             if (displayProceedMessage){
@@ -35,11 +36,11 @@ public abstract class BaseEvent{
         }
     }
     /// <summary>
-    /// Display your nodes content
+    /// Display your nodes content or perform the action
     /// </summary>
-    public abstract void DisplayContent();
+    public abstract void OnExecute();
     // If this event is a chooser it will call options first
-    public abstract BaseEvent? GetNextEvent();
+    public abstract BaseNode? GetNextEvent();
 
     public virtual bool HasRun(){
         return hasRun;
