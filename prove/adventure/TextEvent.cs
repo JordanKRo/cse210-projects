@@ -1,9 +1,9 @@
 public class TextEvent : BaseNode{
     protected string content;
-    protected BaseNode? nextEvent;
+    protected BaseNode? nextNode;
     public TextEvent(string id, string content, BaseNode nextEvent, bool autoAdvance = false, bool displayProceedMessage = true, int sleepMils = 0) : base(id, sleepMils, autoAdvance, displayProceedMessage){
         this.content = content;
-        this.nextEvent = nextEvent;
+        this.nextNode = nextEvent;
     }
 
     public TextEvent(string id, string content) : base(id){
@@ -17,6 +17,10 @@ public class TextEvent : BaseNode{
 
     public override BaseNode? GetNextEvent()
     {
-        return nextEvent;
+        return nextNode;
+    }
+
+    public void SetNextNode(BaseNode node){
+        nextNode = node;
     }
 }

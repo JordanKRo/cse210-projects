@@ -4,7 +4,8 @@
     {
         Console.Clear();
         // Create the game tree
-        BaseNode mainTree = CreateDemoTree();
+        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"..","..","..", "demos", "demo.json");
+        BaseNode mainTree = EventLoader.LoadFromFile(path);
         mainTree.Main();
     }
     

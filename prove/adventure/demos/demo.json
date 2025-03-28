@@ -42,12 +42,15 @@
       {
         "id": "forest",
         "type": "TextEvent",
+        "autoAdvance": true,
         "content": "The end of the forest path."
       },
       {
         "id": "meadow",
         "type": "TextEvent",
+        "autoAdvance": true,
         "content": "The end of the meadow path."
       }
+      
     ]
   }

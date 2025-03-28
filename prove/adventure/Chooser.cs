@@ -1,7 +1,7 @@
 public class Chooser : TextEvent
 {
     protected string prompt;
-    List<Option> options;
+    protected List<Option> options;
     public Chooser(string id, string prompt, List<Option> options) : base(id, prompt, null)
     {
         this.prompt = prompt;
@@ -42,5 +42,9 @@ public class Chooser : TextEvent
 
         // Start the selected node.
         return interpretedNodes[entry];
+    }
+
+    public void SetOptions(List<Option> options) {
+        this.options = options;
     }
 }

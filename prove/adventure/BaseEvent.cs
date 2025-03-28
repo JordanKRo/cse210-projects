@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 public abstract class BaseNode{
     public string id {get; private set;}
     protected bool autoAdvance = false;
