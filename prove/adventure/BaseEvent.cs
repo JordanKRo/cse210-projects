@@ -3,12 +3,15 @@ public abstract class BaseNode{
     protected bool autoAdvance = false;
     protected bool displayProceedMessage = true;
     protected int sleepMils;
+    // This part will be implemented later
     protected bool replayable = false;
     protected bool hasRun = false;
     const string PROCEED_MESSAGE = "\nPress Enter";
-    public BaseNode(string id, int sleepMils = 0){
+    public BaseNode(string id, int sleepMils = 0, bool autoAdvance = false, bool displayProceedMessage = true){
         this.id = id;
         this.sleepMils = sleepMils;
+        this.autoAdvance = autoAdvance;
+        this.displayProceedMessage = displayProceedMessage;
     }
     /// <summary>
     /// Each event calls the main of the other.

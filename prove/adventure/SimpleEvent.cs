@@ -1,7 +1,7 @@
 public class TextEvent : BaseNode{
     protected string content;
     protected BaseNode? nextEvent;
-    public TextEvent(string id, string content, BaseNode nextEvent) : base(id){
+    public TextEvent(string id, string content, BaseNode nextEvent, bool autoAdvance = false, bool displayProceedMessage = true, int sleepMils = 0) : base(id, sleepMils, autoAdvance, displayProceedMessage){
         this.content = content;
         this.nextEvent = nextEvent;
     }
