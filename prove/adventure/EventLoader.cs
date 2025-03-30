@@ -46,7 +46,16 @@ public class EventLoader
             PropertyNameCaseInsensitive = true
         };
 
-        EventTreeDTO eventTree = JsonSerializer.Deserialize<EventTreeDTO>(jsonString, options);
+        EventTreeDTO eventTree;
+        try
+        {
+            eventTree = JsonSerializer.Deserialize<EventTreeDTO>(jsonString, options);
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"Error parsing JSON tree, check syntax!!!");
+            throw new FileLoadException($"Failed to parse Node tree {ex.Message}");
+        }
 
         // First, create a dictionary of all nodes by their ID (but without connections)
         Dictionary<string, BaseNode> nodesById = new Dictionary<string, BaseNode>();

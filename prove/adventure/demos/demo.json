@@ -25,6 +25,10 @@
             "hidden": false,
             "nextId": "right_path",
             "identifier":"r"
+          },
+          {
+            "name":"Some other third thing",
+            "nextId":"Fake ID"
           }
         ]
       },
@@ -55,7 +59,7 @@
       {
         "id": "right_path",
         "type": "TextEvent",
-        "content": "This is the alternate path"
+        "content": "This is override content, this node should be excluded!"
       }
       
     ]
