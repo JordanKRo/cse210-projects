@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 public class EventLoader
 {
-    // Created transfer objects
+    // Data Transfer Objects
     public class EventNodeDTO
     {
         // Could be polymorphic but I might not have time
@@ -51,28 +51,31 @@ public class EventLoader
         // First, create a dictionary of all nodes by their ID (but without connections)
         Dictionary<string, BaseNode> nodesById = new Dictionary<string, BaseNode>();
         Dictionary<string, EventNodeDTO> nodeDtosById = new Dictionary<string, EventNodeDTO>();
-        
+
         foreach (var nodeDto in eventTree.Nodes)
         {
             nodeDtosById[nodeDto.Id] = nodeDto;
-            
-            if (nodeDto.Type == "TextEvent"){
-                nodesById[nodeDto.Id] = new TextEvent(
-                    nodeDto.Id, 
-                    nodeDto.Content, 
+
+            switch (nodeDto.Type)
+            {
+                case "TextEvent":
+                    nodesById[nodeDto.Id] = new TextEvent(
+                    nodeDto.Id,
+                    nodeDto.Content,
                     null, // Set later when the id is located
                     nodeDto.AutoAdvance,
                     nodeDto.DisplayProceedMessage,
                     nodeDto.SleepMils
                 );
-            }
-            else if (nodeDto.Type == "Chooser"){
-                // Create a Chooser with empty options, we'll populate them later
-                nodesById[nodeDto.Id] = new Chooser(
+                    break;
+
+                case "Chooser":
+                    nodesById[nodeDto.Id] = new Chooser(
                     nodeDto.Id,
                     nodeDto.Content,
                     new List<Option>()
                 );
+                    break;
             }
         }
 
@@ -138,14 +141,14 @@ public class EventLoader
 
         // Find the root node (the one that isn't referenced by any other node)
         HashSet<string> referencedIds = new HashSet<string>();
-        
+
         foreach (var nodeDto in eventTree.Nodes)
         {
             if (!string.IsNullOrEmpty(nodeDto.NextId))
             {
                 referencedIds.Add(nodeDto.NextId);
             }
-            
+
             if (nodeDto.Options != null)
             {
                 foreach (var option in nodeDto.Options)
