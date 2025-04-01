@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Node Graph Editor</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: white;
+      overflow: hidden;
+      height: 100vh;
+    }
+    
+    #toolbar {
+      background-color: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #444;
+    }
+    
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    button {
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background-color: #666;
+    }
+    
+    #canvas-container {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 50px);
+      overflow: hidden;
+    }
+    
+    .grid {
+      width: 100%;
+      height: 100%;
+      background-size: 20px 20px;
+      background-image: linear-gradient(to right, #333 1px, transparent 1px),
+                        linear-gradient(to bottom, #333 1px, transparent 1px);
+      background-color: #1e1e1e;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    
+    .node {
+      position: absolute;
+      background-color: #333;
+      border: 2px solid #555;
+      border-radius: 6px;
+      min-width: 160px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      user-select: none;
+      z-index: 1;
+    }
+    
+    .node.selected {
+      border-color: #66aaff;
+      box-shadow: 0 0 10px rgba(102, 170, 255, 0.5);
+    }
+    
+    .node-header {
+      padding: 8px;
+      font-weight: bold;
+      border-bottom: 1px solid #444;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #444;
+      border-radius: 4px 4px 0 0;
+      cursor: move;
+    }
+    
+    .node-input, .node-output {
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .node-input {
+      justify-content: flex-start;
+    }
+    
+    .node-output {
+      justify-content: flex-end;
+    }
+    
+    .port {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin: 0 8px;
+      cursor: pointer;
+    }
+    
+    .input-port {
+      background-color: #66aaff;
+    }
+    
+    .output-port {
+      background-color: #66ff66;
+    }
+    
+    .port:hover {
+      box-shadow: 0 0 8px white;
+    }
+    
+    .connection {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    #temp-connection {
+      stroke: rgba(255, 255, 255, 0.7);
+      stroke-width: 2px;
+      stroke-dasharray: 5, 5;
+      fill: none;
+      pointer-events: none;
+    }
+    
+    .connection-path {
+      stroke: white;
+      stroke-width: 2px;
+      fill: none;
+      cursor: pointer;
+      pointer-events: all;
+    }
+    
+    .info-panel {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #aaa;
+    }
+    
+    .node-type-button {
+      margin-right: 4px;
+    }
+    
+    .node-type-input {
+      background-color: #4a90e2;
+    }
+    
+    .node-type-process {
+      background-color: #e2804a;
+    }
+    
+    .node-type-math {
+      background-color: #4ae280;
+    }
+    
+    .node-type-output {
+      background-color: #e24a4a;
+    }
+    
+    .export-button {
+      background-color: #66aaff;
+    }
+    
+    .close-button {
+      background: none;
+      border: none;
+      color: #aaa;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+    
+    .close-button:hover {
+      color: white;
+      background: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="toolbar">
+    <div class="title">Node Graph Editor</div>
+    <div class="buttons">
+      <button class="node-type-button node-type-input" onclick="addNode('input')">Input</button>
+      <button class="node-type-button node-type-process" onclick="addNode('process')">Process</button>
+      <button class="node-type-button node-type-math" onclick="addNode('math')">Math</button>
+      <button class="node-type-button node-type-output" onclick="addNode('output')">Output</button>
+      <button class="export-button" onclick="exportGraph()">Export JSON</button>
+    </div>
+  </div>
+  
+  <div id="canvas-container">
+    <div class="grid" id="grid"></div>
+    <svg id="connections-layer" width="100%" height="100%">
+      <!-- Fixed: Adding a dedicated group for temp connection -->
+      <g id="temp-connection-group"></g>
+      <g id="connections-group"></g>
+    </svg>
+    <div id="nodes-container"></div>
+    
+    <div class="info-panel">
+      <p>Drag nodes to move | Click green outputs to create connections | Connect to blue inputs | Shift+Click a connection to delete</p>
+    </div>
+  </div>
+
+  <script>
+    // State management
+    const state = {
+      nodes: [],
+      connections: [],
+      nextNodeId: 1,
+      selectedNode: null,
+      dragInfo: null,
+      panInfo: null,
+      connecting: null,
+      offset: { x: 0, y: 0 }
+    };
+
+    // DOM references
+    const canvas = document.getElementById('canvas-container');
+    const nodesContainer = document.getElementById('nodes-container');
+    const connectionsLayer = document.getElementById('connections-layer');
+    const tempConnectionGroup = document.getElementById('temp-connection-group');
+    const connectionsGroup = document.getElementById('connections-group');
+    const grid = document.getElementById('grid');
+
+    // Node type definitions
+    const nodeTypes = {
+      input: {
+        title: 'Input Node',
+        color: '#4a90e2',
+        inputs: [],
+        outputs: [{ id: 'out1', name: 'Value' }]
+      },
+      process: {
+        title: 'Process Node',
+        color: '#e2804a',
+        inputs: [
+          { id: 'in1', name: 'In A' },
+          { id: 'in2', name: 'In B' }
+        ],
+        outputs: [
+          { id: 'out1', name: 'Out' }
+        ]
+      },
+      math: {
+        title: 'Math Node',
+        color: '#4ae280',
+        inputs: [
+          { id: 'in1', name: 'A' },
+          { id: 'in2', name: 'B' }
+        ],
+        outputs: [{ id: 'out1', name: 'Result' }]
+      },
+      output: {
+        title: 'Output Node',
+        color: '#e24a4a',
+        inputs: [{ id: 'in1', name: 'Value' }],
+        outputs: []
+      }
+    };
+
+    // Add a node to the graph
+    function addNode(type) {
+      const nodeType = nodeTypes[type];
+      if (!nodeType) return;
+      
+      const nodeId = state.nextNodeId++;
+      
+      const node = {
+        id: nodeId,
+        type: type,
+        title: nodeType.title,
+        color: nodeType.color,
+        position: { x: 100 + Math.random() * 200, y: 100 + Math.random() * 100 },
+        inputs: nodeType.inputs.map(input => ({
+          id: `${nodeId}-${input.id}`,
+          name: input.name
+        })),
+        outputs: nodeType.outputs.map(output => ({
+          id: `${nodeId}-${output.id}`,
+          name: output.name
+        }))
+      };
+      
+      state.nodes.push(node);
+      renderNode(node);
+      selectNode(nodeId);
+    }
+
+    // Render a node on the canvas
+    function renderNode(node) {
+      const nodeElement = document.createElement('div');
+      nodeElement.id = `node-${node.id}`;
+      nodeElement.className = 'node';
+      nodeElement.style.left = `${node.position.x + state.offset.x}px`;
+      nodeElement.style.top = `${node.position.y + state.offset.y}px`;
+      
+      if (state.selectedNode === node.id) {
+        nodeElement.classList.add('selected');
+      }
+      
+      // Create node header
+      const header = document.createElement('div');
+      header.className = 'node-header';
+      header.style.backgroundColor = node.color;
+      header.innerHTML = `
+        <span>${node.title} ${node.id}</span>
+        <button class="close-button" onclick="deleteNode(${node.id})">×</button>
+      `;
+      
+      // Set up dragging
+      header.addEventListener('mousedown', (e) => {
+        if (e.button === 0) { // Left mouse button
+          startDragging(e, node.id);
+        }
+      });
+      
+      nodeElement.appendChild(header);
+      
+      // Create input ports
+      node.inputs.forEach(input => {
+        const inputElement = document.createElement('div');
+        inputElement.className = 'node-input';
+        
+        const portElement = document.createElement('div');
+        portElement.id = input.id;
+        portElement.className = 'port input-port';
+        portElement.title = "Input: " + input.name;
+        
+        // Make input ports handle mouse up for connection completion
+        portElement.addEventListener('mouseup', (e) => {
+          if (state.connecting) {
+            completeConnection(node.id, input.id);
+            e.stopPropagation();
+          }
+        });
+        
+        inputElement.appendChild(portElement);
+        inputElement.appendChild(document.createTextNode(input.name));
+        
+        nodeElement.appendChild(inputElement);
+      });
+      
+      // Create output ports
+      node.outputs.forEach(output => {
+        const outputElement = document.createElement('div');
+        outputElement.className = 'node-output';
+        
+        outputElement.appendChild(document.createTextNode(output.name));
+        
+        const portElement = document.createElement('div');
+        portElement.id = output.id;
+        portElement.className = 'port output-port';
+        portElement.title = "Output: " + output.name;
+        
+        // Make output ports handle mouse down for connection starting
+        portElement.addEventListener('mousedown', (e) => {
+          if (e.button === 0) { // Left mouse button
+            startConnection(node.id, output.id);
+            e.stopPropagation();
+          }
+        });
+        
+        outputElement.appendChild(portElement);
+        nodeElement.appendChild(outputElement);
+      });
+      
+      // Add click handler for selection
+      nodeElement.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        selectNode(node.id);
+      });
+      
+      nodesContainer.appendChild(nodeElement);
+    }
+
+    // Select a node
+    function selectNode(nodeId) {
+      // Deselect previously selected node
+      if (state.selectedNode !== null) {
+        const prevNode = document.getElementById(`node-${state.selectedNode}`);
+        if (prevNode) {
+          prevNode.classList.remove('selected');
+        }
+      }
+      
+      state.selectedNode = nodeId;
+      
+      // Select new node
+      if (nodeId !== null) {
+        const node = document.getElementById(`node-${nodeId}`);
+        if (node) {
+          node.classList.add('selected');
+        }
+      }
+    }
+
+    // Delete a node
+    function deleteNode(nodeId) {
+      // Remove connections to/from this node
+      state.connections = state.connections.filter(conn => 
+        conn.from.nodeId !== nodeId && conn.to.nodeId !== nodeId
+      );
+      
+      // Remove node from state
+      state.nodes = state.nodes.filter(node => node.id !== nodeId);
+      
+      // Remove node element from DOM
+      const nodeElement = document.getElementById(`node-${nodeId}`);
+      if (nodeElement) {
+        nodeElement.remove();
+      }
+      
+      // If this was the selected node, deselect it
+      if (state.selectedNode === nodeId) {
+        state.selectedNode = null;
+      }
+      
+      // Redraw connections
+      renderConnections();
+    }
+
+    // Start dragging a node
+    function startDragging(event, nodeId) {
+      event.stopPropagation();
+      
+      const nodeElement = document.getElementById(`node-${nodeId}`);
+      const rect = nodeElement.getBoundingClientRect();
+      
+      state.dragInfo = {
+        nodeId: nodeId,
+        initial: {
+          x: rect.left,
+          y: rect.top
+        },
+        offset: {
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top
+        }
+      };
+      
+      // Select the node being dragged
+      selectNode(nodeId);
+    }
+
+    // Start creating a connection
+    function startConnection(nodeId, portId) {
+      state.connecting = {
+        from: {
+          nodeId: nodeId,
+          portId: portId
+        }
+      };
+      
+      // Create temporary connection line
+      createTemporaryConnection();
+    }
+
+    // Create temporary connection while dragging
+    function createTemporaryConnection() {
+      // Clear any existing temporary connection
+      while (tempConnectionGroup.firstChild) {
+        tempConnectionGroup.removeChild(tempConnectionGroup.firstChild);
+      }
+      
+      // Create new temporary connection
+      const tempConnection = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      tempConnection.id = 'temp-connection';
+      
+      tempConnectionGroup.appendChild(tempConnection);
+    }
+
+    // Update temporary connection line
+    function updateTemporaryConnection(mouseX, mouseY) {
+      if (!state.connecting) return;
+      
+      const fromPortId = state.connecting.from.portId;
+      const fromPort = document.getElementById(fromPortId);
+      if (!fromPort) return;
+      
+      const fromRect = fromPort.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      
+      const fromX = fromRect.left + fromRect.width / 2 - canvasRect.left;
+      const fromY = fromRect.top + fromRect.height / 2 - canvasRect.top;
+      
+      const tempConnection = document.getElementById('temp-connection');
+      if (tempConnection) {
+        const dx = mouseX - fromX;
+        const midX = fromX + dx * 0.5;
+        
+        const path = `M ${fromX} ${fromY} C ${midX} ${fromY}, ${midX} ${mouseY}, ${mouseX} ${mouseY}`;
+        tempConnection.setAttribute('d', path);
+      }
+    }
+
+    // Complete a connection
+    function completeConnection(toNodeId, toPortId) {
+      if (!state.connecting) return;
+      
+      // Don't connect to the same node
+      if (toNodeId === state.connecting.from.nodeId) {
+        cancelConnection();
+        return;
+      }
+      
+      // Check if this input already has a connection
+      const existingConnectionIndex = state.connections.findIndex(
+        conn => conn.to.nodeId === toNodeId && conn.to.portId === toPortId
+      );
+      
+      if (existingConnectionIndex !== -1) {
+        // Remove the existing connection
+        state.connections.splice(existingConnectionIndex, 1);
+      }
+      
+      // Add the new connection
+      const newConnection = {
+        id: `conn-${state.connecting.from.nodeId}-${state.connecting.from.portId}-${toNodeId}-${toPortId}`,
+        from: state.connecting.from,
+        to: {
+          nodeId: toNodeId,
+          portId: toPortId
+        }
+      };
+      
+      state.connections.push(newConnection);
+      
+      // Clean up
+      cancelConnection();
+      
+      // Redraw connections
+      renderConnections();
+    }
+
+    // Cancel connection creation
+    function cancelConnection() {
+      state.connecting = null;
+      
+      // Clear temporary connection
+      while (tempConnectionGroup.firstChild) {
+        tempConnectionGroup.removeChild(tempConnectionGroup.firstChild);
+      }
+    }
+
+    // Render all connections
+    function renderConnections() {
+      // Clear existing connections
+      while (connectionsGroup.firstChild) {
+        connectionsGroup.removeChild(connectionsGroup.firstChild);
+      }
+      
+      // Draw each connection
+      state.connections.forEach(conn => {
+        const fromPort = document.getElementById(conn.from.portId);
+        const toPort = document.getElementById(conn.to.portId);
+        
+        if (!fromPort || !toPort) return;
+        
+        const fromRect = fromPort.getBoundingClientRect();
+        const toRect = toPort.getBoundingClientRect();
+        const canvasRect = canvas.getBoundingClientRect();
+        
+        const fromX = fromRect.left + fromRect.width / 2 - canvasRect.left;
+        const fromY = fromRect.top + fromRect.height / 2 - canvasRect.top;
+        const toX = toRect.left + toRect.width / 2 - canvasRect.left;
+        const toY = toRect.top + toRect.height / 2 - canvasRect.top;
+        
+        const dx = toX - fromX;
+        const midX = fromX + dx * 0.5;
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('id', conn.id);
+        path.setAttribute('class', 'connection-path');
+        path.setAttribute('d', `M ${fromX} ${fromY} C ${midX} ${fromY}, ${midX} ${toY}, ${toX} ${toY}`);
+        
+        // Add delete ability with shift+click
+        path.addEventListener('click', (e) => {
+          if (e.shiftKey) {
+            deleteConnection(conn.id);
+          }
+        });
+        
+        connectionsGroup.appendChild(path);
+      });
+    }
+
+    // Delete a connection
+    function deleteConnection(connectionId) {
+      state.connections = state.connections.filter(conn => conn.id !== connectionId);
+      renderConnections();
+    }
+
+    // Export the graph as JSON
+    function exportGraph() {
+      const data = {
+        nodes: state.nodes.map(node => ({
+          id: node.id,
+          type: node.type,
+          title: node.title,
+          position: node.position,
+          inputs: node.inputs,
+          outputs: node.outputs
+        })),
+        connections: state.connections.map(conn => ({
+          from: {
+            nodeId: conn.from.nodeId,
+            portId: conn.from.portId
+          },
+          to: {
+            nodeId: conn.to.nodeId,
+            portId: conn.to.portId
+          }
+        }))
+      };
+      
+      const jsonString = JSON.stringify(data, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'node-graph.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Update the grid pattern
+    function updateGrid() {
+      const offsetX = state.offset.x % 20;
+      const offsetY = state.offset.y % 20;
+      
+      grid.style.backgroundPosition = `${offsetX}px ${offsetY}px`;
+    }
+
+    // Update node positions
+    function updateNodePositions() {
+      state.nodes.forEach(node => {
+        const nodeElement = document.getElementById(`node-${node.id}`);
+        if (nodeElement) {
+          nodeElement.style.left = `${node.position.x + state.offset.x}px`;
+          nodeElement.style.top = `${node.position.y + state.offset.y}px`;
+        }
+      });
+    }
+
+    // Mouse event handlers
+    canvas.addEventListener('mousedown', (e) => {
+      // Middle mouse button or Alt+Left button for panning
+      if (e.button === 1 || (e.button === 0 && e.altKey)) {
+        e.preventDefault();
+        state.panInfo = {
+          startX: e.clientX,
+          startY: e.clientY,
+          offsetX: state.offset.x,
+          offsetY: state.offset.y
+        };
+      } else if (e.button === 0 && !state.connecting) {
+        // Left click on canvas (not on a node) deselects
+        selectNode(null);
+      }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      // Handle node dragging
+      if (state.dragInfo) {
+        const nodeId = state.dragInfo.nodeId;
+        const node = state.nodes.find(n => n.id === nodeId);
+        
+        if (node) {
+          const newX = e.clientX - state.dragInfo.offset.x;
+          const newY = e.clientY - state.dragInfo.offset.y;
+          
+          const canvasRect = canvas.getBoundingClientRect();
+          
+          node.position.x = newX - canvasRect.left - state.offset.x;
+          node.position.y = newY - canvasRect.top - state.offset.y;
+          
+          const nodeElement = document.getElementById(`node-${nodeId}`);
+          if (nodeElement) {
+            nodeElement.style.left = `${node.position.x + state.offset.x}px`;
+            nodeElement.style.top = `${node.position.y + state.offset.y}px`;
+          }
+          
+          renderConnections();
+        }
+      }
+      
+      // Handle canvas panning
+      if (state.panInfo) {
+        const deltaX = e.clientX - state.panInfo.startX;
+        const deltaY = e.clientY - state.panInfo.startY;
+        
+        state.offset.x = state.panInfo.offsetX + deltaX;
+        state.offset.y = state.panInfo.offsetY + deltaY;
+        
+        updateGrid();
+        updateNodePositions();
+        renderConnections();
+      }
+      
+      // Handle connection dragging
+      if (state.connecting) {
+        const canvasRect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - canvasRect.left;
+        const mouseY = e.clientY - canvasRect.top;
+        
+        updateTemporaryConnection(mouseX, mouseY);
+      }
+    });
+
+    document.addEventListener('mouseup', (e) => {
+      // End node dragging
+      if (state.dragInfo) {
+        state.dragInfo = null;
+      }
+      
+      // End canvas panning
+      if (state.panInfo) {
+        state.panInfo = null;
+      }
+      
+      // End connection if not completed and not on an input port
+      if (state.connecting) {
+        // Only cancel if we're not on an input port
+        // Input ports handle their own completion
+        const target = e.target;
+        if (!target.classList || !target.classList.contains('input-port')) {
+          cancelConnection();
+        }
+      }
+    });
+    
+    // Prevent context menu
+    canvas.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+    
+    // Add some initial nodes for demo
+    setTimeout(() => {
+      addNode('input');
+      setTimeout(() => {
+        addNode('process');
+        setTimeout(() => {
+          addNode('output');
+          // Position the nodes in a flow from left to right
+          state.nodes[0].position = { x: 100, y: 150 };
+          state.nodes[1].position = { x: 350, y: 150 };
+          state.nodes[2].position = { x: 600, y: 150 };
+          updateNodePositions();
+        }, 10);
+      }, 10);
+    }, 100);
+  </script>
+</body>
+</html>

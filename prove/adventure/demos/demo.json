@@ -1,6 +1,14 @@
 {
     "nodes": [
       {
+        "id": "Title",
+        "type": "DecoratedTextEvent",
+        "content": "This is the title",
+        "autoAdvance" : true,
+        "nextId": "start",
+        "sleepMils": 100
+      },
+      {
         "id": "start",
         "type": "TextEvent",
         "content": "Welcome to the adventure!",
@@ -48,19 +56,24 @@
         "id": "forest",
         "type": "TextEvent",
         "autoAdvance": true,
-        "content": "The end of the forest path."
+        "content": "The end of the forest path.",
+        "nextId":"End Title"
       },
       {
         "id": "meadow",
         "type": "TextEvent",
         "autoAdvance": true,
-        "content": "The end of the meadow path."
+        "content": "The end of the meadow path.",
+        "nextId":"End Title"
       },
       {
-        "id": "right_path",
-        "type": "TextEvent",
-        "content": "This is override content, this node should be excluded!"
+        "id": "End Title",
+        "type": "DecoratedTextEvent",
+        "content": "THE\nEND",
+        "autoAdvance" : true,
+        "sleepMils": 100
       }
+
       
     ]
   }

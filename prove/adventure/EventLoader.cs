@@ -65,6 +65,12 @@ public class EventLoader
         {
             nodeDtosById[nodeDto.Id] = nodeDto;
 
+            if (nodesById.Keys.Contains(nodeDto.Id)){
+                // skip this one
+                Console.WriteLine($"Warning: Another occurrence of node - '{nodeDto.Id}' was found.");
+                continue;
+            }
+
             switch (nodeDto.Type)
             {
                 case "TextEvent":
@@ -85,6 +91,14 @@ public class EventLoader
                     new List<Option>()
                 );
                     break;
+                case "DecoratedTextEvent":
+                    nodesById[nodeDto.Id] = new DecoratedTextEvent(nodeDto.Id, 
+                    nodeDto.Content, 
+                    null, 
+                    autoAdvance: nodeDto.AutoAdvance, 
+                    displayProceedMessage: nodeDto.DisplayProceedMessage, 
+                    sleepMils: nodeDto.SleepMils);
+                    break;
             }
         }
 
@@ -95,17 +109,21 @@ public class EventLoader
             {
                 if (nodesById.ContainsKey(nodeDto.NextId))
                 {
-                    // Use reflection to set the protected nextEvent field
                     var textEvent = (TextEvent)nodesById[nodeDto.Id];
                     textEvent.SetNextNode(nodesById[nodeDto.NextId]);
-
-                    // var fieldInfo = typeof(TextEvent).GetField("nextEvent", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    // fieldInfo?.SetValue(textEvent, nodesById[nodeDto.NextId]);
                 }
                 else
                 {
                     Console.WriteLine($"Warning: NextId '{nodeDto.NextId}' not found for node '{nodeDto.Id}'");
                 }
+            }else if (nodeDto.Type == "DecoratedTextEvent"  && !string.IsNullOrEmpty(nodeDto.NextId)){
+                if (nodesById.ContainsKey(nodeDto.NextId)){
+                    var decoratedText = (DecoratedTextEvent)nodesById[nodeDto.Id];
+                    decoratedText.SetNextNode(nodesById[nodeDto.NextId]);
+                } else {
+                    Console.WriteLine($"Warning: NextId '{nodeDto.NextId}' not found for node '{nodeDto.Id}'");
+                }
+                
             }
             else if (nodeDto.Type == "Chooser")
             {
