@@ -8,12 +8,14 @@ public abstract class BaseNode{
     // This part will be implemented later
     protected bool replayable = false;
     protected bool hasRun = false;
+    protected bool checkpoint = true;
     const string PROCEED_MESSAGE = "\nPress Enter";
-    public BaseNode(string id, int sleepMils = 0, bool autoAdvance = false, bool displayProceedMessage = true){
+    public BaseNode(string id, int sleepMils = 0, bool autoAdvance = false, bool displayProceedMessage = true, bool checkpoint = true){
         this.id = id;
         this.sleepMils = sleepMils;
         this.autoAdvance = autoAdvance;
         this.displayProceedMessage = displayProceedMessage;
+        this.checkpoint = checkpoint;
     }
     /// <summary>
     /// Each event calls the main of the other.
@@ -21,6 +23,7 @@ public abstract class BaseNode{
     /// <returns></returns>
     public virtual void Main(){
         // Display my content
+        GameState.GetGameState().SetCurrentNode(this);
         OnExecute();
         hasRun = true;
         Thread.Sleep(sleepMils);

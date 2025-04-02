@@ -2,7 +2,7 @@ public class Chooser : TextEvent
 {
     protected string prompt;
     protected List<Option> options;
-    public Chooser(string id, string prompt, List<Option> options) : base(id, prompt, null)
+    public Chooser(string id, string prompt, List<Option> options, bool checkpoint = true) : base(id, prompt, null, checkpoint: checkpoint)
     {
         this.prompt = prompt;
         this.options = options;

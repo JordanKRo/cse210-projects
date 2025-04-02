@@ -11,6 +11,7 @@ public class EventLoader
         public required string Type { get; set; }
         public required string Content { get; set; }
         public int SleepMils { get; set; } = 0;
+        public bool checkpoint { get; set; } = true;
         public bool AutoAdvance { get; set; } = false;
         public bool DisplayProceedMessage { get; set; } = true;
         public string? NextId { get; set; }

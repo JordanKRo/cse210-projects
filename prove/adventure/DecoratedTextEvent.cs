@@ -1,6 +1,6 @@
 public class DecoratedTextEvent : TextEvent
 {
-    public DecoratedTextEvent(string id, string content, BaseNode nextEvent, bool autoAdvance = false, bool displayProceedMessage = true, int sleepMils = 0) : base(id, content, nextEvent, autoAdvance, displayProceedMessage, sleepMils)
+    public DecoratedTextEvent(string id, string content, BaseNode nextEvent, bool autoAdvance = false, bool displayProceedMessage = true, int sleepMils = 0, bool checkpoint = true) : base(id, content, nextEvent, autoAdvance, displayProceedMessage, sleepMils, checkpoint: checkpoint)
     {
 
     }
