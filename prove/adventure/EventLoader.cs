@@ -7,6 +7,7 @@ public class EventLoader
     public class EventNodeDTO
     {
         // Could be polymorphic but I might not have time
+        // Common
         public required string Id { get; set; }
         public required string Type { get; set; }
         public required string Content { get; set; }
@@ -15,7 +16,16 @@ public class EventLoader
         public bool AutoAdvance { get; set; } = false;
         public bool DisplayProceedMessage { get; set; } = true;
         public string? NextId { get; set; }
+        // Chooser
         public List<OptionDTO> Options { get; set; } = new List<OptionDTO>();
+        // Switcher
+
+
+        // WriteNode
+    }
+
+    public class SwitchOptionDTO{
+        public 
     }
 
     public class OptionDTO

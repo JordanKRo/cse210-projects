@@ -20,4 +20,8 @@ public class SystemNode : BaseNode
     {
         callable.Invoke();
     }
+
+    public void SetNextNode(BaseNode nextNode){
+        nextEvent = nextNode;
+    }
 }

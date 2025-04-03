@@ -19,4 +19,8 @@ public class WriteNode : BaseNode
     {
         GameState.GetGameState().Set(variable, value);
     }
+
+    public void SetNextNode(BaseNode nextNode){
+        nextEvent = nextNode;
+    }
 }

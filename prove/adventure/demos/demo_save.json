@@ -1,6 +1,8 @@
 {
   "Save": {
-    "NodeID": "choice1",
-    "vars": {}
+    "NodeID": "ending",
+    "vars": {
+      "hasKey": true
+    }
   }
 }

@@ -76,6 +76,7 @@ public abstract class BaseNode{
     /// <param name="id"></param>
     /// <returns></returns>
     public static BaseNode? FindByID(string id){
-        return nodesById[id] ?? null;
+        nodesById.TryGetValue(id, out BaseNode? node);
+        return node;
     }
 }
