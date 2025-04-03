@@ -1,6 +1,6 @@
 {
   "Save": {
-    "NodeID": "ending_accept",
+    "NodeID": "examine_bookshelves",
     "vars": {
       "has_key": true,
       "door_unlocked": true

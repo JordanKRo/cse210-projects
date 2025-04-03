@@ -48,6 +48,7 @@ public class Chooser : TextEvent
                 Console.WriteLine("\nInvalid option. Please try again.");
             }
         } while (!interpretedNodes.ContainsKey(entry));
+        Console.WriteLine();
 
         // Start the selected node.
         return interpretedNodes[entry];
