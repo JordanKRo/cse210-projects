@@ -198,6 +198,9 @@ public class EventLoader
         if (rootCandidates.Count == 0)
         {
             // If no clear root, just use the first node
+            if (nodesById.Count == 0){
+                throw new InvalidOperationException("Cannot find the root node in file!");
+            }
             return nodesById[eventTree.Nodes[0].Id];
         }
         else if (rootCandidates.Count == 1)

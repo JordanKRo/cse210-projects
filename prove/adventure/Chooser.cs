@@ -2,6 +2,8 @@ public class Chooser : TextEvent
 {
     protected string prompt;
     protected List<Option> options;
+
+    public static List<Option> globalOptions = new List<Option>();
     public Chooser(string id, string prompt, List<Option> options, bool checkpoint = true) : base(id, prompt, null, checkpoint: checkpoint)
     {
         this.prompt = prompt;
@@ -25,12 +27,17 @@ public class Chooser : TextEvent
     protected BaseNode PromptOptions(){
         Dictionary<char, BaseNode> interpretedNodes = new Dictionary<char, BaseNode>();
         // TODO display the numbers before the custom ids
-        for (int i = 0; i < options.Count; i++){
+        List<Option> composite = new List<Option>(options);
+        composite.AddRange(globalOptions);
+        for (int i = 0; i < composite.Count; i++){
             // Identifier is just the option number unless the id is null
             // char identifier = options[i].Identifier.HasValue ? options[i].Identifier ?? 'd' : (i + 1).ToString()[0];
-            char identifier = char.ToUpper(options[i].Identifier ?? (i + 1).ToString()[0]);
-            Console.WriteLine($"{identifier} - {options[i]}");
-            interpretedNodes.Add(identifier, options[i].Node);
+            Option option = composite[i];
+            char identifier = char.ToUpper(option.Identifier ?? (i + 1).ToString()[0]);
+            if (!option.Hidden){
+                Console.WriteLine($"{identifier} - {option}");
+            }
+            interpretedNodes.Add(identifier, option.Node);
         }
         
         char entry;

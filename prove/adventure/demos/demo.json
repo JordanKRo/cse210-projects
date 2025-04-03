@@ -15,6 +15,7 @@
         "sleepMils": 1000,
         "autoAdvance": true,
         "displayProceedMessage": true,
+        "checkpoint": false,
         "nextId": "choice1"
       },
       {
