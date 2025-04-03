@@ -38,7 +38,9 @@ public abstract class BaseNode{
         Thread.Sleep(sleepMils);
         if (!autoAdvance){
             if (displayProceedMessage){
+                Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.WriteLine(PROCEED_MESSAGE);
+                Console.ResetColor();
             } else {
                 Console.WriteLine();
             }

@@ -39,7 +39,8 @@ public class GameState
 
     public dynamic Get(string variable, dynamic defaultValue)
     {
-        return gameVariables[variable] ?? defaultValue;
+        gameVariables.TryGetValue(variable, out dynamic? value);
+        return value ?? defaultValue;
     }
 
     public void SetCurrentNode(BaseNode node)

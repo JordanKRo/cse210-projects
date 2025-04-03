@@ -23,7 +23,7 @@ public class SwitchNode : BaseNode
 
     public override BaseNode? GetNextEvent()
     {
-        var gameValue = GameState.GetGameState().Get(variable, options[0].DesiredValue);
+        var gameValue = GameState.GetGameState().Get(variable, defaultValue);
         foreach(SwitchOption option in options){
             if (option.Evaluate(gameValue)){
                 return option.Path;
