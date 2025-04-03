@@ -319,7 +319,7 @@
       {
         "Id": "speak_to_captain_again",
         "Type": "TextEvent",
-        "Content": "\"Please hurry,\" Captain Reeves urges weakly. \"The station doesn't have much time. Find my keycard if you haven't already.\"",
+        "Content": "\"Please hurry,\" Captain Reeves urges weakly. \"The station doesn't have much time.\"",
         "NextId": "initial_command_options"
       },
       {
