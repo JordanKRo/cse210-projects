@@ -89,4 +89,8 @@
         
 
     }
+
+    public static BaseNode DemoTree(){
+        return null;
+    }
 }
