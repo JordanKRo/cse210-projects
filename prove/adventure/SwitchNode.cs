@@ -41,6 +41,10 @@ public class SwitchNode : BaseNode
         // do nothing
     }
 
+    public void SetOptions(List<SwitchOption> options){
+        this.options = options;
+    }
+
     public class SwitchOption
     {
         public dynamic DesiredValue { get; private set; }

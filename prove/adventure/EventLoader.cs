@@ -6,7 +6,7 @@ public class EventLoader
     // Data Transfer Objects
     public class EventNodeDTO
     {
-        // Could be polymorphic but I might not have time
+        // Could be polymorphic but I might not have time so it is a mess
         // Common
         public required string Id { get; set; }
         public required string Type { get; set; }
@@ -19,13 +19,18 @@ public class EventLoader
         // Chooser
         public List<OptionDTO> Options { get; set; } = new List<OptionDTO>();
         // Switcher
-
+        public List<SwitchOptionDTO> SwitchOptions = new List<SwitchOptionDTO>();
+        public string? Variable; // Shared with WriteNode
+        public dynamic? DefaultValue;
 
         // WriteNode
+        public string? WriteValue;
     }
 
     public class SwitchOptionDTO{
-        public 
+        public required dynamic desiredValue;
+        public required string pathId;
+        public required string domain;
     }
 
     public class OptionDTO
@@ -110,6 +115,13 @@ public class EventLoader
                     displayProceedMessage: nodeDto.DisplayProceedMessage, 
                     sleepMils: nodeDto.SleepMils);
                     break;
+                case "Switcher":
+                    nodesById[nodeDto.Id] = new SwitchNode(
+                        nodeDto.Id, new List<SwitchNode.SwitchOption>(), 
+                        nodeDto.Variable, 
+                        nodeDto.DefaultValue
+                    );
+                    break;
             }
         }
 
@@ -143,8 +155,10 @@ public class EventLoader
 
                 foreach (var optionDto in nodeDto.Options)
                 {
+                    // check if this option rout ID is present
                     if (nodesById.ContainsKey(optionDto.NextId))
                     {
+                        // Check if it has a custom identifier
                         if (optionDto.Identifier.HasValue)
                         {
                             dtoOptions.Add(new Option(
@@ -169,11 +183,43 @@ public class EventLoader
                     }
                 }
 
-                // Use reflection to set the protected options field
                 chooser.SetOptions(dtoOptions);
+            } else if (nodeDto.Type == "Switcher"){
+                var switcher = (SwitchNode)nodesById[nodeDto.Id];
+                var switchOptions = new List<SwitchNode.SwitchOption>();
 
-                // var optionsField = typeof(Chooser).GetField("options", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                // optionsField?.SetValue(chooser, dtoOptions);
+                foreach (var switchOptionDTO in nodeDto.SwitchOptions)
+                {
+                    // check if this option rout ID is present
+                    if (nodesById.ContainsKey(switchOptionDTO.pathId))
+                    {
+                        SwitchNode.SwitchOption.Domain domain;
+                        switch (switchOptionDTO.domain.ToUpper()){
+                            case "NOT":
+                                domain = SwitchNode.SwitchOption.Domain.NOT;
+                                break;
+                            case "EQUAL":
+                                domain = SwitchNode.SwitchOption.Domain.EQUAL;
+                                break;
+                            case "GREATER":
+                                domain = SwitchNode.SwitchOption.Domain.GREATER;
+                                break;
+                            case "LESS":
+                                domain = SwitchNode.SwitchOption.Domain.LESS;
+                                break;
+                            default:
+                                domain = SwitchNode.SwitchOption.Domain.EQUAL;
+                                break;
+                        }
+                        switchOptions.Add(new SwitchNode.SwitchOption(switchOptionDTO.desiredValue, nodesById[switchOptionDTO.pathId], domain));
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Warning: NextId '{switchOptionDTO.pathId}' not found in node '{nodeDto.Id}'");
+                    }
+                }
+
+                switcher.SetOptions(switchOptions);
             }
         }
 
