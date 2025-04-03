@@ -1,8 +1,9 @@
 {
   "Save": {
-    "NodeID": "ending",
+    "NodeID": "ending_accept",
     "vars": {
-      "hasKey": true
+      "has_key": true,
+      "door_unlocked": true
     }
   }
 }

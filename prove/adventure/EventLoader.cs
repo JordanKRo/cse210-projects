@@ -19,18 +19,19 @@ public class EventLoader
         // Chooser
         public List<OptionDTO> Options { get; set; } = new List<OptionDTO>();
         // Switcher
-        public List<SwitchOptionDTO> SwitchOptions = new List<SwitchOptionDTO>();
-        public string? Variable; // Shared with WriteNode
-        public dynamic? DefaultValue;
+        public List<SwitchOptionDTO>? SwitchOptions { get; set; } = new List<SwitchOptionDTO>();
+        public string? Variable { get; set; } // Shared with WriteNode
+        public dynamic? DefaultValue { get; set; }
 
         // WriteNode
-        public string? WriteValue;
+        public dynamic? WriteValue { get; set; }
     }
 
-    public class SwitchOptionDTO{
-        public required dynamic desiredValue;
-        public required string pathId;
-        public required string domain;
+    public class SwitchOptionDTO
+    {
+        public required dynamic DesiredValue { get; set; }
+        public required string PathId { get; set; }
+        public required string Domain { get; set; }
     }
 
     public class OptionDTO
@@ -96,30 +97,64 @@ public class EventLoader
                     null, // Set later when the id is located
                     nodeDto.AutoAdvance,
                     nodeDto.DisplayProceedMessage,
-                    nodeDto.SleepMils
-                );
+                    nodeDto.SleepMils,
+                    checkpoint: nodeDto.checkpoint
+                    );
                     break;
 
                 case "Chooser":
                     nodesById[nodeDto.Id] = new Chooser(
                     nodeDto.Id,
                     nodeDto.Content,
-                    new List<Option>()
-                );
+                    new List<Option>(),
+                    checkpoint: nodeDto.checkpoint
+                    );
                     break;
                 case "DecoratedTextEvent":
-                    nodesById[nodeDto.Id] = new DecoratedTextEvent(nodeDto.Id, 
+                    nodesById[nodeDto.Id] = new DecoratedTextEvent(
+                    nodeDto.Id, 
                     nodeDto.Content, 
                     null, 
                     autoAdvance: nodeDto.AutoAdvance, 
                     displayProceedMessage: nodeDto.DisplayProceedMessage, 
-                    sleepMils: nodeDto.SleepMils);
+                    sleepMils: nodeDto.SleepMils,
+                    checkpoint: nodeDto.checkpoint);
                     break;
                 case "Switcher":
+                    if (string.IsNullOrEmpty(nodeDto.Variable))
+                    {
+                        Console.WriteLine($"Warning: Switcher node '{nodeDto.Id}' is missing a Variable property.");
+                        continue;
+                    }
                     nodesById[nodeDto.Id] = new SwitchNode(
-                        nodeDto.Id, new List<SwitchNode.SwitchOption>(), 
+                        nodeDto.Id, 
+                        new List<SwitchNode.SwitchOption>(), 
                         nodeDto.Variable, 
-                        nodeDto.DefaultValue
+                        nodeDto.DefaultValue ?? ""
+                    );
+                    break;
+                case "WriteNode":
+                    if (string.IsNullOrEmpty(nodeDto.Variable))
+                    {
+                        Console.WriteLine($"Warning: WriteNode '{nodeDto.Id}' is missing a Variable property.");
+                        continue;
+                    }
+                    if (false) // ==================================================================================================================== HEY FIX THIS
+                    {
+                        Console.WriteLine($"Warning: WriteNode '{nodeDto.Id}' is missing a WriteValue property.");
+                        continue;
+                    }
+                    if (string.IsNullOrEmpty(nodeDto.NextId))
+                    {
+                        Console.WriteLine($"Warning: WriteNode '{nodeDto.Id}' is missing a NextId property.");
+                        continue;
+                    }
+                    // We'll set the next node later
+                    nodesById[nodeDto.Id] = new WriteNode(
+                        nodeDto.Id,
+                        nodeDto.Variable,
+                        nodeDto.WriteValue,
+                        null // Set later when NextId is resolved
                     );
                     break;
             }
@@ -128,25 +163,29 @@ public class EventLoader
         // Now connect the nodes
         foreach (var nodeDto in eventTree.Nodes)
         {
-            if (nodeDto.Type == "TextEvent" && !string.IsNullOrEmpty(nodeDto.NextId))
+            // Handle simple nodes with a next event (TextEvent, DecoratedTextEvent, WriteNode)
+            if ((nodeDto.Type == "TextEvent" || nodeDto.Type == "DecoratedTextEvent" || nodeDto.Type == "WriteNode") 
+                && !string.IsNullOrEmpty(nodeDto.NextId))
             {
                 if (nodesById.ContainsKey(nodeDto.NextId))
                 {
-                    var textEvent = (TextEvent)nodesById[nodeDto.Id];
-                    textEvent.SetNextNode(nodesById[nodeDto.NextId]);
+                    switch (nodeDto.Type)
+                    {
+                        case "TextEvent":
+                            ((TextEvent)nodesById[nodeDto.Id]).SetNextNode(nodesById[nodeDto.NextId]);
+                            break;
+                        case "DecoratedTextEvent":
+                            ((DecoratedTextEvent)nodesById[nodeDto.Id]).SetNextNode(nodesById[nodeDto.NextId]);
+                            break;
+                        case "WriteNode":
+                            ((WriteNode)nodesById[nodeDto.Id]).SetNextNode(nodesById[nodeDto.NextId]);
+                            break;
+                    }
                 }
                 else
                 {
                     Console.WriteLine($"Warning: NextId '{nodeDto.NextId}' not found for node '{nodeDto.Id}'");
                 }
-            }else if (nodeDto.Type == "DecoratedTextEvent"  && !string.IsNullOrEmpty(nodeDto.NextId)){
-                if (nodesById.ContainsKey(nodeDto.NextId)){
-                    var decoratedText = (DecoratedTextEvent)nodesById[nodeDto.Id];
-                    decoratedText.SetNextNode(nodesById[nodeDto.NextId]);
-                } else {
-                    Console.WriteLine($"Warning: NextId '{nodeDto.NextId}' not found for node '{nodeDto.Id}'");
-                }
-                
             }
             else if (nodeDto.Type == "Chooser")
             {
@@ -155,7 +194,7 @@ public class EventLoader
 
                 foreach (var optionDto in nodeDto.Options)
                 {
-                    // check if this option rout ID is present
+                    // check if this option route ID is present
                     if (nodesById.ContainsKey(optionDto.NextId))
                     {
                         // Check if it has a custom identifier
@@ -184,42 +223,59 @@ public class EventLoader
                 }
 
                 chooser.SetOptions(dtoOptions);
-            } else if (nodeDto.Type == "Switcher"){
-                var switcher = (SwitchNode)nodesById[nodeDto.Id];
-                var switchOptions = new List<SwitchNode.SwitchOption>();
-
-                foreach (var switchOptionDTO in nodeDto.SwitchOptions)
+            } 
+            else if (nodeDto.Type == "Switcher" && nodeDto.SwitchOptions != null)
+            {
+                if (nodesById.ContainsKey(nodeDto.Id) && nodesById[nodeDto.Id] is SwitchNode switcher)
                 {
-                    // check if this option rout ID is present
-                    if (nodesById.ContainsKey(switchOptionDTO.pathId))
+                    var switchOptions = new List<SwitchNode.SwitchOption>();
+
+                    foreach (var switchOptionDTO in nodeDto.SwitchOptions)
                     {
-                        SwitchNode.SwitchOption.Domain domain;
-                        switch (switchOptionDTO.domain.ToUpper()){
-                            case "NOT":
-                                domain = SwitchNode.SwitchOption.Domain.NOT;
-                                break;
-                            case "EQUAL":
-                                domain = SwitchNode.SwitchOption.Domain.EQUAL;
-                                break;
-                            case "GREATER":
-                                domain = SwitchNode.SwitchOption.Domain.GREATER;
-                                break;
-                            case "LESS":
-                                domain = SwitchNode.SwitchOption.Domain.LESS;
-                                break;
-                            default:
-                                domain = SwitchNode.SwitchOption.Domain.EQUAL;
-                                break;
+                        // check if this option route ID is present
+                        if (nodesById.ContainsKey(switchOptionDTO.PathId))
+                        {
+                            SwitchNode.SwitchOption.Domain domain;
+                            switch (switchOptionDTO.Domain.ToUpper())
+                            {
+                                case "NOT":
+                                    domain = SwitchNode.SwitchOption.Domain.NOT;
+                                    break;
+                                case "EQUAL":
+                                    domain = SwitchNode.SwitchOption.Domain.EQUAL;
+                                    break;
+                                case "GREATER":
+                                    domain = SwitchNode.SwitchOption.Domain.GREATER;
+                                    break;
+                                case "LESS":
+                                    domain = SwitchNode.SwitchOption.Domain.LESS;
+                                    break;
+                                default:
+                                    domain = SwitchNode.SwitchOption.Domain.EQUAL;
+                                    Console.WriteLine($"Warning: Unknown domain '{switchOptionDTO.Domain}' in node '{nodeDto.Id}'. Using EQUAL.");
+                                    break;
+                            }
+                            switchOptions.Add(new SwitchNode.SwitchOption(switchOptionDTO.DesiredValue, nodesById[switchOptionDTO.PathId], domain));
                         }
-                        switchOptions.Add(new SwitchNode.SwitchOption(switchOptionDTO.desiredValue, nodesById[switchOptionDTO.pathId], domain));
+                        else
+                        {
+                            Console.WriteLine($"Warning: PathId '{switchOptionDTO.PathId}' not found in node '{nodeDto.Id}'");
+                        }
                     }
-                    else
+
+                    try
                     {
-                        Console.WriteLine($"Warning: NextId '{switchOptionDTO.pathId}' not found in node '{nodeDto.Id}'");
+                        switcher.SetOptions(switchOptions);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine($"Error setting switch options for node '{nodeDto.Id}': {ex.Message}");
                     }
                 }
-
-                switcher.SetOptions(switchOptions);
+                else
+                {
+                    Console.WriteLine($"Warning: Could not find or cast node '{nodeDto.Id}' as SwitchNode");
+                }
             }
         }
 
@@ -240,6 +296,17 @@ public class EventLoader
                     if (!string.IsNullOrEmpty(option.NextId))
                     {
                         referencedIds.Add(option.NextId);
+                    }
+                }
+            }
+
+            if (nodeDto.SwitchOptions != null)
+            {
+                foreach (var switchOption in nodeDto.SwitchOptions)
+                {
+                    if (!string.IsNullOrEmpty(switchOption.PathId))
+                    {
+                        referencedIds.Add(switchOption.PathId);
                     }
                 }
             }
@@ -265,7 +332,7 @@ public class EventLoader
         }
         else
         {
-            Console.WriteLine($"Warning: Multiple root nodes found: {string.Join(", ", rootCandidates)}. Using the first one.");
+            // uses first one
             return nodesById[rootCandidates[0]];
         }
     }

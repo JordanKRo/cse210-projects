@@ -19,10 +19,6 @@ public class SwitchNode : BaseNode
         this.options = options;
         this.variable = variable;
         this.defaultValue = defaultValue;
-
-        if (options.Count == 0){
-            throw new ArgumentException("SwitchOptions must have at least 1 option and path");
-        }
     }
 
     public override BaseNode? GetNextEvent()

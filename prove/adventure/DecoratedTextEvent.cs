@@ -13,6 +13,9 @@ public class DecoratedTextEvent : TextEvent
         foreach (var line in lines)
         {
             var margin = (width - line.Length) / 2;
+            if (margin < 0){
+                margin = 0;
+            }
             Console.WriteLine(new string(' ', margin) + line);
         }
         Console.WriteLine(new string('=', width));
