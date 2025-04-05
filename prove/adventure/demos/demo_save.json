@@ -1,13 +1,8 @@
 {
   "Save": {
-    "NodeID": "car_breakdown",
+    "NodeID": "m2",
     "vars": {
-      "loop_count": 1,
-      "knows_password": true,
-      "has_coffee": false,
-      "has_key": false,
-      "got_fired": false,
-      "saved_cat": false
+      "number": "22"
     }
   }
 }

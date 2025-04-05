@@ -60,6 +60,7 @@ public class EventLoader
     {
         var options = new JsonSerializerOptions
         {
+            Converters = { new JsonStringEnumConverter() },
             PropertyNameCaseInsensitive = true
         };
 
@@ -148,6 +149,9 @@ public class EventLoader
                     {
                         Console.WriteLine($"Warning: WriteNode '{nodeDto.Id}' is missing a NextId property.");
                         continue;
+                    }
+                    if(nodeDto.WriteValue is JsonElement el && el.ValueKind == JsonValueKind.String){
+                        nodeDto.WriteValue = el.ToString();
                     }
                     // We'll set the next node later
                     nodesById[nodeDto.Id] = new WriteNode(
