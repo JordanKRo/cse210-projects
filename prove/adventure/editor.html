@@ -1,786 +1,1181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Node Graph Editor</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1e1e1e;
-      color: white;
-      overflow: hidden;
-      height: 100vh;
-    }
-    
-    #toolbar {
-      background-color: #333;
-      padding: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #444;
-    }
-    
-    .title {
-      font-size: 18px;
-      font-weight: bold;
-    }
-    
-    .buttons {
-      display: flex;
-      gap: 8px;
-    }
-    
-    button {
-      background-color: #555;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 6px 12px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    
-    button:hover {
-      background-color: #666;
-    }
-    
-    #canvas-container {
-      position: relative;
-      width: 100%;
-      height: calc(100vh - 50px);
-      overflow: hidden;
-    }
-    
-    .grid {
-      width: 100%;
-      height: 100%;
-      background-size: 20px 20px;
-      background-image: linear-gradient(to right, #333 1px, transparent 1px),
-                        linear-gradient(to bottom, #333 1px, transparent 1px);
-      background-color: #1e1e1e;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    
-    .node {
-      position: absolute;
-      background-color: #333;
-      border: 2px solid #555;
-      border-radius: 6px;
-      min-width: 160px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      user-select: none;
-      z-index: 1;
-    }
-    
-    .node.selected {
-      border-color: #66aaff;
-      box-shadow: 0 0 10px rgba(102, 170, 255, 0.5);
-    }
-    
-    .node-header {
-      padding: 8px;
-      font-weight: bold;
-      border-bottom: 1px solid #444;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #444;
-      border-radius: 4px 4px 0 0;
-      cursor: move;
-    }
-    
-    .node-input, .node-output {
-      padding: 6px 10px;
-      display: flex;
-      align-items: center;
-    }
-    
-    .node-input {
-      justify-content: flex-start;
-    }
-    
-    .node-output {
-      justify-content: flex-end;
-    }
-    
-    .port {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      margin: 0 8px;
-      cursor: pointer;
-    }
-    
-    .input-port {
-      background-color: #66aaff;
-    }
-    
-    .output-port {
-      background-color: #66ff66;
-    }
-    
-    .port:hover {
-      box-shadow: 0 0 8px white;
-    }
-    
-    .connection {
-      position: absolute;
-      pointer-events: none;
-      z-index: 0;
-    }
-    
-    #temp-connection {
-      stroke: rgba(255, 255, 255, 0.7);
-      stroke-width: 2px;
-      stroke-dasharray: 5, 5;
-      fill: none;
-      pointer-events: none;
-    }
-    
-    .connection-path {
-      stroke: white;
-      stroke-width: 2px;
-      fill: none;
-      cursor: pointer;
-      pointer-events: all;
-    }
-    
-    .info-panel {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      color: #aaa;
-    }
-    
-    .node-type-button {
-      margin-right: 4px;
-    }
-    
-    .node-type-input {
-      background-color: #4a90e2;
-    }
-    
-    .node-type-process {
-      background-color: #e2804a;
-    }
-    
-    .node-type-math {
-      background-color: #4ae280;
-    }
-    
-    .node-type-output {
-      background-color: #e24a4a;
-    }
-    
-    .export-button {
-      background-color: #66aaff;
-    }
-    
-    .close-button {
-      background: none;
-      border: none;
-      color: #aaa;
-      cursor: pointer;
-      padding: 0 4px;
-    }
-    
-    .close-button:hover {
-      color: white;
-      background: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Adventure Node Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        
+        #sidebar {
+            width: 300px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #canvas-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #canvas {
+            position: absolute;
+            background-color: #f9f9f9;
+            cursor: move;
+        }
+        
+        .node {
+            position: absolute;
+            min-width: 150px;
+            padding: 10px;
+            background-color: white;
+            border: 2px solid #333;
+            border-radius: 5px;
+            cursor: move;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            user-select: none;
+        }
+        
+        .node.selected {
+            border-color: #f00;
+            box-shadow: 0 0 10px rgba(255,0,0,0.5);
+        }
+        
+        .node.checkpoint {
+            background-color: #ffd9ec;
+            border-color: #ff69b4;
+        }
+        
+        .node.text-event {
+            background-color: #e6f7ff;
+            border-color: #1890ff;
+        }
+        
+        .node.decorated-text-event {
+            background-color: #fff1e6;
+            border-color: #fa8c16;
+        }
+        
+        .node.chooser {
+            background-color: #f6ffed;
+            border-color: #52c41a;
+        }
+        
+        .node.switcher {
+            background-color: #f9f0ff;
+            border-color: #722ed1;
+        }
+        
+        .node.write-node {
+            background-color: #fcffe6;
+            border-color: #d6ca3a;
+        }
+        
+        .node-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .node-content {
+            font-size: 12px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .node-id {
+            font-size: 10px;
+            color: #888;
+        }
+        
+        .connection-point {
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            z-index: 11;
+        }
+        
+        .connection {
+            position: absolute;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        #controls {
+            margin-top: 20px;
+        }
+        
+        button {
+            margin: 5px 0;
+            padding: 8px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        #node-details {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 6px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        
+        #json-output {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+        }
+        
+        #load-json {
+            background-color: #2196F3;
+        }
+        
+        #load-json:hover {
+            background-color: #0b7dda;
+        }
+        
+        #save-json {
+            background-color: #ff9800;
+        }
+        
+        #save-json:hover {
+            background-color: #e68a00;
+        }
+        
+        .node-list {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #555;
+            padding: 5px;
+        }
+        
+        .node-list-item {
+            padding: 5px;
+            cursor: pointer;
+            border-bottom: 1px solid #555;
+        }
+        
+        .node-list-item:hover {
+            background-color: #444;
+        }
+        
+        #minimap {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ccc;
+            z-index: 100;
+            overflow: hidden;
+        }
+        
+        #minimap-content {
+            position: relative;
+            transform-origin: 0 0;
+        }
+        
+        .minimap-node {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #333;
+        }
+        
+        .minimap-viewport {
+            position: absolute;
+            border: 1px solid red;
+            z-index: 101;
+            background-color: rgba(255, 0, 0, 0.1);
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-  <div id="toolbar">
-    <div class="title">Node Graph Editor</div>
-    <div class="buttons">
-      <button class="node-type-button node-type-input" onclick="addNode('input')">Input</button>
-      <button class="node-type-button node-type-process" onclick="addNode('process')">Process</button>
-      <button class="node-type-button node-type-math" onclick="addNode('math')">Math</button>
-      <button class="node-type-button node-type-output" onclick="addNode('output')">Output</button>
-      <button class="export-button" onclick="exportGraph()">Export JSON</button>
+    <div id="sidebar">
+        <h2>Text Adventure Node Editor</h2>
+        
+        <div id="controls">
+            <button id="new-node">Add New Node</button>
+            <button id="load-json">Load JSON</button>
+            <button id="save-json">Save JSON</button>
+            <button id="auto-layout">Auto Layout</button>
+            <button id="center-view">Center View</button>
+        </div>
+        
+        <div id="node-list-container">
+            <h3>Node List</h3>
+            <div id="node-list" class="node-list"></div>
+        </div>
+        
+        <div id="node-details">
+            <h3>Node Details</h3>
+            <label for="node-id">ID:</label>
+            <input type="text" id="node-id">
+            
+            <label for="node-type">Type:</label>
+            <select id="node-type">
+                <option value="TextEvent">TextEvent</option>
+                <option value="DecoratedTextEvent">DecoratedTextEvent</option>
+                <option value="Chooser">Chooser</option>
+                <option value="Switcher">Switcher</option>
+                <option value="WriteNode">WriteNode</option>
+            </select>
+            
+            <label for="node-content">Content:</label>
+            <textarea id="node-content"></textarea>
+            
+            <label for="node-next-id">Next ID:</label>
+            <input type="text" id="node-next-id">
+            
+            <label for="node-checkpoint">
+                <input type="checkbox" id="node-checkpoint" style="width: auto;">
+                Checkpoint
+            </label>
+            
+            <div id="variable-container" style="display: none;">
+                <label for="node-variable">Variable:</label>
+                <input type="text" id="node-variable">
+                
+                <label for="node-write-value">Write Value:</label>
+                <input type="text" id="node-write-value">
+            </div>
+            
+            <div id="options-container" style="display: none;">
+                <h4>Options</h4>
+                <div id="options-list"></div>
+                <button id="add-option">Add Option</button>
+            </div>
+        </div>
+        
+        <textarea id="json-output" style="display: none;"></textarea>
     </div>
-  </div>
-  
-  <div id="canvas-container">
-    <div class="grid" id="grid"></div>
-    <svg id="connections-layer" width="100%" height="100%">
-      <!-- Fixed: Adding a dedicated group for temp connection -->
-      <g id="temp-connection-group"></g>
-      <g id="connections-group"></g>
-    </svg>
-    <div id="nodes-container"></div>
     
-    <div class="info-panel">
-      <p>Drag nodes to move | Click green outputs to create connections | Connect to blue inputs | Shift+Click a connection to delete</p>
+    <div id="canvas-container">
+        <div id="canvas"></div>
     </div>
-  </div>
-
-  <script>
-    // State management
-    const state = {
-      nodes: [],
-      connections: [],
-      nextNodeId: 1,
-      selectedNode: null,
-      dragInfo: null,
-      panInfo: null,
-      connecting: null,
-      offset: { x: 0, y: 0 }
-    };
-
-    // DOM references
-    const canvas = document.getElementById('canvas-container');
-    const nodesContainer = document.getElementById('nodes-container');
-    const connectionsLayer = document.getElementById('connections-layer');
-    const tempConnectionGroup = document.getElementById('temp-connection-group');
-    const connectionsGroup = document.getElementById('connections-group');
-    const grid = document.getElementById('grid');
-
-    // Node type definitions
-    const nodeTypes = {
-      input: {
-        title: 'Input Node',
-        color: '#4a90e2',
-        inputs: [],
-        outputs: [{ id: 'out1', name: 'Value' }]
-      },
-      process: {
-        title: 'Process Node',
-        color: '#e2804a',
-        inputs: [
-          { id: 'in1', name: 'In A' },
-          { id: 'in2', name: 'In B' }
-        ],
-        outputs: [
-          { id: 'out1', name: 'Out' }
-        ]
-      },
-      math: {
-        title: 'Math Node',
-        color: '#4ae280',
-        inputs: [
-          { id: 'in1', name: 'A' },
-          { id: 'in2', name: 'B' }
-        ],
-        outputs: [{ id: 'out1', name: 'Result' }]
-      },
-      output: {
-        title: 'Output Node',
-        color: '#e24a4a',
-        inputs: [{ id: 'in1', name: 'Value' }],
-        outputs: []
-      }
-    };
-
-    // Add a node to the graph
-    function addNode(type) {
-      const nodeType = nodeTypes[type];
-      if (!nodeType) return;
-      
-      const nodeId = state.nextNodeId++;
-      
-      const node = {
-        id: nodeId,
-        type: type,
-        title: nodeType.title,
-        color: nodeType.color,
-        position: { x: 100 + Math.random() * 200, y: 100 + Math.random() * 100 },
-        inputs: nodeType.inputs.map(input => ({
-          id: `${nodeId}-${input.id}`,
-          name: input.name
-        })),
-        outputs: nodeType.outputs.map(output => ({
-          id: `${nodeId}-${output.id}`,
-          name: output.name
-        }))
-      };
-      
-      state.nodes.push(node);
-      renderNode(node);
-      selectNode(nodeId);
-    }
-
-    // Render a node on the canvas
-    function renderNode(node) {
-      const nodeElement = document.createElement('div');
-      nodeElement.id = `node-${node.id}`;
-      nodeElement.className = 'node';
-      nodeElement.style.left = `${node.position.x + state.offset.x}px`;
-      nodeElement.style.top = `${node.position.y + state.offset.y}px`;
-      
-      if (state.selectedNode === node.id) {
-        nodeElement.classList.add('selected');
-      }
-      
-      // Create node header
-      const header = document.createElement('div');
-      header.className = 'node-header';
-      header.style.backgroundColor = node.color;
-      header.innerHTML = `
-        <span>${node.title} ${node.id}</span>
-        <button class="close-button" onclick="deleteNode(${node.id})">×</button>
-      `;
-      
-      // Set up dragging
-      header.addEventListener('mousedown', (e) => {
-        if (e.button === 0) { // Left mouse button
-          startDragging(e, node.id);
+    
+    <div id="minimap">
+        <div id="minimap-content"></div>
+        <div class="minimap-viewport"></div>
+    </div>
+    
+    <script>
+        // Store nodes and connections
+        let nodes = [];
+        let connections = [];
+        let selectedNode = null;
+        let isDragging = false;
+        let isCanvasDragging = false;
+        let isCreatingConnection = false;
+        let startConnectionNode = null;
+        let mouseOffsetX = 0;
+        let mouseOffsetY = 0;
+        let canvasOffsetX = 0;
+        let canvasOffsetY = 0;
+        let zoom = 1;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+        let nextNodeId = 1;
+        
+        const canvas = document.getElementById('canvas');
+        const canvasContainer = document.getElementById('canvas-container');
+        const nodeDetailsContainer = document.getElementById('node-details');
+        const nodeIdInput = document.getElementById('node-id');
+        const nodeTypeSelect = document.getElementById('node-type');
+        const nodeContentTextarea = document.getElementById('node-content');
+        const nodeNextIdInput = document.getElementById('node-next-id');
+        const nodeCheckpointCheckbox = document.getElementById('node-checkpoint');
+        const nodeVariableInput = document.getElementById('node-variable');
+        const nodeWriteValueInput = document.getElementById('node-write-value');
+        const jsonOutput = document.getElementById('json-output');
+        const variableContainer = document.getElementById('variable-container');
+        const optionsContainer = document.getElementById('options-container');
+        const optionsList = document.getElementById('options-list');
+        const nodeList = document.getElementById('node-list');
+        const minimap = document.getElementById('minimap');
+        const minimapContent = document.getElementById('minimap-content');
+        const minimapViewport = document.querySelector('.minimap-viewport');
+        
+        function initCanvas() {
+            canvas.style.width = '3000px';
+            canvas.style.height = '3000px';
+            
+            // Center the canvas initially
+            canvasOffsetX = (canvasContainer.clientWidth - 3000) / 2;
+            canvasOffsetY = (canvasContainer.clientHeight - 3000) / 2;
+            updateCanvasPosition();
         }
-      });
-      
-      nodeElement.appendChild(header);
-      
-      // Create input ports
-      node.inputs.forEach(input => {
-        const inputElement = document.createElement('div');
-        inputElement.className = 'node-input';
         
-        const portElement = document.createElement('div');
-        portElement.id = input.id;
-        portElement.className = 'port input-port';
-        portElement.title = "Input: " + input.name;
+        function updateCanvasPosition() {
+            canvas.style.transform = `translate(${canvasOffsetX}px, ${canvasOffsetY}px) scale(${zoom})`;
+            updateConnectionLines();
+            updateMinimap();
+        }
         
-        // Make input ports handle mouse up for connection completion
-        portElement.addEventListener('mouseup', (e) => {
-          if (state.connecting) {
-            completeConnection(node.id, input.id);
-            e.stopPropagation();
-          }
+        function createNode(id, type, content, x, y, nextId = null, checkpoint = false, options = [], variable = null, writeValue = null) {
+            const node = document.createElement('div');
+            node.className = 'node ' + type.toLowerCase();
+            node.dataset.id = id;
+            node.dataset.type = type;
+            node.dataset.content = content;
+            node.dataset.nextId = nextId || '';
+            node.dataset.checkpoint = checkpoint;
+            node.dataset.variable = variable || '';
+            node.dataset.writeValue = writeValue !== null ? writeValue : '';
+            
+            if (checkpoint) {
+                node.classList.add('checkpoint');
+            }
+            
+            node.style.left = x + 'px';
+            node.style.top = y + 'px';
+            
+            const titleContent = content.length > 30 ? content.substring(0, 30) + '...' : content;
+            
+            node.innerHTML = `
+                <div class="node-title">${type}</div>
+                <div class="node-content">${titleContent}</div>
+                <div class="node-id">ID: ${id}</div>
+                <div class="connection-point"></div>
+            `;
+            
+            canvas.appendChild(node);
+            
+            // Store node data
+            nodes.push({
+                id,
+                element: node,
+                type,
+                content,
+                nextId,
+                checkpoint,
+                x,
+                y,
+                options,
+                variable,
+                writeValue
+            });
+            
+            // Make node draggable
+            node.addEventListener('mousedown', startDragNode);
+            
+            // Add connection point functionality
+            const connectionPoint = node.querySelector('.connection-point');
+            connectionPoint.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                isCreatingConnection = true;
+                startConnectionNode = node;
+            });
+            
+            // Select node on click
+            node.addEventListener('click', (e) => {
+                selectNode(node);
+            });
+            
+            return node;
+        }
+        
+        function startDragNode(e) {
+            if (isCreatingConnection) return;
+            
+            selectNode(this);
+            isDragging = true;
+            
+            const rect = this.getBoundingClientRect();
+            mouseOffsetX = e.clientX - rect.left;
+            mouseOffsetY = e.clientY - rect.top;
+            
+            e.preventDefault();
+        }
+        
+        function selectNode(node) {
+            // Deselect previously selected node
+            if (selectedNode) {
+                selectedNode.classList.remove('selected');
+            }
+            
+            // Select new node
+            selectedNode = node;
+            node.classList.add('selected');
+            
+            // Update node details form
+            updateNodeDetailsForm();
+            
+            // Show node details
+            nodeDetailsContainer.style.display = 'block';
+        }
+        
+        function updateNodeDetailsForm() {
+            if (!selectedNode) return;
+            
+            const id = selectedNode.dataset.id;
+            const type = selectedNode.dataset.type;
+            const content = selectedNode.dataset.content;
+            const nextId = selectedNode.dataset.nextId;
+            const checkpoint = selectedNode.dataset.checkpoint === 'true';
+            const variable = selectedNode.dataset.variable;
+            const writeValue = selectedNode.dataset.writeValue;
+            
+            nodeIdInput.value = id;
+            nodeTypeSelect.value = type;
+            nodeContentTextarea.value = content;
+            nodeNextIdInput.value = nextId;
+            nodeCheckpointCheckbox.checked = checkpoint;
+            nodeVariableInput.value = variable || '';
+            nodeWriteValueInput.value = writeValue || '';
+            
+            // Show/hide variable container based on node type
+            variableContainer.style.display = type === 'WriteNode' || type === 'Switcher' ? 'block' : 'none';
+            
+            // Show/hide options container based on node type
+            optionsContainer.style.display = type === 'Chooser' ? 'block' : 'none';
+            
+            // Clear and populate options list
+            optionsList.innerHTML = '';
+            const nodeData = findNodeDataById(id);
+            
+            if (nodeData && nodeData.options && nodeData.options.length > 0) {
+                nodeData.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.innerHTML = `
+                        <div style="display: flex; margin-bottom: 5px;">
+                            <input type="text" placeholder="Option name" value="${option.Name}" style="flex: 2; margin-right: 5px;">
+                            <input type="text" placeholder="Next ID" value="${option.NextId}" style="flex: 1;">
+                            <button class="remove-option" data-index="${index}" style="margin-left: 5px;">X</button>
+                        </div>
+                    `;
+                    optionsList.appendChild(optionDiv);
+                    
+                    // Add event listener to remove button
+                    optionDiv.querySelector('.remove-option').addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        nodeData.options.splice(index, 1);
+                        updateNodeDetailsForm();
+                    });
+                });
+            }
+        }
+        
+        function createConnection(fromNode, toNode) {
+            const connection = {
+                from: fromNode.dataset.id,
+                to: toNode.dataset.id,
+                element: document.createElement('div')
+            };
+            
+            connection.element.className = 'connection';
+            canvas.insertBefore(connection.element, canvas.firstChild);
+            
+            connections.push(connection);
+            
+            updateConnectionLine(connection);
+            
+            // Update nextId of the fromNode
+            fromNode.dataset.nextId = toNode.dataset.id;
+            
+            // Find and update the node data
+            const nodeData = findNodeDataById(fromNode.dataset.id);
+            if (nodeData) {
+                nodeData.nextId = toNode.dataset.id;
+            }
+            
+            // Update node details form if the selected node is the fromNode
+            if (selectedNode === fromNode) {
+                updateNodeDetailsForm();
+            }
+        }
+        
+        function updateConnectionLine(connection) {
+            const fromNode = document.querySelector(`.node[data-id="${connection.from}"]`);
+            const toNode = document.querySelector(`.node[data-id="${connection.to}"]`);
+            
+            if (!fromNode || !toNode) {
+                // Remove connection if nodes don't exist
+                removeConnection(connection);
+                return;
+            }
+            
+            const fromRect = fromNode.getBoundingClientRect();
+            const toRect = toNode.getBoundingClientRect();
+            const canvasRect = canvas.getBoundingClientRect();
+            
+            // Calculate the center of the connection point at the bottom of fromNode
+            const x1 = fromNode.offsetLeft + fromNode.offsetWidth / 2;
+            const y1 = fromNode.offsetTop + fromNode.offsetHeight;
+            
+            // Calculate the center of the toNode
+            const x2 = toNode.offsetLeft + toNode.offsetWidth / 2;
+            const y2 = toNode.offsetTop;
+            
+            // Calculate the distance and angle
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            
+            // Set the line style
+            connection.element.style.width = `${distance}px`;
+            connection.element.style.left = `${x1}px`;
+            connection.element.style.top = `${y1}px`;
+            connection.element.style.transform = `rotate(${angle}deg)`;
+            connection.element.style.transformOrigin = '0 0';
+            connection.element.style.borderTop = '2px solid #666';
+        }
+        
+        function updateConnectionLines() {
+            connections.forEach(updateConnectionLine);
+        }
+        
+        function removeConnection(connection) {
+            const index = connections.indexOf(connection);
+            if (index !== -1) {
+                if (connection.element.parentNode) {
+                    connection.element.parentNode.removeChild(connection.element);
+                }
+                connections.splice(index, 1);
+            }
+        }
+        
+        function findNodeDataById(id) {
+            return nodes.find(node => node.id === id);
+        }
+        
+        function updateNodeFromForm() {
+            if (!selectedNode) return;
+            
+            const id = nodeIdInput.value;
+            const type = nodeTypeSelect.value;
+            const content = nodeContentTextarea.value;
+            const nextId = nodeNextIdInput.value;
+            const checkpoint = nodeCheckpointCheckbox.checked;
+            const variable = nodeVariableInput.value;
+            const writeValue = nodeWriteValueInput.value;
+            
+            // Update node element
+            selectedNode.dataset.id = id;
+            selectedNode.dataset.type = type;
+            selectedNode.dataset.content = content;
+            selectedNode.dataset.nextId = nextId;
+            selectedNode.dataset.checkpoint = checkpoint;
+            selectedNode.dataset.variable = variable;
+            selectedNode.dataset.writeValue = writeValue;
+            
+            // Update class based on type
+            selectedNode.className = 'node ' + type.toLowerCase();
+            if (checkpoint) {
+                selectedNode.classList.add('checkpoint');
+            }
+            selectedNode.classList.add('selected'); // Maintain selection
+            
+            // Update title and content display
+            const titleContent = content.length > 30 ? content.substring(0, 30) + '...' : content;
+            selectedNode.querySelector('.node-title').textContent = type;
+            selectedNode.querySelector('.node-content').textContent = titleContent;
+            selectedNode.querySelector('.node-id').textContent = 'ID: ' + id;
+            
+            // Find and update the node data
+            const nodeData = findNodeDataById(selectedNode.dataset.id);
+            if (nodeData) {
+                nodeData.type = type;
+                nodeData.content = content;
+                nodeData.nextId = nextId;
+                nodeData.checkpoint = checkpoint;
+                nodeData.variable = variable;
+                nodeData.writeValue = writeValue;
+                
+                // Update options if it's a Chooser
+                if (type === 'Chooser') {
+                    const options = [];
+                    const optionElements = optionsList.querySelectorAll('div');
+                    
+                    optionElements.forEach(optionElement => {
+                        const inputs = optionElement.querySelectorAll('input');
+                        if (inputs.length >= 2) {
+                            options.push({
+                                Name: inputs[0].value,
+                                NextId: inputs[1].value
+                            });
+                        }
+                    });
+                    
+                    nodeData.options = options;
+                }
+            }
+            
+            // Update connections
+            updateConnectionLines();
+            
+            // Update node list
+            updateNodeList();
+        }
+        
+        function updateNodeList() {
+            nodeList.innerHTML = '';
+            
+            nodes.sort((a, b) => a.id.localeCompare(b.id)).forEach(node => {
+                const item = document.createElement('div');
+                item.className = 'node-list-item';
+                item.textContent = `${node.id} (${node.type})`;
+                item.dataset.id = node.id;
+                
+                item.addEventListener('click', () => {
+                    // Find the node element
+                    const nodeElement = document.querySelector(`.node[data-id="${node.id}"]`);
+                    if (nodeElement) {
+                        // Select the node
+                        selectNode(nodeElement);
+                        
+                        // Center view on the node
+                        centerViewOnNode(node);
+                    }
+                });
+                
+                nodeList.appendChild(item);
+            });
+        }
+        
+        function centerViewOnNode(node) {
+            const containerWidth = canvasContainer.clientWidth;
+            const containerHeight = canvasContainer.clientHeight;
+            
+            canvasOffsetX = containerWidth / 2 - node.x * zoom - 75 * zoom; // 75 is half the default node width
+            canvasOffsetY = containerHeight / 2 - node.y * zoom - 75 * zoom; // 75 is half the default node height
+            
+            updateCanvasPosition();
+        }
+        
+        function autoLayoutNodes() {
+            // Simple automatic layout algorithm
+            const levelMap = {};
+            const processed = new Set();
+            const nodeWidth = 150;
+            const nodeHeight = 100;
+            const horizSpacing = 200;
+            const vertSpacing = 150;
+            
+            // Find root nodes (without incoming connections)
+            let rootNodes = [...nodes];
+            
+            connections.forEach(conn => {
+                const toNodeIndex = rootNodes.findIndex(n => n.id === conn.to);
+                if (toNodeIndex !== -1) {
+                    rootNodes.splice(toNodeIndex, 1);
+                }
+            });
+            
+            // If no root nodes found, use the first node
+            if (rootNodes.length === 0 && nodes.length > 0) {
+                rootNodes = [nodes[0]];
+            }
+            
+            // Assign levels starting from root nodes
+            function assignLevels(nodeId, level) {
+                if (processed.has(nodeId)) return;
+                processed.add(nodeId);
+                
+                if (!levelMap[level]) {
+                    levelMap[level] = [];
+                }
+                levelMap[level].push(nodeId);
+                
+                // Find all connections from this node
+                const outgoingConnections = connections.filter(conn => conn.from === nodeId);
+                outgoingConnections.forEach(conn => {
+                    assignLevels(conn.to, level + 1);
+                });
+                
+                // Check for nextId
+                const nodeData = findNodeDataById(nodeId);
+                if (nodeData && nodeData.nextId && nodeData.nextId !== '') {
+                    assignLevels(nodeData.nextId, level + 1);
+                }
+                
+                // Check for chooser options
+                if (nodeData && nodeData.options && nodeData.options.length > 0) {
+                    nodeData.options.forEach(option => {
+                        if (option.NextId && option.NextId !== '') {
+                            assignLevels(option.NextId, level + 1);
+                        }
+                    });
+                }
+            }
+            
+            rootNodes.forEach(node => assignLevels(node.id, 0));
+            
+            // For any unprocessed nodes, assign them to level 0
+            nodes.forEach(node => {
+                if (!processed.has(node.id)) {
+                    if (!levelMap[0]) {
+                        levelMap[0] = [];
+                    }
+                    levelMap[0].push(node.id);
+                }
+            });
+            
+            // Position nodes based on their levels
+            Object.keys(levelMap).forEach(level => {
+                const nodesInLevel = levelMap[level];
+                const levelInt = parseInt(level);
+                
+                nodesInLevel.forEach((nodeId, index) => {
+                    const nodeData = findNodeDataById(nodeId);
+                    if (nodeData) {
+                        const x = index * horizSpacing + 50;
+                        const y = levelInt * vertSpacing + 50;
+                        
+                        nodeData.x = x;
+                        nodeData.y = y;
+                        nodeData.element.style.left = x + 'px';
+                        nodeData.element.style.top = y + 'px';
+                    }
+                });
+            });
+            
+            // Update connections
+            updateConnectionLines();
+            updateMinimap();
+        }
+        
+        function updateMinimap() {
+            // Clear minimap
+            minimapContent.innerHTML = '';
+            
+            // Calculate scale factor for minimap
+            const canvasWidth = 3000;
+            const canvasHeight = 3000;
+            const minimapWidth = minimap.clientWidth;
+            const minimapHeight = minimap.clientHeight;
+            
+            const scaleX = minimapWidth / canvasWidth;
+            const scaleY = minimapHeight / canvasHeight;
+            
+            // Add nodes to minimap
+            nodes.forEach(node => {
+                const minimapNode = document.createElement('div');
+                minimapNode.className = 'minimap-node';
+                minimapNode.style.left = (node.x * scaleX) + 'px';
+                minimapNode.style.top = (node.y * scaleY) + 'px';
+                
+                minimapContent.appendChild(minimapNode);
+            });
+            
+            // Update viewport rectangle
+            const viewportWidth = Math.min(canvasContainer.clientWidth / (zoom * canvasWidth) * minimapWidth, minimapWidth);
+            const viewportHeight = Math.min(canvasContainer.clientHeight / (zoom * canvasHeight) * minimapHeight, minimapHeight);
+            
+            // Calculate viewport position
+            const viewportX = Math.min(Math.max((-canvasOffsetX / zoom) * scaleX, 0), minimapWidth - viewportWidth);
+            const viewportY = Math.min(Math.max((-canvasOffsetY / zoom) * scaleY, 0), minimapHeight - viewportHeight);
+            
+            minimapViewport.style.width = viewportWidth + 'px';
+            minimapViewport.style.height = viewportHeight + 'px';
+            minimapViewport.style.left = viewportX + 'px';
+            minimapViewport.style.top = viewportY + 'px';
+        }
+        
+        function generateJson() {
+            const jsonNodes = nodes.map(node => {
+                const jsonNode = {
+                    Id: node.id,
+                    Type: node.type,
+                    Content: node.content
+                };
+                
+                if (node.nextId) {
+                    jsonNode.NextId = node.nextId;
+                }
+                
+                if (node.checkpoint) {
+                    jsonNode.checkpoint = true;
+                }
+                
+                if (node.type === 'Chooser' && node.options && node.options.length > 0) {
+                    jsonNode.Options = node.options;
+                }
+                
+                if ((node.type === 'WriteNode' || node.type === 'Switcher') && node.variable) {
+                    jsonNode.Variable = node.variable;
+                }
+                
+                if (node.type === 'WriteNode' && node.writeValue !== undefined) {
+                    // Handle different value types
+                    if (node.writeValue.toLowerCase() === 'true') {
+                        jsonNode.WriteValue = true;
+                    } else if (node.writeValue.toLowerCase() === 'false') {
+                        jsonNode.WriteValue = false;
+                    } else if (!isNaN(node.writeValue) && node.writeValue !== '') {
+                        jsonNode.WriteValue = Number(node.writeValue);
+                    } else {
+                        jsonNode.WriteValue = node.writeValue;
+                    }
+                }
+                
+                return jsonNode;
+            });
+            
+            return {
+                Nodes: jsonNodes
+            };
+        }
+        
+        function parseJson(json) {
+            try {
+                const data = typeof json === 'string' ? JSON.parse(json) : json;
+                
+                // Clear existing nodes and connections
+                nodes.forEach(node => {
+                    if (node.element.parentNode) {
+                        node.element.parentNode.removeChild(node.element);
+                    }
+                });
+                
+                connections.forEach(connection => {
+                    if (connection.element.parentNode) {
+                        connection.element.parentNode.removeChild(connection.element);
+                    }
+                });
+                
+                nodes = [];
+                connections = [];
+                
+                // Create new nodes
+                if (data.Nodes) {
+                    // First pass: create all nodes
+                    data.Nodes.forEach((nodeData, index) => {
+                        const x = 50 + (index % 5) * 200;
+                        const y = 50 + Math.floor(index / 5) * 150;
+                        
+                        createNode(
+                            nodeData.Id,
+                            nodeData.Type,
+                            nodeData.Content,
+                            x,
+                            y,
+                            nodeData.NextId,
+                            nodeData.checkpoint || false,
+                            nodeData.Options || [],
+                            nodeData.Variable,
+                            nodeData.WriteValue
+                        );
+                    });
+                    
+                    // Second pass: create connections
+                    data.Nodes.forEach(nodeData => {
+                        if (nodeData.NextId) {
+                            const fromNode = document.querySelector(`.node[data-id="${nodeData.Id}"]`);
+                            const toNode = document.querySelector(`.node[data-id="${nodeData.NextId}"]`);
+                            
+                            if (fromNode && toNode) {
+                                createConnection(fromNode, toNode);
+                            }
+                        }
+                        
+                        if (nodeData.Options && nodeData.Options.length > 0) {
+                            nodeData.Options.forEach(option => {
+                                if (option.NextId) {
+                                    const fromNode = document.querySelector(`.node[data-id="${nodeData.Id}"]`);
+                                    const toNode = document.querySelector(`.node[data-id="${option.NextId}"]`);
+                                    
+                                    if (fromNode && toNode) {
+                                        createConnection(fromNode, toNode);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    
+                    // Auto layout the nodes
+                    autoLayoutNodes();
+                    
+                    // Update node list
+                    updateNodeList();
+                    
+                    return true;
+                }
+                
+                return false;
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                return false;
+            }
+        }
+        
+        // Initialize the canvas
+        initCanvas();
+        
+        // Event listeners
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging && selectedNode) {
+                const x = (e.clientX - canvasContainer.getBoundingClientRect().left - mouseOffsetX - canvasOffsetX) / zoom;
+                const y = (e.clientY - canvasContainer.getBoundingClientRect().top - mouseOffsetY - canvasOffsetY) / zoom;
+                
+                selectedNode.style.left = x + 'px';
+                selectedNode.style.top = y + 'px';
+                
+                // Update node data
+                const nodeData = findNodeDataById(selectedNode.dataset.id);
+                if (nodeData) {
+                    nodeData.x = x;
+                    nodeData.y = y;
+                }
+                
+                updateConnectionLines();
+                updateMinimap();
+            } else if (isCanvasDragging) {
+                const dx = e.clientX - lastMouseX;
+                const dy = e.clientY - lastMouseY;
+                
+                canvasOffsetX += dx;
+                canvasOffsetY += dy;
+                
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+                
+                updateCanvasPosition();
+            } else if (isCreatingConnection) {
+                // Draw a temporary line from the start node to the current mouse position
+                const startNode = startConnectionNode;
+                if (!startNode) return;
+                
+                const startRect = startNode.getBoundingClientRect();
+                const canvasRect = canvas.getBoundingClientRect();
+                
+                // Create or update temporary line
+                let tempLine = document.getElementById('temp-connection-line');
+                if (!tempLine) {
+                    tempLine = document.createElement('div');
+                    tempLine.id = 'temp-connection-line';
+                    tempLine.className = 'connection';
+                    tempLine.style.borderTop = '2px dashed #f00';
+                    canvas.appendChild(tempLine);
+                }
+                
+                // Calculate line position and length
+                const x1 = parseFloat(startNode.style.left) + startNode.offsetWidth / 2;
+                const y1 = parseFloat(startNode.style.top) + startNode.offsetHeight;
+                
+                const x2 = (e.clientX - canvasRect.left - canvasOffsetX) / zoom;
+                const y2 = (e.clientY - canvasRect.top - canvasOffsetY) / zoom;
+                
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                tempLine.style.width = `${distance}px`;
+                tempLine.style.left = `${x1}px`;
+                tempLine.style.top = `${y1}px`;
+                tempLine.style.transform = `rotate(${angle}deg)`;
+                tempLine.style.transformOrigin = '0 0';
+            }
         });
         
-        inputElement.appendChild(portElement);
-        inputElement.appendChild(document.createTextNode(input.name));
-        
-        nodeElement.appendChild(inputElement);
-      });
-      
-      // Create output ports
-      node.outputs.forEach(output => {
-        const outputElement = document.createElement('div');
-        outputElement.className = 'node-output';
-        
-        outputElement.appendChild(document.createTextNode(output.name));
-        
-        const portElement = document.createElement('div');
-        portElement.id = output.id;
-        portElement.className = 'port output-port';
-        portElement.title = "Output: " + output.name;
-        
-        // Make output ports handle mouse down for connection starting
-        portElement.addEventListener('mousedown', (e) => {
-          if (e.button === 0) { // Left mouse button
-            startConnection(node.id, output.id);
-            e.stopPropagation();
-          }
+        document.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+            } else if (isCanvasDragging) {
+                isCanvasDragging = false;
+            } else if (isCreatingConnection) {
+                // Check if we're hovering over another node
+                const elementUnderMouse = document.elementFromPoint(e.clientX, e.clientY);
+                const targetNode = elementUnderMouse ? elementUnderMouse.closest('.node') : null;
+                
+                if (targetNode && targetNode !== startConnectionNode) {
+                    createConnection(startConnectionNode, targetNode);
+                }
+                
+                // Remove temporary line
+                const tempLine = document.getElementById('temp-connection-line');
+                if (tempLine) {
+                    tempLine.parentNode.removeChild(tempLine);
+                }
+                
+                isCreatingConnection = false;
+                startConnectionNode = null;
+            }
         });
         
-        outputElement.appendChild(portElement);
-        nodeElement.appendChild(outputElement);
-      });
-      
-      // Add click handler for selection
-      nodeElement.addEventListener('mousedown', (e) => {
-        e.stopPropagation();
-        selectNode(node.id);
-      });
-      
-      nodesContainer.appendChild(nodeElement);
-    }
-
-    // Select a node
-    function selectNode(nodeId) {
-      // Deselect previously selected node
-      if (state.selectedNode !== null) {
-        const prevNode = document.getElementById(`node-${state.selectedNode}`);
-        if (prevNode) {
-          prevNode.classList.remove('selected');
-        }
-      }
-      
-      state.selectedNode = nodeId;
-      
-      // Select new node
-      if (nodeId !== null) {
-        const node = document.getElementById(`node-${nodeId}`);
-        if (node) {
-          node.classList.add('selected');
-        }
-      }
-    }
-
-    // Delete a node
-    function deleteNode(nodeId) {
-      // Remove connections to/from this node
-      state.connections = state.connections.filter(conn => 
-        conn.from.nodeId !== nodeId && conn.to.nodeId !== nodeId
-      );
-      
-      // Remove node from state
-      state.nodes = state.nodes.filter(node => node.id !== nodeId);
-      
-      // Remove node element from DOM
-      const nodeElement = document.getElementById(`node-${nodeId}`);
-      if (nodeElement) {
-        nodeElement.remove();
-      }
-      
-      // If this was the selected node, deselect it
-      if (state.selectedNode === nodeId) {
-        state.selectedNode = null;
-      }
-      
-      // Redraw connections
-      renderConnections();
-    }
-
-    // Start dragging a node
-    function startDragging(event, nodeId) {
-      event.stopPropagation();
-      
-      const nodeElement = document.getElementById(`node-${nodeId}`);
-      const rect = nodeElement.getBoundingClientRect();
-      
-      state.dragInfo = {
-        nodeId: nodeId,
-        initial: {
-          x: rect.left,
-          y: rect.top
-        },
-        offset: {
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top
-        }
-      };
-      
-      // Select the node being dragged
-      selectNode(nodeId);
-    }
-
-    // Start creating a connection
-    function startConnection(nodeId, portId) {
-      state.connecting = {
-        from: {
-          nodeId: nodeId,
-          portId: portId
-        }
-      };
-      
-      // Create temporary connection line
-      createTemporaryConnection();
-    }
-
-    // Create temporary connection while dragging
-    function createTemporaryConnection() {
-      // Clear any existing temporary connection
-      while (tempConnectionGroup.firstChild) {
-        tempConnectionGroup.removeChild(tempConnectionGroup.firstChild);
-      }
-      
-      // Create new temporary connection
-      const tempConnection = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      tempConnection.id = 'temp-connection';
-      
-      tempConnectionGroup.appendChild(tempConnection);
-    }
-
-    // Update temporary connection line
-    function updateTemporaryConnection(mouseX, mouseY) {
-      if (!state.connecting) return;
-      
-      const fromPortId = state.connecting.from.portId;
-      const fromPort = document.getElementById(fromPortId);
-      if (!fromPort) return;
-      
-      const fromRect = fromPort.getBoundingClientRect();
-      const canvasRect = canvas.getBoundingClientRect();
-      
-      const fromX = fromRect.left + fromRect.width / 2 - canvasRect.left;
-      const fromY = fromRect.top + fromRect.height / 2 - canvasRect.top;
-      
-      const tempConnection = document.getElementById('temp-connection');
-      if (tempConnection) {
-        const dx = mouseX - fromX;
-        const midX = fromX + dx * 0.5;
-        
-        const path = `M ${fromX} ${fromY} C ${midX} ${fromY}, ${midX} ${mouseY}, ${mouseX} ${mouseY}`;
-        tempConnection.setAttribute('d', path);
-      }
-    }
-
-    // Complete a connection
-    function completeConnection(toNodeId, toPortId) {
-      if (!state.connecting) return;
-      
-      // Don't connect to the same node
-      if (toNodeId === state.connecting.from.nodeId) {
-        cancelConnection();
-        return;
-      }
-      
-      // Check if this input already has a connection
-      const existingConnectionIndex = state.connections.findIndex(
-        conn => conn.to.nodeId === toNodeId && conn.to.portId === toPortId
-      );
-      
-      if (existingConnectionIndex !== -1) {
-        // Remove the existing connection
-        state.connections.splice(existingConnectionIndex, 1);
-      }
-      
-      // Add the new connection
-      const newConnection = {
-        id: `conn-${state.connecting.from.nodeId}-${state.connecting.from.portId}-${toNodeId}-${toPortId}`,
-        from: state.connecting.from,
-        to: {
-          nodeId: toNodeId,
-          portId: toPortId
-        }
-      };
-      
-      state.connections.push(newConnection);
-      
-      // Clean up
-      cancelConnection();
-      
-      // Redraw connections
-      renderConnections();
-    }
-
-    // Cancel connection creation
-    function cancelConnection() {
-      state.connecting = null;
-      
-      // Clear temporary connection
-      while (tempConnectionGroup.firstChild) {
-        tempConnectionGroup.removeChild(tempConnectionGroup.firstChild);
-      }
-    }
-
-    // Render all connections
-    function renderConnections() {
-      // Clear existing connections
-      while (connectionsGroup.firstChild) {
-        connectionsGroup.removeChild(connectionsGroup.firstChild);
-      }
-      
-      // Draw each connection
-      state.connections.forEach(conn => {
-        const fromPort = document.getElementById(conn.from.portId);
-        const toPort = document.getElementById(conn.to.portId);
-        
-        if (!fromPort || !toPort) return;
-        
-        const fromRect = fromPort.getBoundingClientRect();
-        const toRect = toPort.getBoundingClientRect();
-        const canvasRect = canvas.getBoundingClientRect();
-        
-        const fromX = fromRect.left + fromRect.width / 2 - canvasRect.left;
-        const fromY = fromRect.top + fromRect.height / 2 - canvasRect.top;
-        const toX = toRect.left + toRect.width / 2 - canvasRect.left;
-        const toY = toRect.top + toRect.height / 2 - canvasRect.top;
-        
-        const dx = toX - fromX;
-        const midX = fromX + dx * 0.5;
-        
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('id', conn.id);
-        path.setAttribute('class', 'connection-path');
-        path.setAttribute('d', `M ${fromX} ${fromY} C ${midX} ${fromY}, ${midX} ${toY}, ${toX} ${toY}`);
-        
-        // Add delete ability with shift+click
-        path.addEventListener('click', (e) => {
-          if (e.shiftKey) {
-            deleteConnection(conn.id);
-          }
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.target === canvas) {
+                isCanvasDragging = true;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+                e.preventDefault();
+            }
         });
         
-        connectionsGroup.appendChild(path);
-      });
-    }
-
-    // Delete a connection
-    function deleteConnection(connectionId) {
-      state.connections = state.connections.filter(conn => conn.id !== connectionId);
-      renderConnections();
-    }
-
-    // Export the graph as JSON
-    function exportGraph() {
-      const data = {
-        nodes: state.nodes.map(node => ({
-          id: node.id,
-          type: node.type,
-          title: node.title,
-          position: node.position,
-          inputs: node.inputs,
-          outputs: node.outputs
-        })),
-        connections: state.connections.map(conn => ({
-          from: {
-            nodeId: conn.from.nodeId,
-            portId: conn.from.portId
-          },
-          to: {
-            nodeId: conn.to.nodeId,
-            portId: conn.to.portId
-          }
-        }))
-      };
-      
-      const jsonString = JSON.stringify(data, null, 2);
-      const blob = new Blob([jsonString], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'node-graph.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    // Update the grid pattern
-    function updateGrid() {
-      const offsetX = state.offset.x % 20;
-      const offsetY = state.offset.y % 20;
-      
-      grid.style.backgroundPosition = `${offsetX}px ${offsetY}px`;
-    }
-
-    // Update node positions
-    function updateNodePositions() {
-      state.nodes.forEach(node => {
-        const nodeElement = document.getElementById(`node-${node.id}`);
-        if (nodeElement) {
-          nodeElement.style.left = `${node.position.x + state.offset.x}px`;
-          nodeElement.style.top = `${node.position.y + state.offset.y}px`;
-        }
-      });
-    }
-
-    // Mouse event handlers
-    canvas.addEventListener('mousedown', (e) => {
-      // Middle mouse button or Alt+Left button for panning
-      if (e.button === 1 || (e.button === 0 && e.altKey)) {
-        e.preventDefault();
-        state.panInfo = {
-          startX: e.clientX,
-          startY: e.clientY,
-          offsetX: state.offset.x,
-          offsetY: state.offset.y
+        canvasContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            
+            // Calculate zoom center (mouse position)
+            const rect = canvasContainer.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // Calculate mouse position relative to the canvas
+            const mouseCanvasX = (mouseX - canvasOffsetX) / zoom;
+            const mouseCanvasY = (mouseY - canvasOffsetY) / zoom;
+            
+            // Adjust zoom level
+            const zoomDelta = e.deltaY > 0 ? 0.9 : 1.1;
+            zoom = Math.max(0.1, Math.min(3, zoom * zoomDelta));
+            
+            // Adjust canvas offset to zoom toward mouse position
+            canvasOffsetX = mouseX - mouseCanvasX * zoom;
+            canvasOffsetY = mouseY - mouseCanvasY * zoom;
+            
+            updateCanvasPosition();
+        });
+        
+        // Form input event listeners
+        nodeIdInput.addEventListener('input', updateNodeFromForm);
+        nodeTypeSelect.addEventListener('change', updateNodeFromForm);
+        nodeContentTextarea.addEventListener('input', updateNodeFromForm);
+        nodeNextIdInput.addEventListener('input', updateNodeFromForm);
+        nodeCheckpointCheckbox.addEventListener('change', updateNodeFromForm);
+        nodeVariableInput.addEventListener('input', updateNodeFromForm);
+        nodeWriteValueInput.addEventListener('input', updateNodeFromForm);
+        
+        // Add option button
+        document.getElementById('add-option').addEventListener('click', () => {
+            if (!selectedNode || selectedNode.dataset.type !== 'Chooser') return;
+            
+            const nodeData = findNodeDataById(selectedNode.dataset.id);
+            if (!nodeData) return;
+            
+            if (!nodeData.options) {
+                nodeData.options = [];
+            }
+            
+            nodeData.options.push({
+                Name: 'New Option',
+                NextId: ''
+            });
+            
+            updateNodeDetailsForm();
+        });
+        
+        // Add new node button
+        document.getElementById('new-node').addEventListener('click', () => {
+            const id = 'node_' + nextNodeId++;
+            const node = createNode(id, 'TextEvent', 'New node content', 100, 100);
+            selectNode(node);
+            updateNodeList();
+        });
+        
+        // Load JSON button
+        document.getElementById('load-json').addEventListener('click', () => {
+            jsonOutput.style.display = 'block';
+            jsonOutput.value = '';
+            jsonOutput.placeholder = 'Paste your JSON here and click "Load JSON" again';
+            
+            // Check if there's already content
+            if (jsonOutput.value.trim()) {
+                const result = parseJson(jsonOutput.value);
+                if (result) {
+                    jsonOutput.style.display = 'none';
+                }
+            }
+        });
+        
+        // Save JSON button
+        document.getElementById('save-json').addEventListener('click', () => {
+            const json = generateJson();
+            jsonOutput.style.display = 'block';
+            jsonOutput.value = JSON.stringify(json, null, 2);
+        });
+        
+        // Auto layout button
+        document.getElementById('auto-layout').addEventListener('click', autoLayoutNodes);
+        
+        // Center view button
+        document.getElementById('center-view').addEventListener('click', () => {
+            canvasOffsetX = (canvasContainer.clientWidth - 3000 * zoom) / 2;
+            canvasOffsetY = (canvasContainer.clientHeight - 3000 * zoom) / 2;
+            updateCanvasPosition();
+        });
+        
+        // Load initial JSON if available
+        const initialJson = {
+            "Nodes": [
+                {
+                    "Id": "start",
+                    "Type": "DecoratedTextEvent",
+                    "Content": "THE ABANDONED MANSION\nA text adventure game",
+                    "NextId": "initialize_game",
+                    "checkpoint": true
+                },
+                {
+                    "Id": "initialize_game",
+                    "Type": "WriteNode",
+                    "Content": "Initializing game state...",
+                    "Variable": "has_key",
+                    "WriteValue": false,
+                    "NextId": "initialize_door"
+                }
+            ]
         };
-      } else if (e.button === 0 && !state.connecting) {
-        // Left click on canvas (not on a node) deselects
-        selectNode(null);
-      }
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      // Handle node dragging
-      if (state.dragInfo) {
-        const nodeId = state.dragInfo.nodeId;
-        const node = state.nodes.find(n => n.id === nodeId);
         
-        if (node) {
-          const newX = e.clientX - state.dragInfo.offset.x;
-          const newY = e.clientY - state.dragInfo.offset.y;
-          
-          const canvasRect = canvas.getBoundingClientRect();
-          
-          node.position.x = newX - canvasRect.left - state.offset.x;
-          node.position.y = newY - canvasRect.top - state.offset.y;
-          
-          const nodeElement = document.getElementById(`node-${nodeId}`);
-          if (nodeElement) {
-            nodeElement.style.left = `${node.position.x + state.offset.x}px`;
-            nodeElement.style.top = `${node.position.y + state.offset.y}px`;
-          }
-          
-          renderConnections();
+        parseJson(initialJson);
+        
+        // Load JSON from paste.txt if provided in the document
+        const pasteData = document.querySelector('.document_content');
+        if (pasteData && pasteData.textContent) {
+            try {
+                const jsonData = JSON.parse(pasteData.textContent);
+                parseJson(jsonData);
+            } catch (error) {
+                console.error('Error parsing the paste data:', error);
+            }
         }
-      }
-      
-      // Handle canvas panning
-      if (state.panInfo) {
-        const deltaX = e.clientX - state.panInfo.startX;
-        const deltaY = e.clientY - state.panInfo.startY;
-        
-        state.offset.x = state.panInfo.offsetX + deltaX;
-        state.offset.y = state.panInfo.offsetY + deltaY;
-        
-        updateGrid();
-        updateNodePositions();
-        renderConnections();
-      }
-      
-      // Handle connection dragging
-      if (state.connecting) {
-        const canvasRect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - canvasRect.left;
-        const mouseY = e.clientY - canvasRect.top;
-        
-        updateTemporaryConnection(mouseX, mouseY);
-      }
-    });
-
-    document.addEventListener('mouseup', (e) => {
-      // End node dragging
-      if (state.dragInfo) {
-        state.dragInfo = null;
-      }
-      
-      // End canvas panning
-      if (state.panInfo) {
-        state.panInfo = null;
-      }
-      
-      // End connection if not completed and not on an input port
-      if (state.connecting) {
-        // Only cancel if we're not on an input port
-        // Input ports handle their own completion
-        const target = e.target;
-        if (!target.classList || !target.classList.contains('input-port')) {
-          cancelConnection();
-        }
-      }
-    });
-    
-    // Prevent context menu
-    canvas.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-    });
-    
-    // Add some initial nodes for demo
-    setTimeout(() => {
-      addNode('input');
-      setTimeout(() => {
-        addNode('process');
-        setTimeout(() => {
-          addNode('output');
-          // Position the nodes in a flow from left to right
-          state.nodes[0].position = { x: 100, y: 150 };
-          state.nodes[1].position = { x: 350, y: 150 };
-          state.nodes[2].position = { x: 600, y: 150 };
-          updateNodePositions();
-        }, 10);
-      }, 10);
-    }, 100);
-  </script>
+    </script>
 </body>
 </html>

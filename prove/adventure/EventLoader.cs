@@ -3,8 +3,8 @@ using System.Text.Json.Serialization;
 
 public class EventLoader
 {
-    // Data Transfer Objects
-    public class EventNodeDTO
+    // Transfer Objects
+    private class EventNodeDTO
     {
         // Could be polymorphic but I might not have time so it is a mess
         // Common
@@ -27,14 +27,14 @@ public class EventLoader
         public dynamic? WriteValue { get; set; }
     }
 
-    public class SwitchOptionDTO
+    private class SwitchOptionDTO
     {
         public required dynamic DesiredValue { get; set; }
         public required string PathId { get; set; }
         public required string Domain { get; set; }
     }
 
-    public class OptionDTO
+    private class OptionDTO
     {
         public required string Name { get; set; }
         public bool Hidden { get; set; } = false;
@@ -42,7 +42,7 @@ public class EventLoader
         public char? Identifier { get; set; }
     }
 
-    public class EventTreeDTO
+    private class EventTreeDTO
     {
         public List<EventNodeDTO> Nodes { get; set; } = new List<EventNodeDTO>();
     }
