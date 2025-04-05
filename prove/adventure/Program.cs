@@ -66,7 +66,7 @@
 
         // Console.Clear();
         // Create the game tree
-        BaseNode mainTree = ReadSpaceGameFile();
+        BaseNode mainTree = ReadLoopDemo();
 
         // need to load the state after the tree otherwise the state cannot find the entry point.
         GameState state = new GameState(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "demos", "demo_save.json"));
@@ -311,6 +311,12 @@
     public static BaseNode ReadSpaceGameFile()
     {
         string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "demos", "space_game.json");
+        BaseNode mainTree = EventLoader.LoadFromFile(path);
+        return mainTree;
+    }
+
+    public static BaseNode ReadLoopDemo(){
+        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "demos", "loop.json");
         BaseNode mainTree = EventLoader.LoadFromFile(path);
         return mainTree;
     }

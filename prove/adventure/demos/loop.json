@@ -1,0 +1,621 @@
+{
+    "Nodes": [
+      {
+        "Id": "start",
+        "Type": "DecoratedTextEvent",
+        "Content": "MONDAY NEVER ENDS\nA time loop adventure game",
+        "NextId": "initialize_game",
+        "checkpoint": true
+      },
+      {
+        "Id": "initialize_game",
+        "Type": "WriteNode",
+        "Content": "Initializing game state...",
+        "Variable": "loop_count",
+        "WriteValue": 1,
+        "NextId": "initialize_knowledge"
+      },
+      {
+        "Id": "initialize_knowledge",
+        "Type": "WriteNode",
+        "Content": "Setting initial knowledge...",
+        "Variable": "knows_password",
+        "WriteValue": false,
+        "NextId": "initialize_coffee"
+      },
+      {
+        "Id": "initialize_coffee",
+        "Type": "WriteNode",
+        "Content": "Setting coffee status...",
+        "Variable": "has_coffee",
+        "WriteValue": false,
+        "NextId": "initialize_key"
+      },
+      {
+        "Id": "initialize_key",
+        "Type": "WriteNode",
+        "Content": "Setting key status...",
+        "Variable": "has_key",
+        "WriteValue": false,
+        "NextId": "initialize_fired"
+      },
+      {
+        "Id": "initialize_fired",
+        "Type": "WriteNode",
+        "Content": "Setting job status...",
+        "Variable": "got_fired",
+        "WriteValue": false,
+        "NextId": "initialize_cat"
+      },
+      {
+        "Id": "initialize_cat",
+        "Type": "WriteNode",
+        "Content": "Setting cat rescue status...",
+        "Variable": "saved_cat",
+        "WriteValue": false,
+        "NextId": "wake_up"
+      },
+      {
+        "Id": "wake_up",
+        "Type": "TextEvent",
+        "Content": "Your alarm blares. It's 7:00 AM, Monday. Again. You've been stuck in this loop for who knows how long, reliving the same day over and over. The song on the radio is that cheesy 80s hit you now know every word to.",
+        "NextId": "loop_count_check",
+        "checkpoint": true
+      },
+      {
+        "Id": "loop_count_check",
+        "Type": "Switcher",
+        "Content": "Checking how many loops you've experienced...",
+        "Variable": "loop_count",
+        "DefaultValue": 1,
+        "SwitchOptions": [
+          {
+            "DesiredValue": 1,
+            "PathId": "first_loop_morning",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": 1,
+            "PathId": "later_loop_morning",
+            "Domain": "GREATER"
+          }
+        ]
+      },
+      {
+        "Id": "first_loop_morning",
+        "Type": "TextEvent",
+        "Content": "Wait... something feels off. Didn't you already live this day? The calendar says Monday, April 15, but you could swear you already went to work yesterday. Maybe you're just having déjà vu?",
+        "NextId": "morning_options"
+      },
+      {
+        "Id": "later_loop_morning",
+        "Type": "TextEvent",
+        "Content": "You sigh deeply. Another reset. Another Monday. The calendar mockingly displays April 15, just like it has every other time. You're getting pretty tired of Mondays.",
+        "NextId": "morning_options"
+      },
+      {
+        "Id": "morning_options",
+        "Type": "Chooser",
+        "Content": "What do you do first thing in the morning?",
+        "Options": [
+          {
+            "Name": "Hit snooze and sleep more",
+            "NextId": "snooze_alarm"
+          },
+          {
+            "Name": "Get up and make coffee",
+            "NextId": "make_coffee"
+          },
+          {
+            "Name": "Check your phone",
+            "NextId": "check_phone"
+          }
+        ]
+      },
+      {
+        "Id": "snooze_alarm",
+        "Type": "TextEvent",
+        "Content": "You hit snooze and roll over. Five more minutes won't hurt... Suddenly, your phone rings. It's your boss, Janet. 'Where are you? The client meeting started 30 minutes ago!'",
+        "NextId": "oversleep_consequences"
+      },
+      {
+        "Id": "oversleep_consequences",
+        "Type": "TextEvent",
+        "Content": "You check the time - 9:30 AM?! You've somehow slept through multiple alarms. You're majorly late for the important client meeting you're supposed to be presenting at.",
+        "NextId": "mark_fired"
+      },
+      {
+        "Id": "mark_fired",
+        "Type": "WriteNode",
+        "Content": "Janet's voice is ice cold: 'Don't bother coming in. Clean out your desk tomorrow.' She hangs up before you can explain.",
+        "Variable": "got_fired",
+        "WriteValue": true,
+        "NextId": "go_outside"
+      },
+      {
+        "Id": "make_coffee",
+        "Type": "TextEvent",
+        "Content": "You shuffle to the kitchen and start the coffee maker. As it brews, you notice a strange note on your refrigerator that you don't remember writing: 'CHECK THE BASEMENT TONIGHT 11:30 PM'",
+        "NextId": "coffee_ready"
+      },
+      {
+        "Id": "coffee_ready",
+        "Type": "WriteNode",
+        "Content": "The coffee machine beeps. You pour yourself a cup of liquid motivation.",
+        "Variable": "has_coffee",
+        "WriteValue": true,
+        "NextId": "get_ready_with_coffee"
+      },
+      {
+        "Id": "get_ready_with_coffee",
+        "Type": "TextEvent",
+        "Content": "With coffee in hand, you feel more alert. Time to get ready for work. The client presentation is at 9:00 AM sharp.",
+        "NextId": "go_to_work_options"
+      },
+      {
+        "Id": "check_phone",
+        "Type": "TextEvent",
+        "Content": "You check your phone. Three missed calls from your boss and a text: 'DON'T FORGET THE HENDERSON PRESENTATION 9 AM!' You also notice a mysterious app you don't remember installing called 'LOOP.exe'",
+        "NextId": "check_app_options"
+      },
+      {
+        "Id": "check_app_options",
+        "Type": "Chooser",
+        "Content": "What do you do with the mysterious app?",
+        "Options": [
+          {
+            "Name": "Open the LOOP.exe app",
+            "NextId": "open_app"
+          },
+          {
+            "Name": "Ignore it and get ready for work",
+            "NextId": "ignore_app"
+          }
+        ]
+      },
+      {
+        "Id": "open_app",
+        "Type": "TextEvent",
+        "Content": "The app opens to display a single message: 'LOOP #NUMBER. FIND THE KEY. CHECK BASEMENT 11:30 PM. PASSWORD: CHRONOS.' The app then closes itself and disappears from your phone.",
+        "NextId": "discover_password"
+      },
+      {
+        "Id": "discover_password",
+        "Type": "WriteNode",
+        "Content": "You've discovered an important clue about the time loop!",
+        "Variable": "knows_password",
+        "WriteValue": true,
+        "NextId": "get_ready_without_coffee"
+      },
+      {
+        "Id": "ignore_app",
+        "Type": "TextEvent",
+        "Content": "You decide to ignore the strange app. You've got enough to worry about with the client presentation. You quickly get ready for work.",
+        "NextId": "get_ready_without_coffee"
+      },
+      {
+        "Id": "get_ready_without_coffee",
+        "Type": "TextEvent",
+        "Content": "You get ready for work, feeling a bit groggy without coffee. The Henderson presentation is at 9:00 AM sharp, and you need to make sure everything is perfect.",
+        "NextId": "go_to_work_options"
+      },
+      {
+        "Id": "go_to_work_options",
+        "Type": "Chooser",
+        "Content": "How do you get to work?",
+        "Options": [
+          {
+            "Name": "Take your car",
+            "NextId": "car_breakdown"
+          },
+          {
+            "Name": "Take the bus",
+            "NextId": "bus_ride"
+          },
+          {
+            "Name": "Call a taxi",
+            "NextId": "taxi_ride"
+          }
+        ]
+      },
+      {
+        "Id": "car_breakdown",
+        "Type": "TextEvent",
+        "Content": "You get in your car and turn the key. Nothing happens. Dead battery. Of all days! You check the time - 8:15 AM. You need an alternative, fast.",
+        "NextId": "alternative_transport"
+      },
+      {
+        "Id": "alternative_transport",
+        "Type": "Chooser",
+        "Content": "Your car won't start. What now?",
+        "Options": [
+          {
+            "Name": "Call a taxi",
+            "NextId": "taxi_ride"
+          },
+          {
+            "Name": "Run to the bus stop",
+            "NextId": "bus_ride"
+          }
+        ]
+      },
+      {
+        "Id": "bus_ride",
+        "Type": "TextEvent",
+        "Content": "You dash to the bus stop just as bus #42 arrives. As you board, you notice something odd - everyone on the bus is reading the same newspaper, and they all turn to look at you simultaneously. Creepy.",
+        "NextId": "cat_in_tree"
+      },
+      {
+        "Id": "taxi_ride",
+        "Type": "TextEvent",
+        "Content": "The taxi arrives quickly. The driver looks at you through the rearview mirror and says, 'Monday again, huh?' before you've said anything. How does he know?",
+        "NextId": "cat_in_tree"
+      },
+      {
+        "Id": "cat_in_tree",
+        "Type": "TextEvent",
+        "Content": "On your way, you pass by the park where a small crowd has gathered. A ginger cat is stuck high in a tree, meowing pitifully. A child is crying about their beloved pet.",
+        "NextId": "cat_options"
+      },
+      {
+        "Id": "cat_options",
+        "Type": "Chooser",
+        "Content": "What do you do about the cat in the tree?",
+        "Options": [
+          {
+            "Name": "Stop and try to help",
+            "NextId": "help_cat"
+          },
+          {
+            "Name": "Keep going to work",
+            "NextId": "ignore_cat"
+          }
+        ]
+      },
+      {
+        "Id": "help_cat",
+        "Type": "TextEvent",
+        "Content": "You stop to help. Using a nearby ladder, you climb up and coax the cat into your arms. As you bring it down, the grateful cat purrs and drops a small key from its collar into your hand. The child thanks you profusely.",
+        "NextId": "get_cat_key"
+      },
+      {
+        "Id": "get_cat_key",
+        "Type": "WriteNode",
+        "Content": "You pocket the mysterious key, wondering what it might open.",
+        "Variable": "has_key",
+        "WriteValue": true,
+        "NextId": "mark_cat_saved"
+      },
+      {
+        "Id": "mark_cat_saved",
+        "Type": "WriteNode",
+        "Content": "The child hugs their cat, extremely grateful for your help.",
+        "Variable": "saved_cat",
+        "WriteValue": true,
+        "NextId": "late_for_work"
+      },
+      {
+        "Id": "ignore_cat",
+        "Type": "TextEvent",
+        "Content": "You decide to keep going. The Henderson presentation is too important to risk being late. As you pass, you hear the child crying louder. You feel a twinge of guilt but push it aside.",
+        "NextId": "arrive_at_work"
+      },
+      {
+        "Id": "late_for_work",
+        "Type": "TextEvent",
+        "Content": "After helping with the cat, you rush to work. You're cutting it close for the presentation.",
+        "NextId": "arrive_at_work"
+      },
+      {
+        "Id": "arrive_at_work",
+        "Type": "TextEvent",
+        "Content": "You arrive at Infinicorp Tower, a gleaming glass monolith where you work as a marketing executive. The lobby clock reads 8:50 AM - just enough time to get to the conference room.",
+        "NextId": "elevator_options"
+      },
+      {
+        "Id": "elevator_options",
+        "Type": "Chooser",
+        "Content": "How do you get to the 15th floor?",
+        "Options": [
+          {
+            "Name": "Take the elevator",
+            "NextId": "elevator_ride"
+          },
+          {
+            "Name": "Take the stairs (15 floors!)",
+            "NextId": "take_stairs"
+          }
+        ]
+      },
+      {
+        "Id": "elevator_ride",
+        "Type": "TextEvent",
+        "Content": "You press the button for the elevator. When it arrives, Dr. Sharma from R&D is inside. She looks at you with recognition, 'Oh, you again. Having fun with the loop?' Before you can respond, she exits on the 8th floor.",
+        "NextId": "presentation_prep"
+      },
+      {
+        "Id": "take_stairs",
+        "Type": "TextEvent",
+        "Content": "You decide to take the stairs, all 15 flights. By the time you reach your floor, you're sweating and out of breath, but you made it without any strange encounters. Small victories.",
+        "NextId": "presentation_prep"
+      },
+      {
+        "Id": "presentation_prep",
+        "Type": "TextEvent",
+        "Content": "You rush into the conference room at 9:00 AM sharp. The clients from Henderson Corp are already seated, along with your boss, Janet, who gives you a skeptical look. Time to present.",
+        "NextId": "presentation_check"
+      },
+      {
+        "Id": "presentation_check",
+        "Type": "Switcher",
+        "Content": "Checking coffee status for presentation energy...",
+        "Variable": "has_coffee",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "good_presentation",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "bad_presentation",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "good_presentation",
+        "Type": "TextEvent",
+        "Content": "Thanks to your morning coffee, you're alert and on point. Your presentation goes smoothly. The Henderson executives are nodding along, clearly impressed. Janet gives you an approving smile.",
+        "NextId": "lunch_time"
+      },
+      {
+        "Id": "bad_presentation",
+        "Type": "TextEvent",
+        "Content": "Without your morning caffeine, you stumble through the presentation. You mix up key figures and forget the name of Henderson's CEO - who happens to be sitting right there. It's a disaster.",
+        "NextId": "janet_angry"
+      },
+      {
+        "Id": "janet_angry",
+        "Type": "TextEvent",
+        "Content": "After the clients leave, Janet pulls you aside. 'What was that? We've been preparing for months! Meet me in my office at 5 PM.' Her tone suggests your job might be on the line.",
+        "NextId": "lunch_time"
+      },
+      {
+        "Id": "lunch_time",
+        "Type": "TextEvent",
+        "Content": "The rest of the morning passes in a blur of emails and meetings. At lunch, you head to the company cafeteria.",
+        "NextId": "lunch_encounter"
+      },
+      {
+        "Id": "lunch_encounter",
+        "Type": "TextEvent",
+        "Content": "In the cafeteria, you see Dr. Sharma again, sitting alone. She's scribbling equations in a notebook labeled 'TEMPORAL DISPLACEMENT THEORY'.",
+        "NextId": "lunch_options"
+      },
+      {
+        "Id": "lunch_options",
+        "Type": "Chooser",
+        "Content": "What do you do?",
+        "Options": [
+          {
+            "Name": "Join Dr. Sharma and ask about time loops",
+            "NextId": "talk_to_sharma"
+          },
+          {
+            "Name": "Eat alone and check your emails",
+            "NextId": "eat_alone"
+          }
+        ]
+      },
+      {
+        "Id": "talk_to_sharma",
+        "Type": "TextEvent",
+        "Content": "You sit down across from Dr. Sharma. She doesn't seem surprised. 'I was wondering when you'd approach me. This is loop iteration number seven for you, by my count.' She slides a keycard across the table. 'Meet me in the basement lab at 11:30 PM. We need to talk.'",
+        "NextId": "back_to_work"
+      },
+      {
+        "Id": "eat_alone",
+        "Type": "TextEvent",
+        "Content": "You decide to eat alone. As you check your emails, you notice one from Dr. Sharma sent just seconds ago: 'We need to talk about the loop. Basement lab, 11:30 PM tonight.' How did she know you were thinking about her?",
+        "NextId": "back_to_work"
+      },
+      {
+        "Id": "back_to_work",
+        "Type": "TextEvent",
+        "Content": "The afternoon drags on. You can't stop thinking about the mysterious messages about the basement and 11:30 PM. Finally, 5 PM arrives.",
+        "NextId": "check_firing"
+      },
+      {
+        "Id": "check_firing",
+        "Type": "Switcher",
+        "Content": "Checking if you got fired this morning...",
+        "Variable": "got_fired",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "evening_fired",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "evening_not_fired",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "evening_fired",
+        "Type": "TextEvent",
+        "Content": "You've spent the day at home, having been fired this morning. As evening approaches, you wonder if you should investigate the basement message or just try to relax and start fresh tomorrow (though 'tomorrow' seems to be a relative concept lately).",
+        "NextId": "evening_options"
+      },
+      {
+        "Id": "evening_not_fired",
+        "Type": "TextEvent",
+        "Content": "You pack up your things and head out of the office. The day is finally over, but the evening's mystery still awaits. What will you do with your time before the 11:30 PM basement meeting?",
+        "NextId": "evening_options"
+      },
+      {
+        "Id": "evening_options",
+        "Type": "Chooser",
+        "Content": "How do you spend your evening?",
+        "Options": [
+          {
+            "Name": "Go home and research time loops",
+            "NextId": "research_loops"
+          },
+          {
+            "Name": "Go to a bar to clear your head",
+            "NextId": "go_to_bar"
+          },
+          {
+            "Name": "Take a nap to prepare for the late night",
+            "NextId": "take_nap"
+          }
+        ]
+      },
+      {
+        "Id": "research_loops",
+        "Type": "TextEvent",
+        "Content": "You spend hours browsing websites about time anomalies, quantum physics, and supernatural phenomena. Most seem like pseudoscience, but a few academic papers mention Dr. Anita Sharma's controversial research on 'temporal recursion theory.'",
+        "NextId": "prepare_for_basement"
+      },
+      {
+        "Id": "go_to_bar",
+        "Type": "TextEvent",
+        "Content": "You head to O'Malley's Pub to clear your head. The bartender hands you your usual drink before you order. 'Rough Monday?' he asks with a knowing smile. A TV in the corner is showing the same baseball game you could swear was on 'yesterday.'",
+        "NextId": "prepare_for_basement"
+      },
+      {
+        "Id": "take_nap",
+        "Type": "TextEvent",
+        "Content": "You lie down for a quick nap but fall into a deep sleep filled with vivid dreams. You're running through endless corridors, always ending up back where you started. You wake with a jolt at 11:00 PM, feeling strangely refreshed.",
+        "NextId": "prepare_for_basement"
+      },
+      {
+        "Id": "prepare_for_basement",
+        "Type": "TextEvent",
+        "Content": "It's nearly time. 11:15 PM. The basement awaits. You grab your coat and head out into the night.",
+        "NextId": "basement_arrival"
+      },
+      {
+        "Id": "basement_arrival",
+        "Type": "TextEvent",
+        "Content": "You arrive at Infinicorp Tower at 11:28 PM. The building is eerily quiet. The security guard is asleep at his desk, snoring softly. You slip past him to the basement access door, which requires a keycard and a password.",
+        "NextId": "check_basement_access"
+      },
+      {
+        "Id": "check_basement_access",
+        "Type": "Switcher",
+        "Content": "Checking if you know the password...",
+        "Variable": "knows_password",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "try_password",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "no_password",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "try_password",
+        "Type": "TextEvent",
+        "Content": "You swipe the keycard and the panel prompts for a password. You enter 'CHRONOS' from the mysterious app. The light turns green, and the door unlocks with a soft click.",
+        "NextId": "enter_basement"
+      },
+      {
+        "Id": "no_password",
+        "Type": "TextEvent",
+        "Content": "You try to open the basement door, but it requires both a keycard and a password. You don't have the password. As you stand there frustrated, the door suddenly opens from inside. Dr. Sharma looks at you with mild disappointment. 'You didn't find the password in this iteration. No matter, come in.'",
+        "NextId": "enter_basement"
+      },
+      {
+        "Id": "enter_basement",
+        "Type": "TextEvent",
+        "Content": "The basement lab is filled with humming machinery. In the center is a large device that looks like a cross between an MRI machine and a particle accelerator. Dr. Sharma is checking readings on a bank of monitors.",
+        "NextId": "sharma_explains"
+      },
+      {
+        "Id": "sharma_explains",
+        "Type": "TextEvent",
+        "Content": "'Welcome to the Chronos Project,' Dr. Sharma says. 'Last week—well, what would have been last week—an experiment went wrong. We created a localized time loop affecting about a 5-mile radius. Only a few people, like you and me, are aware of the repetition. Everyone else resets completely.'",
+        "NextId": "sharma_solution"
+      },
+      {
+        "Id": "sharma_solution",
+        "Type": "TextEvent",
+        "Content": "'The good news is, we can break the loop,' she continues. 'The bad news is, we need a quantum stabilization key that was stolen by my former lab assistant. He escaped with it, but lost it somewhere in the city. We need to find it before we can reset the machine.'",
+        "NextId": "check_for_basement_key"
+      },
+      {
+        "Id": "check_for_basement_key",
+        "Type": "Switcher",
+        "Content": "Checking if you found the key from the cat...",
+        "Variable": "has_key",
+        "DefaultValue": false,
+        "SwitchOptions": [
+          {
+            "DesiredValue": true,
+            "PathId": "have_key_ending",
+            "Domain": "EQUAL"
+          },
+          {
+            "DesiredValue": false,
+            "PathId": "no_key_ending",
+            "Domain": "EQUAL"
+          }
+        ]
+      },
+      {
+        "Id": "have_key_ending",
+        "Type": "TextEvent",
+        "Content": "You reach into your pocket and pull out the small key you got from the cat's collar. 'Could this be it?' Dr. Sharma's eyes widen. 'The quantum stabilization key! Where did you find it?' You explain about the cat in the tree. She laughs, 'Schrödinger would appreciate the irony.'",
+        "NextId": "save_loop_count"
+      },
+      {
+        "Id": "save_loop_count",
+        "Type": "WriteNode",
+        "Content": "Dr. Sharma takes the key and inserts it into the machine.",
+        "Variable": "loop_count",
+        "WriteValue": "$$loop_count + 1$$",
+        "NextId": "good_ending"
+      },
+      {
+        "Id": "good_ending",
+        "Type": "DecoratedTextEvent",
+        "Content": "LOOP BROKEN\n\nThe machine powers up, bathing the room in blue light. 'This will reset time properly,' Dr. Sharma explains. 'We'll all return to last Monday, but without the loop. Only you and I will remember any of this.' The light grows blindingly bright...\n\nYou wake up. It's Monday morning. Your alarm is playing that cheesy 80s song, but something feels different. Your phone has a text from Dr. Sharma: 'It worked! Come see me at lunch. PS - Don't forget to rescue that cat on your way to work. Some things are meant to happen, loop or no loop.'\n\nYou smile. Time to start a brand new day.\n\nTHE END",
+        "NextId": null,
+        "checkpoint": true
+      },
+      {
+        "Id": "no_key_ending",
+        "Type": "TextEvent",
+        "Content": "You explain that you don't have the key. Dr. Sharma sighs, 'Then we'll have to try again tomorrow. Or rather, today again. The loop will reset at midnight. Remember: find the key! It's small, silver, with quantum engravings. My assistant said something about a cat before he disappeared. That might be a clue.'",
+        "NextId": "save_loop_count_fail"
+      },
+      {
+        "Id": "save_loop_count_fail",
+        "Type": "WriteNode",
+        "Content": "As the clock strikes midnight, you feel the familiar pull of the loop resetting.",
+        "Variable": "loop_count",
+        "WriteValue": "$$loop_count + 1$$",
+        "NextId": "loop_again_ending"
+      },
+      {
+        "Id": "loop_again_ending",
+        "Type": "DecoratedTextEvent",
+        "Content": "LOOP CONTINUES\n\nThe world blurs around you. You feel a strange sensation, like being pulled backward through time...\n\nYour alarm blares. It's 7:00 AM, Monday. Again. But this time, you know what to do. Find the cat. Get the key. Break the loop.\n\nAnother chance begins...\n\nBack to the start!",
+        "NextId": "wake_up",
+        "checkpoint": true
+      }
+    ]
+  }

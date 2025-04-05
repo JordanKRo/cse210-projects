@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,203 +11,257 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            display: flex;
             height: 100vh;
             background-color: #f0f0f0;
         }
-        
-        #sidebar {
-            width: 300px;
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-        
+
         #canvas-container {
-            flex: 1;
+            width: 100%;
+            height: 100%;
             position: relative;
             overflow: hidden;
         }
-        
+
         #canvas {
             position: absolute;
             background-color: #f9f9f9;
             cursor: move;
         }
-        
+
         .node {
             position: absolute;
-            min-width: 150px;
-            padding: 10px;
+            min-width: 200px;
             background-color: white;
             border: 2px solid #333;
             border-radius: 5px;
-            cursor: move;
             z-index: 10;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             user-select: none;
+            transition: height 0.2s ease;
         }
-        
+
         .node.selected {
             border-color: #f00;
-            box-shadow: 0 0 10px rgba(255,0,0,0.5);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }
-        
+
         .node.checkpoint {
             background-color: #ffd9ec;
             border-color: #ff69b4;
         }
-        
-        .node.text-event {
+
+        .node.textevent {
             background-color: #e6f7ff;
             border-color: #1890ff;
         }
-        
-        .node.decorated-text-event {
+
+        .node.decoratedtextevent {
             background-color: #fff1e6;
             border-color: #fa8c16;
         }
-        
+
         .node.chooser {
             background-color: #f6ffed;
             border-color: #52c41a;
         }
-        
+
         .node.switcher {
             background-color: #f9f0ff;
             border-color: #722ed1;
         }
-        
-        .node.write-node {
+
+        .node.writenode {
             background-color: #fcffe6;
             border-color: #d6ca3a;
         }
-        
+
+        .node-header {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+
         .node-title {
             font-weight: bold;
-            margin-bottom: 5px;
-            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
-        .node-content {
-            font-size: 12px;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
+
         .node-id {
             font-size: 10px;
             color: #888;
+            margin-top: 4px;
         }
-        
+
+        .node-body {
+            padding: 8px;
+        }
+
+        .node-content {
+            margin-bottom: 8px;
+        }
+
+        .node-content textarea {
+            width: 100%;
+            min-height: 60px;
+            resize: vertical;
+            font-family: inherit;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+
+        .node-properties {
+            margin-top: 8px;
+        }
+
+        .property-row {
+            display: flex;
+            margin-bottom: 4px;
+        }
+
+        .property-label {
+            flex: 1;
+            font-size: 12px;
+        }
+
+        .property-value {
+            flex: 2;
+        }
+
+        .property-value input,
+        .property-value select {
+            width: 100%;
+            font-size: 12px;
+            padding: 2px;
+        }
+
         .connection-point {
             width: 10px;
             height: 10px;
-            background-color: #f00;
+            background-color: #555;
             border-radius: 50%;
             position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
             cursor: pointer;
             z-index: 11;
         }
-        
+
+        .entrance-point {
+            left: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #3498db;
+        }
+
+        .exit-point {
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #e74c3c;
+        }
+
+        .option-exit-point {
+            right: -5px;
+            background-color: #e74c3c;
+        }
+
         .connection {
             position: absolute;
             z-index: 5;
             pointer-events: none;
         }
-        
-        #controls {
-            margin-top: 20px;
+
+        .connection-label {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 10px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
         }
-        
-        button {
-            margin: 5px 0;
-            padding: 8px;
+
+        #toolbar {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+        }
+
+        .toolbar-button {
+            margin: 5px;
+            padding: 8px 12px;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 14px;
         }
-        
-        button:hover {
+
+        .toolbar-button:hover {
             background-color: #45a049;
         }
-        
-        #node-details {
-            margin-top: 20px;
-            display: none;
+
+        .toolbar-section {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
         }
-        
-        label {
-            display: block;
-            margin-top: 10px;
+
+        .chooser-options {
+            margin-top: 8px;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
         }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 6px;
-            margin-top: 5px;
-            box-sizing: border-box;
+
+        .option-row {
+            display: flex;
+            margin-bottom: 4px;
+            position: relative;
+            align-items: center;
         }
-        
-        textarea {
-            height: 80px;
-            resize: vertical;
+
+        .option-name {
+            flex: 3;
+            margin-right: 4px;
         }
-        
-        #json-output {
-            width: 100%;
-            height: 200px;
-            margin-top: 20px;
+
+        .option-nextid {
+            flex: 2;
         }
-        
-        #load-json {
-            background-color: #2196F3;
-        }
-        
-        #load-json:hover {
-            background-color: #0b7dda;
-        }
-        
-        #save-json {
-            background-color: #ff9800;
-        }
-        
-        #save-json:hover {
-            background-color: #e68a00;
-        }
-        
-        .node-list {
-            margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #555;
-            padding: 5px;
-        }
-        
-        .node-list-item {
-            padding: 5px;
+
+        .option-delete {
+            margin-left: 4px;
+            background-color: #ff4d4f;
+            color: white;
+            border: none;
+            border-radius: 3px;
             cursor: pointer;
-            border-bottom: 1px solid #555;
+            font-size: 10px;
+            padding: 2px 4px;
         }
-        
-        .node-list-item:hover {
-            background-color: #444;
+
+        .add-option-button {
+            margin-top: 4px;
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 4px 8px;
+            width: 100%;
         }
-        
+
         #minimap {
-            position: absolute;
+            position: fixed;
             bottom: 20px;
             right: 20px;
             width: 150px;
@@ -216,19 +271,19 @@
             z-index: 100;
             overflow: hidden;
         }
-        
+
         #minimap-content {
             position: relative;
             transform-origin: 0 0;
         }
-        
+
         .minimap-node {
             position: absolute;
             width: 5px;
             height: 5px;
             background-color: #333;
         }
-        
+
         .minimap-viewport {
             position: absolute;
             border: 1px solid red;
@@ -236,86 +291,129 @@
             background-color: rgba(255, 0, 0, 0.1);
             pointer-events: none;
         }
+
+        #json-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 800px;
+            height: 80%;
+            max-height: 600px;
+            background-color: white;
+            z-index: 200;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #json-textarea {
+            flex: 1;
+            margin: 10px 0;
+            font-family: monospace;
+            padding: 10px;
+            resize: none;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .dialog-button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .dialog-button.cancel {
+            background-color: #f44336;
+        }
+
+        .node-type-select {
+            margin: 5px 0;
+            width: 100%;
+            padding: 4px;
+        }
+
+        .checkpoint-toggle {
+            margin-top: 5px;
+        }
+
+        .node-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .node-action-button {
+            margin-left: 5px;
+            padding: 4px 8px;
+            font-size: 12px;
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .node-action-button.delete {
+            background-color: #ff4d4f;
+        }
     </style>
 </head>
+
 <body>
-    <div id="sidebar">
-        <h2>Text Adventure Node Editor</h2>
-        
-        <div id="controls">
-            <button id="new-node">Add New Node</button>
-            <button id="load-json">Load JSON</button>
-            <button id="save-json">Save JSON</button>
-            <button id="auto-layout">Auto Layout</button>
-            <button id="center-view">Center View</button>
-        </div>
-        
-        <div id="node-list-container">
-            <h3>Node List</h3>
-            <div id="node-list" class="node-list"></div>
-        </div>
-        
-        <div id="node-details">
-            <h3>Node Details</h3>
-            <label for="node-id">ID:</label>
-            <input type="text" id="node-id">
-            
-            <label for="node-type">Type:</label>
-            <select id="node-type">
-                <option value="TextEvent">TextEvent</option>
-                <option value="DecoratedTextEvent">DecoratedTextEvent</option>
-                <option value="Chooser">Chooser</option>
-                <option value="Switcher">Switcher</option>
-                <option value="WriteNode">WriteNode</option>
-            </select>
-            
-            <label for="node-content">Content:</label>
-            <textarea id="node-content"></textarea>
-            
-            <label for="node-next-id">Next ID:</label>
-            <input type="text" id="node-next-id">
-            
-            <label for="node-checkpoint">
-                <input type="checkbox" id="node-checkpoint" style="width: auto;">
-                Checkpoint
-            </label>
-            
-            <div id="variable-container" style="display: none;">
-                <label for="node-variable">Variable:</label>
-                <input type="text" id="node-variable">
-                
-                <label for="node-write-value">Write Value:</label>
-                <input type="text" id="node-write-value">
-            </div>
-            
-            <div id="options-container" style="display: none;">
-                <h4>Options</h4>
-                <div id="options-list"></div>
-                <button id="add-option">Add Option</button>
-            </div>
-        </div>
-        
-        <textarea id="json-output" style="display: none;"></textarea>
-    </div>
-    
     <div id="canvas-container">
         <div id="canvas"></div>
     </div>
-    
+
+    <div id="toolbar">
+        <div class="toolbar-section">
+            <button id="new-node-btn" class="toolbar-button">Add New Node</button>
+            <button id="auto-layout-btn" class="toolbar-button">Auto Layout</button>
+        </div>
+        <div class="toolbar-section">
+            <button id="load-json-btn" class="toolbar-button">Load JSON</button>
+            <button id="save-json-btn" class="toolbar-button">Save JSON</button>
+        </div>
+        <div class="toolbar-section">
+            <button id="center-view-btn" class="toolbar-button">Center View</button>
+            <button id="clear-selection-btn" class="toolbar-button">Clear Selection</button>
+        </div>
+    </div>
+
     <div id="minimap">
         <div id="minimap-content"></div>
         <div class="minimap-viewport"></div>
     </div>
-    
+
+    <div id="json-dialog">
+        <h2>Edit JSON</h2>
+        <textarea id="json-textarea"></textarea>
+        <div class="dialog-buttons">
+            <button id="json-cancel-btn" class="dialog-button cancel">Cancel</button>
+            <button id="json-apply-btn" class="dialog-button">Apply</button>
+        </div>
+    </div>
+
     <script>
-        // Store nodes and connections
+        // Global variables
         let nodes = [];
-        let connections = [];
         let selectedNode = null;
         let isDragging = false;
         let isCanvasDragging = false;
-        let isCreatingConnection = false;
-        let startConnectionNode = null;
+        let isDraggingConnection = false;
+        let connectionStartNode = null;
+        let connectionStartPoint = null;
         let mouseOffsetX = 0;
         let mouseOffsetY = 0;
         let canvasOffsetX = 0;
@@ -324,433 +422,746 @@
         let lastMouseX = 0;
         let lastMouseY = 0;
         let nextNodeId = 1;
-        
+
+        // DOM Elements
         const canvas = document.getElementById('canvas');
         const canvasContainer = document.getElementById('canvas-container');
-        const nodeDetailsContainer = document.getElementById('node-details');
-        const nodeIdInput = document.getElementById('node-id');
-        const nodeTypeSelect = document.getElementById('node-type');
-        const nodeContentTextarea = document.getElementById('node-content');
-        const nodeNextIdInput = document.getElementById('node-next-id');
-        const nodeCheckpointCheckbox = document.getElementById('node-checkpoint');
-        const nodeVariableInput = document.getElementById('node-variable');
-        const nodeWriteValueInput = document.getElementById('node-write-value');
-        const jsonOutput = document.getElementById('json-output');
-        const variableContainer = document.getElementById('variable-container');
-        const optionsContainer = document.getElementById('options-container');
-        const optionsList = document.getElementById('options-list');
-        const nodeList = document.getElementById('node-list');
         const minimap = document.getElementById('minimap');
         const minimapContent = document.getElementById('minimap-content');
         const minimapViewport = document.querySelector('.minimap-viewport');
-        
+        const jsonDialog = document.getElementById('json-dialog');
+        const jsonTextarea = document.getElementById('json-textarea');
+
+        // Initialize canvas
         function initCanvas() {
-            canvas.style.width = '3000px';
-            canvas.style.height = '3000px';
-            
+            canvas.style.width = '5000px';
+            canvas.style.height = '5000px';
+
             // Center the canvas initially
-            canvasOffsetX = (canvasContainer.clientWidth - 3000) / 2;
-            canvasOffsetY = (canvasContainer.clientHeight - 3000) / 2;
+            canvasOffsetX = (canvasContainer.clientWidth - 5000) / 2;
+            canvasOffsetY = (canvasContainer.clientHeight - 5000) / 2;
             updateCanvasPosition();
         }
-        
+
         function updateCanvasPosition() {
             canvas.style.transform = `translate(${canvasOffsetX}px, ${canvasOffsetY}px) scale(${zoom})`;
             updateConnectionLines();
             updateMinimap();
         }
-        
-        function createNode(id, type, content, x, y, nextId = null, checkpoint = false, options = [], variable = null, writeValue = null) {
+
+        // Find node by ID
+        function findNodeById(id) {
+            return nodes.find(node => node.id === id);
+        }
+
+        // Refresh the entire editor
+        function refreshEditor() {
+            // Clear all nodes from the DOM
+            document.querySelectorAll('.node').forEach(el => el.remove());
+
+            // Clear all connections
+            document.querySelectorAll('.connection, .connection-label').forEach(el => el.remove());
+
+            // Re-create all nodes
+            const nodesCopy = [...nodes];
+            nodes = [];
+
+            nodesCopy.forEach(nodeData => {
+                createNode({
+                    id: nodeData.id,
+                    type: nodeData.type,
+                    content: nodeData.content,
+                    nextId: nodeData.nextId,
+                    x: nodeData.x,
+                    y: nodeData.y,
+                    checkpoint: nodeData.checkpoint,
+                    variable: nodeData.variable,
+                    writeValue: nodeData.writeValue,
+                    options: nodeData.options
+                });
+            });
+
+            // Update connections
+            updateConnectionLines();
+
+            // Update minimap
+            updateMinimap();
+        }
+
+        // Create a new node
+        function createNode(data) {
+            const nodeData = {
+                id: data.id || `node_${nextNodeId++}`,
+                type: data.type || 'TextEvent',
+                content: data.content || 'New node content',
+                nextId: data.nextId || null,
+                x: data.x || 100,
+                y: data.y || 100,
+                checkpoint: data.checkpoint || false,
+                variable: data.variable || '',
+                writeValue: data.writeValue,
+                options: data.options || []
+            };
+
+            // Create node element
             const node = document.createElement('div');
-            node.className = 'node ' + type.toLowerCase();
-            node.dataset.id = id;
-            node.dataset.type = type;
-            node.dataset.content = content;
-            node.dataset.nextId = nextId || '';
-            node.dataset.checkpoint = checkpoint;
-            node.dataset.variable = variable || '';
-            node.dataset.writeValue = writeValue !== null ? writeValue : '';
-            
-            if (checkpoint) {
+            node.className = `node ${nodeData.type.toLowerCase()}`;
+            node.dataset.id = nodeData.id;
+
+            if (nodeData.checkpoint) {
                 node.classList.add('checkpoint');
             }
-            
-            node.style.left = x + 'px';
-            node.style.top = y + 'px';
-            
-            const titleContent = content.length > 30 ? content.substring(0, 30) + '...' : content;
-            
-            node.innerHTML = `
-                <div class="node-title">${type}</div>
-                <div class="node-content">${titleContent}</div>
-                <div class="node-id">ID: ${id}</div>
-                <div class="connection-point"></div>
-            `;
-            
-            canvas.appendChild(node);
-            
-            // Store node data
-            nodes.push({
-                id,
-                element: node,
-                type,
-                content,
-                nextId,
-                checkpoint,
-                x,
-                y,
-                options,
-                variable,
-                writeValue
+
+            node.style.left = nodeData.x + 'px';
+            node.style.top = nodeData.y + 'px';
+
+            // Create the node header
+            const nodeHeader = document.createElement('div');
+            nodeHeader.className = 'node-header';
+
+            const titleDiv = document.createElement('div');
+            titleDiv.innerHTML = `<div class="node-title">${nodeData.type}</div><div class="node-id">${nodeData.id}</div>`;
+
+            const typeSelect = document.createElement('select');
+            typeSelect.className = 'node-type-select';
+            ['TextEvent', 'DecoratedTextEvent', 'Chooser', 'Switcher', 'WriteNode'].forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                if (type === nodeData.type) {
+                    option.selected = true;
+                }
+                typeSelect.appendChild(option);
             });
-            
+
+            typeSelect.addEventListener('change', function () {
+                nodeData.type = this.value;
+                refreshEditor();
+            });
+
+            nodeHeader.appendChild(titleDiv);
+
+            // Create node body
+            const nodeBody = document.createElement('div');
+            nodeBody.className = 'node-body';
+
+            // Content area
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'node-content';
+
+            const contentTextarea = document.createElement('textarea');
+            contentTextarea.value = nodeData.content;
+            contentTextarea.placeholder = 'Node content...';
+            contentTextarea.addEventListener('input', function () {
+                nodeData.content = this.value;
+                refreshEditor();
+            });
+
+            contentDiv.appendChild(contentTextarea);
+            nodeBody.appendChild(contentDiv);
+
+            // Properties area
+            const propertiesDiv = document.createElement('div');
+            propertiesDiv.className = 'node-properties';
+
+            // Type selector
+            const typeRow = document.createElement('div');
+            typeRow.className = 'property-row';
+            typeRow.innerHTML = `<div class="property-label">Type:</div>`;
+            const typeValueDiv = document.createElement('div');
+            typeValueDiv.className = 'property-value';
+            typeValueDiv.appendChild(typeSelect);
+            typeRow.appendChild(typeValueDiv);
+            propertiesDiv.appendChild(typeRow);
+
+            // Checkpoint toggle
+            const checkpointRow = document.createElement('div');
+            checkpointRow.className = 'property-row checkpoint-toggle';
+            const checkboxLabel = document.createElement('label');
+            checkboxLabel.innerHTML = `<input type="checkbox" ${nodeData.checkpoint ? 'checked' : ''}> Checkpoint`;
+
+            const checkbox = checkboxLabel.querySelector('input');
+            checkbox.addEventListener('change', function () {
+                nodeData.checkpoint = this.checked;
+                refreshEditor();
+            });
+
+            checkpointRow.appendChild(checkboxLabel);
+            propertiesDiv.appendChild(checkpointRow);
+
+            // Next ID field (only if not a Chooser)
+            if (nodeData.type !== 'Chooser') {
+                const nextIdRow = document.createElement('div');
+                nextIdRow.className = 'property-row';
+                nextIdRow.innerHTML = `<div class="property-label">Next ID:</div>`;
+
+                const nextIdInput = document.createElement('input');
+                nextIdInput.type = 'text';
+                nextIdInput.value = nodeData.nextId || '';
+                nextIdInput.placeholder = 'Next node ID';
+                nextIdInput.addEventListener('input', function () {
+                    nodeData.nextId = this.value || null;
+                    refreshEditor();
+                });
+
+                const nextIdValueDiv = document.createElement('div');
+                nextIdValueDiv.className = 'property-value';
+                nextIdValueDiv.appendChild(nextIdInput);
+                nextIdRow.appendChild(nextIdValueDiv);
+                propertiesDiv.appendChild(nextIdRow);
+            }
+
+            // Variable fields for WriteNode and Switcher
+            if (nodeData.type === 'WriteNode' || nodeData.type === 'Switcher') {
+                const variableRow = document.createElement('div');
+                variableRow.className = 'property-row';
+                variableRow.innerHTML = `<div class="property-label">Variable:</div>`;
+
+                const variableInput = document.createElement('input');
+                variableInput.type = 'text';
+                variableInput.value = nodeData.variable || '';
+                variableInput.placeholder = 'Variable name';
+                variableInput.addEventListener('input', function () {
+                    nodeData.variable = this.value;
+                    refreshEditor();
+                });
+
+                const variableValueDiv = document.createElement('div');
+                variableValueDiv.className = 'property-value';
+                variableValueDiv.appendChild(variableInput);
+                variableRow.appendChild(variableValueDiv);
+                propertiesDiv.appendChild(variableRow);
+
+                // Write value for WriteNode
+                if (nodeData.type === 'WriteNode') {
+                    const writeValueRow = document.createElement('div');
+                    writeValueRow.className = 'property-row';
+                    writeValueRow.innerHTML = `<div class="property-label">Write Value:</div>`;
+
+                    const writeValueInput = document.createElement('input');
+                    writeValueInput.type = 'text';
+                    writeValueInput.value = nodeData.writeValue !== undefined ? String(nodeData.writeValue) : '';
+                    writeValueInput.placeholder = 'Value to write';
+                    writeValueInput.addEventListener('input', function () {
+                        // Convert to appropriate type
+                        const val = this.value;
+                        if (val.toLowerCase() === 'true') {
+                            nodeData.writeValue = true;
+                        } else if (val.toLowerCase() === 'false') {
+                            nodeData.writeValue = false;
+                        } else if (!isNaN(val) && val !== '') {
+                            nodeData.writeValue = Number(val);
+                        } else {
+                            nodeData.writeValue = val;
+                        }
+                        refreshEditor();
+                    });
+
+                    const writeValueDiv = document.createElement('div');
+                    writeValueDiv.className = 'property-value';
+                    writeValueDiv.appendChild(writeValueInput);
+                    writeValueRow.appendChild(writeValueDiv);
+                    propertiesDiv.appendChild(writeValueRow);
+                }
+            }
+
+            // Options for Chooser
+            if (nodeData.type === 'Chooser') {
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'chooser-options';
+                optionsDiv.innerHTML = '<h4>Options:</h4>';
+
+                // Render each option
+                nodeData.options.forEach((option, index) => {
+                    const optionRow = document.createElement('div');
+                    optionRow.className = 'option-row';
+                    optionRow.style.position = 'relative';
+
+                    const nameInput = document.createElement('input');
+                    nameInput.type = 'text';
+                    nameInput.className = 'option-name';
+                    nameInput.value = option.Name || '';
+                    nameInput.placeholder = 'Option text';
+                    nameInput.addEventListener('input', function () {
+                        option.Name = this.value;
+                        refreshEditor();
+                    });
+
+                    const nextIdInput = document.createElement('input');
+                    nextIdInput.type = 'text';
+                    nextIdInput.className = 'option-nextid';
+                    nextIdInput.value = option.NextId || '';
+                    nextIdInput.placeholder = 'Next ID';
+                    nextIdInput.addEventListener('input', function () {
+                        option.NextId = this.value;
+                        refreshEditor();
+                    });
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'option-delete';
+                    deleteBtn.textContent = 'X';
+                    deleteBtn.addEventListener('click', function () {
+                        nodeData.options.splice(index, 1);
+                        refreshEditor();
+                    });
+
+                    // Add exit connection point
+                    const exitPoint = document.createElement('div');
+                    exitPoint.className = 'connection-point option-exit-point';
+                    exitPoint.dataset.optionIndex = index;
+                    exitPoint.style.top = `${28 + index * 28}px`;
+
+                    exitPoint.addEventListener('mousedown', function (e) {
+                        e.stopPropagation();
+                        isDraggingConnection = true;
+                        connectionStartNode = nodeData;
+                        connectionStartPoint = {
+                            type: 'option',
+                            index: parseInt(this.dataset.optionIndex)
+                        };
+
+                        createTemporaryConnectionLine(e);
+                    });
+
+                    optionRow.appendChild(nameInput);
+                    optionRow.appendChild(nextIdInput);
+                    optionRow.appendChild(deleteBtn);
+                    optionsDiv.appendChild(optionRow);
+                    node.appendChild(exitPoint);
+                });
+
+                // Add button to add new option
+                const addButton = document.createElement('button');
+                addButton.className = 'add-option-button';
+                addButton.textContent = '+ Add Option';
+                addButton.addEventListener('click', function () {
+                    nodeData.options.push({ Name: 'New Option', NextId: '' });
+                    refreshEditor();
+                });
+
+                optionsDiv.appendChild(addButton);
+                propertiesDiv.appendChild(optionsDiv);
+            }
+
+            // Add delete button
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'node-actions';
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'node-action-button delete';
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.addEventListener('click', function () {
+                deleteNode(nodeData.id);
+            });
+
+            actionsDiv.appendChild(deleteBtn);
+            propertiesDiv.appendChild(actionsDiv);
+
+            nodeBody.appendChild(propertiesDiv);
+
+            // Add header and body to the node
+            node.appendChild(nodeHeader);
+            node.appendChild(nodeBody);
+
+            // Add entrance connection point
+            const entrancePoint = document.createElement('div');
+            entrancePoint.className = 'connection-point entrance-point';
+            node.appendChild(entrancePoint);
+
+            // Add exit connection point for non-Chooser nodes
+            if (nodeData.type !== 'Chooser') {
+                const exitPoint = document.createElement('div');
+                exitPoint.className = 'connection-point exit-point';
+
+                exitPoint.addEventListener('mousedown', function (e) {
+                    e.stopPropagation();
+                    isDraggingConnection = true;
+                    connectionStartNode = nodeData;
+                    connectionStartPoint = { type: 'main' };
+
+                    createTemporaryConnectionLine(e);
+                });
+
+                node.appendChild(exitPoint);
+            }
+
             // Make node draggable
-            node.addEventListener('mousedown', startDragNode);
-            
-            // Add connection point functionality
-            const connectionPoint = node.querySelector('.connection-point');
-            connectionPoint.addEventListener('mousedown', (e) => {
-                e.stopPropagation();
-                isCreatingConnection = true;
-                startConnectionNode = node;
-            });
-            
-            // Select node on click
-            node.addEventListener('click', (e) => {
+            nodeHeader.addEventListener('mousedown', function (e) {
+                if (isDraggingConnection) return;
+
                 selectNode(node);
+                isDragging = true;
+
+                const rect = node.getBoundingClientRect();
+                mouseOffsetX = e.clientX - rect.left;
+                mouseOffsetY = e.clientY - rect.top;
+
+                e.preventDefault();
             });
-            
-            return node;
+
+            // Add node to the DOM
+            canvas.appendChild(node);
+
+            // Store node data
+            nodes.push(nodeData);
+
+            return nodeData;
         }
-        
-        function startDragNode(e) {
-            if (isCreatingConnection) return;
-            
-            selectNode(this);
-            isDragging = true;
-            
-            const rect = this.getBoundingClientRect();
-            mouseOffsetX = e.clientX - rect.left;
-            mouseOffsetY = e.clientY - rect.top;
-            
-            e.preventDefault();
+
+        // Delete a node
+        function deleteNode(id) {
+            const nodeIndex = nodes.findIndex(n => n.id === id);
+            if (nodeIndex === -1) return;
+
+            // Remove node from data array
+            nodes.splice(nodeIndex, 1);
+
+            // Remove any references to this node
+            nodes.forEach(node => {
+                if (node.nextId === id) {
+                    node.nextId = null;
+                }
+
+                if (node.options) {
+                    node.options.forEach(option => {
+                        if (option.NextId === id) {
+                            option.NextId = '';
+                        }
+                    });
+                }
+            });
+
+            // Clear selection if this was the selected node
+            if (selectedNode && selectedNode.dataset.id === id) {
+                selectedNode = null;
+            }
+
+            // Refresh the editor
+            refreshEditor();
         }
-        
+
+        // Select a node
         function selectNode(node) {
             // Deselect previously selected node
             if (selectedNode) {
                 selectedNode.classList.remove('selected');
             }
-            
+
             // Select new node
             selectedNode = node;
             node.classList.add('selected');
-            
-            // Update node details form
-            updateNodeDetailsForm();
-            
-            // Show node details
-            nodeDetailsContainer.style.display = 'block';
         }
-        
-        function updateNodeDetailsForm() {
-            if (!selectedNode) return;
-            
-            const id = selectedNode.dataset.id;
-            const type = selectedNode.dataset.type;
-            const content = selectedNode.dataset.content;
-            const nextId = selectedNode.dataset.nextId;
-            const checkpoint = selectedNode.dataset.checkpoint === 'true';
-            const variable = selectedNode.dataset.variable;
-            const writeValue = selectedNode.dataset.writeValue;
-            
-            nodeIdInput.value = id;
-            nodeTypeSelect.value = type;
-            nodeContentTextarea.value = content;
-            nodeNextIdInput.value = nextId;
-            nodeCheckpointCheckbox.checked = checkpoint;
-            nodeVariableInput.value = variable || '';
-            nodeWriteValueInput.value = writeValue || '';
-            
-            // Show/hide variable container based on node type
-            variableContainer.style.display = type === 'WriteNode' || type === 'Switcher' ? 'block' : 'none';
-            
-            // Show/hide options container based on node type
-            optionsContainer.style.display = type === 'Chooser' ? 'block' : 'none';
-            
-            // Clear and populate options list
-            optionsList.innerHTML = '';
-            const nodeData = findNodeDataById(id);
-            
-            if (nodeData && nodeData.options && nodeData.options.length > 0) {
-                nodeData.options.forEach((option, index) => {
-                    const optionDiv = document.createElement('div');
-                    optionDiv.innerHTML = `
-                        <div style="display: flex; margin-bottom: 5px;">
-                            <input type="text" placeholder="Option name" value="${option.Name}" style="flex: 2; margin-right: 5px;">
-                            <input type="text" placeholder="Next ID" value="${option.NextId}" style="flex: 1;">
-                            <button class="remove-option" data-index="${index}" style="margin-left: 5px;">X</button>
-                        </div>
-                    `;
-                    optionsList.appendChild(optionDiv);
-                    
-                    // Add event listener to remove button
-                    optionDiv.querySelector('.remove-option').addEventListener('click', function() {
-                        const index = parseInt(this.dataset.index);
-                        nodeData.options.splice(index, 1);
-                        updateNodeDetailsForm();
-                    });
-                });
+
+        // Clear the current selection
+        function clearSelection() {
+            if (selectedNode) {
+                selectedNode.classList.remove('selected');
+                selectedNode = null;
             }
         }
-        
-        function createConnection(fromNode, toNode) {
-            const connection = {
-                from: fromNode.dataset.id,
-                to: toNode.dataset.id,
-                element: document.createElement('div')
-            };
-            
-            connection.element.className = 'connection';
-            canvas.insertBefore(connection.element, canvas.firstChild);
-            
-            connections.push(connection);
-            
-            updateConnectionLine(connection);
-            
-            // Update nextId of the fromNode
-            fromNode.dataset.nextId = toNode.dataset.id;
-            
-            // Find and update the node data
-            const nodeData = findNodeDataById(fromNode.dataset.id);
-            if (nodeData) {
-                nodeData.nextId = toNode.dataset.id;
-            }
-            
-            // Update node details form if the selected node is the fromNode
-            if (selectedNode === fromNode) {
-                updateNodeDetailsForm();
-            }
-        }
-        
-        function updateConnectionLine(connection) {
-            const fromNode = document.querySelector(`.node[data-id="${connection.from}"]`);
-            const toNode = document.querySelector(`.node[data-id="${connection.to}"]`);
-            
-            if (!fromNode || !toNode) {
-                // Remove connection if nodes don't exist
-                removeConnection(connection);
-                return;
-            }
-            
-            const fromRect = fromNode.getBoundingClientRect();
-            const toRect = toNode.getBoundingClientRect();
-            const canvasRect = canvas.getBoundingClientRect();
-            
-            // Calculate the center of the connection point at the bottom of fromNode
-            const x1 = fromNode.offsetLeft + fromNode.offsetWidth / 2;
-            const y1 = fromNode.offsetTop + fromNode.offsetHeight;
-            
-            // Calculate the center of the toNode
-            const x2 = toNode.offsetLeft + toNode.offsetWidth / 2;
-            const y2 = toNode.offsetTop;
-            
-            // Calculate the distance and angle
-            const dx = x2 - x1;
-            const dy = y2 - y1;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-            
-            // Set the line style
-            connection.element.style.width = `${distance}px`;
-            connection.element.style.left = `${x1}px`;
-            connection.element.style.top = `${y1}px`;
-            connection.element.style.transform = `rotate(${angle}deg)`;
-            connection.element.style.transformOrigin = '0 0';
-            connection.element.style.borderTop = '2px solid #666';
-        }
-        
+
+        // Update all connection lines
         function updateConnectionLines() {
-            connections.forEach(updateConnectionLine);
-        }
-        
-        function removeConnection(connection) {
-            const index = connections.indexOf(connection);
-            if (index !== -1) {
-                if (connection.element.parentNode) {
-                    connection.element.parentNode.removeChild(connection.element);
+            // Remove all existing connections
+            document.querySelectorAll('.connection, .connection-label').forEach(el => el.remove());
+
+            // Create new connections
+            nodes.forEach(fromNode => {
+                // Handle main nextId connection
+                if (fromNode.nextId) {
+                    const toNode = findNodeById(fromNode.nextId);
+                    if (toNode) {
+                        createConnectionLine(fromNode, toNode);
+                    }
                 }
-                connections.splice(index, 1);
-            }
-        }
-        
-        function findNodeDataById(id) {
-            return nodes.find(node => node.id === id);
-        }
-        
-        function updateNodeFromForm() {
-            if (!selectedNode) return;
-            
-            const id = nodeIdInput.value;
-            const type = nodeTypeSelect.value;
-            const content = nodeContentTextarea.value;
-            const nextId = nodeNextIdInput.value;
-            const checkpoint = nodeCheckpointCheckbox.checked;
-            const variable = nodeVariableInput.value;
-            const writeValue = nodeWriteValueInput.value;
-            
-            // Update node element
-            selectedNode.dataset.id = id;
-            selectedNode.dataset.type = type;
-            selectedNode.dataset.content = content;
-            selectedNode.dataset.nextId = nextId;
-            selectedNode.dataset.checkpoint = checkpoint;
-            selectedNode.dataset.variable = variable;
-            selectedNode.dataset.writeValue = writeValue;
-            
-            // Update class based on type
-            selectedNode.className = 'node ' + type.toLowerCase();
-            if (checkpoint) {
-                selectedNode.classList.add('checkpoint');
-            }
-            selectedNode.classList.add('selected'); // Maintain selection
-            
-            // Update title and content display
-            const titleContent = content.length > 30 ? content.substring(0, 30) + '...' : content;
-            selectedNode.querySelector('.node-title').textContent = type;
-            selectedNode.querySelector('.node-content').textContent = titleContent;
-            selectedNode.querySelector('.node-id').textContent = 'ID: ' + id;
-            
-            // Find and update the node data
-            const nodeData = findNodeDataById(selectedNode.dataset.id);
-            if (nodeData) {
-                nodeData.type = type;
-                nodeData.content = content;
-                nodeData.nextId = nextId;
-                nodeData.checkpoint = checkpoint;
-                nodeData.variable = variable;
-                nodeData.writeValue = writeValue;
-                
-                // Update options if it's a Chooser
-                if (type === 'Chooser') {
-                    const options = [];
-                    const optionElements = optionsList.querySelectorAll('div');
-                    
-                    optionElements.forEach(optionElement => {
-                        const inputs = optionElement.querySelectorAll('input');
-                        if (inputs.length >= 2) {
-                            options.push({
-                                Name: inputs[0].value,
-                                NextId: inputs[1].value
-                            });
+
+                // Handle options for Chooser nodes
+                if (fromNode.type === 'Chooser' && fromNode.options) {
+                    fromNode.options.forEach((option, index) => {
+                        if (option.NextId) {
+                            const toNode = findNodeById(option.NextId);
+                            if (toNode) {
+                                createConnectionLine(fromNode, toNode, option.Name, index);
+                            }
                         }
                     });
-                    
-                    nodeData.options = options;
                 }
-            }
-            
-            // Update connections
-            updateConnectionLines();
-            
-            // Update node list
-            updateNodeList();
-        }
-        
-        function updateNodeList() {
-            nodeList.innerHTML = '';
-            
-            nodes.sort((a, b) => a.id.localeCompare(b.id)).forEach(node => {
-                const item = document.createElement('div');
-                item.className = 'node-list-item';
-                item.textContent = `${node.id} (${node.type})`;
-                item.dataset.id = node.id;
-                
-                item.addEventListener('click', () => {
-                    // Find the node element
-                    const nodeElement = document.querySelector(`.node[data-id="${node.id}"]`);
-                    if (nodeElement) {
-                        // Select the node
-                        selectNode(nodeElement);
-                        
-                        // Center view on the node
-                        centerViewOnNode(node);
-                    }
-                });
-                
-                nodeList.appendChild(item);
             });
         }
-        
-        function centerViewOnNode(node) {
-            const containerWidth = canvasContainer.clientWidth;
-            const containerHeight = canvasContainer.clientHeight;
-            
-            canvasOffsetX = containerWidth / 2 - node.x * zoom - 75 * zoom; // 75 is half the default node width
-            canvasOffsetY = containerHeight / 2 - node.y * zoom - 75 * zoom; // 75 is half the default node height
-            
-            updateCanvasPosition();
+
+        // Create a connection line between two nodes
+        function createConnectionLine(fromNode, toNode, label = null, optionIndex = -1) {
+            const fromEl = document.querySelector(`.node[data-id="${fromNode.id}"]`);
+            const toEl = document.querySelector(`.node[data-id="${toNode.id}"]`);
+
+            if (!fromEl || !toEl) return;
+
+            const line = document.createElement('div');
+            line.className = 'connection';
+
+            // Get connection points
+            let startX, startY, endX, endY;
+
+            if (optionIndex >= 0) {
+                // Connection from an option exit point
+                const exitPoint = fromEl.querySelector(`.option-exit-point[data-option-index="${optionIndex}"]`);
+                if (exitPoint) {
+                    startX = fromNode.x + fromEl.offsetWidth;
+                    startY = fromNode.y + exitPoint.offsetTop + 5; // Center of exit point
+                } else {
+                    startX = fromNode.x + fromEl.offsetWidth;
+                    startY = fromNode.y + 30 + optionIndex * 28; // Approximate position
+                }
+            } else {
+                // Normal exit point
+                startX = fromNode.x + fromEl.offsetWidth;
+                startY = fromNode.y + fromEl.offsetHeight / 2;
+            }
+
+            // Entry point is always on the left
+            endX = toNode.x;
+            endY = toNode.y + toEl.offsetHeight / 2;
+
+            // Calculate the distance and angle
+            const dx = endX - startX;
+            const dy = endY - startY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+            // Set the line style
+            line.style.width = `${distance}px`;
+            line.style.left = `${startX}px`;
+            line.style.top = `${startY}px`;
+            line.style.transform = `rotate(${angle}deg)`;
+            line.style.transformOrigin = '0 0';
+            line.style.borderTop = '2px solid #666';
+
+            canvas.appendChild(line);
+
+            // Add label if provided
+            if (label) {
+                const labelEl = document.createElement('div');
+                labelEl.className = 'connection-label';
+                labelEl.textContent = label;
+
+                // Position label at midpoint of line
+                const midX = startX + dx / 2;
+                const midY = startY + dy / 2;
+
+                labelEl.style.left = `${midX}px`;
+                labelEl.style.top = `${midY}px`;
+
+                canvas.appendChild(labelEl);
+            }
         }
-        
+
+        // Create temporary connection line when dragging
+        function createTemporaryConnectionLine(e) {
+            let tempLine = document.getElementById('temp-connection-line');
+            if (tempLine) {
+                tempLine.remove();
+            }
+
+            tempLine = document.createElement('div');
+            tempLine.id = 'temp-connection-line';
+            tempLine.className = 'connection';
+            tempLine.style.borderTop = '2px dashed #f00';
+            canvas.appendChild(tempLine);
+
+            updateTemporaryConnectionLine(e);
+        }
+
+        // Update the temporary connection line position
+        function updateTemporaryConnectionLine(e) {
+            if (!isDraggingConnection || !connectionStartNode) return;
+
+            const tempLine = document.getElementById('temp-connection-line');
+            if (!tempLine) return;
+
+            const startNodeEl = document.querySelector(`.node[data-id="${connectionStartNode.id}"]`);
+            if (!startNodeEl) return;
+
+            let startX, startY;
+
+            if (connectionStartPoint.type === 'option') {
+                // Start from option exit point
+                const optionIndex = connectionStartPoint.index;
+                const exitPoint = startNodeEl.querySelector(`.option-exit-point[data-option-index="${optionIndex}"]`);
+
+                if (exitPoint) {
+                    startX = connectionStartNode.x + startNodeEl.offsetWidth;
+                    startY = connectionStartNode.y + exitPoint.offsetTop + 5;
+                } else {
+                    startX = connectionStartNode.x + startNodeEl.offsetWidth;
+                    startY = connectionStartNode.y + 30 + optionIndex * 28;
+                }
+            } else {
+                // Start from main exit point
+                startX = connectionStartNode.x + startNodeEl.offsetWidth;
+                startY = connectionStartNode.y + startNodeEl.offsetHeight / 2;
+            }
+
+            const canvasRect = canvas.getBoundingClientRect();
+            const endX = (e.clientX - canvasRect.left - canvasOffsetX) / zoom;
+            const endY = (e.clientY - canvasRect.top - canvasOffsetY) / zoom;
+
+            // Calculate the distance and angle
+            const dx = endX - startX;
+            const dy = endY - startY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+            // Set the line style
+            tempLine.style.width = `${distance}px`;
+            tempLine.style.left = `${startX}px`;
+            tempLine.style.top = `${startY}px`;
+            tempLine.style.transform = `rotate(${angle}deg)`;
+            tempLine.style.transformOrigin = '0 0';
+        }
+
+        // Complete a connection when a line is dragged to a node
+        function completeConnection(targetNodeId) {
+            if (!isDraggingConnection || !connectionStartNode) return;
+
+            // Remove temporary line
+            const tempLine = document.getElementById('temp-connection-line');
+            if (tempLine) {
+                tempLine.remove();
+            }
+
+            // Get target node
+            const targetNode = findNodeById(targetNodeId);
+            if (!targetNode) return;
+
+            // Update connection in the node data
+            if (connectionStartPoint.type === 'option') {
+                // Update option nextId
+                const optionIndex = connectionStartPoint.index;
+                if (connectionStartNode.options && connectionStartNode.options[optionIndex]) {
+                    connectionStartNode.options[optionIndex].NextId = targetNodeId;
+                }
+            } else {
+                // Update main nextId
+                connectionStartNode.nextId = targetNodeId;
+            }
+
+            // Refresh the editor
+            refreshEditor();
+        }
+
+        // Update minimap
+        function updateMinimap() {
+            // Clear minimap
+            minimapContent.innerHTML = '';
+
+            // Calculate scale factor for minimap
+            const canvasWidth = 5000;
+            const canvasHeight = 5000;
+            const minimapWidth = minimap.clientWidth;
+            const minimapHeight = minimap.clientHeight;
+
+            const scaleX = minimapWidth / canvasWidth;
+            const scaleY = minimapHeight / canvasHeight;
+
+            // Add nodes to minimap
+            nodes.forEach(node => {
+                const minimapNode = document.createElement('div');
+                minimapNode.className = 'minimap-node';
+                minimapNode.style.left = (node.x * scaleX) + 'px';
+                minimapNode.style.top = (node.y * scaleY) + 'px';
+
+                if (node.type === 'Chooser') {
+                    minimapNode.style.backgroundColor = '#52c41a';
+                } else if (node.type === 'DecoratedTextEvent') {
+                    minimapNode.style.backgroundColor = '#fa8c16';
+                } else if (node.checkpoint) {
+                    minimapNode.style.backgroundColor = '#ff69b4';
+                }
+
+                minimapContent.appendChild(minimapNode);
+            });
+
+            // Update viewport rectangle
+            const viewportWidth = Math.min(canvasContainer.clientWidth / (zoom * canvasWidth) * minimapWidth, minimapWidth);
+            const viewportHeight = Math.min(canvasContainer.clientHeight / (zoom * canvasHeight) * minimapHeight, minimapHeight);
+
+            // Calculate viewport position
+            const viewportX = Math.min(Math.max((-canvasOffsetX / zoom) * scaleX, 0), minimapWidth - viewportWidth);
+            const viewportY = Math.min(Math.max((-canvasOffsetY / zoom) * scaleY, 0), minimapHeight - viewportHeight);
+
+            minimapViewport.style.width = viewportWidth + 'px';
+            minimapViewport.style.height = viewportHeight + 'px';
+            minimapViewport.style.left = viewportX + 'px';
+            minimapViewport.style.top = viewportY + 'px';
+        }
+
+        // Auto layout nodes
         function autoLayoutNodes() {
-            // Simple automatic layout algorithm
+            // Create a map of levels
             const levelMap = {};
             const processed = new Set();
-            const nodeWidth = 150;
-            const nodeHeight = 100;
-            const horizSpacing = 200;
+            const horizSpacing = 300;
             const vertSpacing = 150;
-            
-            // Find root nodes (without incoming connections)
+
+            // Find root nodes (nodes without incoming connections)
             let rootNodes = [...nodes];
-            
-            connections.forEach(conn => {
-                const toNodeIndex = rootNodes.findIndex(n => n.id === conn.to);
-                if (toNodeIndex !== -1) {
-                    rootNodes.splice(toNodeIndex, 1);
+
+            nodes.forEach(node => {
+                if (node.nextId) {
+                    const targetNode = findNodeById(node.nextId);
+                    if (targetNode) {
+                        rootNodes = rootNodes.filter(n => n.id !== targetNode.id);
+                    }
+                }
+
+                if (node.options) {
+                    node.options.forEach(option => {
+                        if (option.NextId) {
+                            const targetNode = findNodeById(option.NextId);
+                            if (targetNode) {
+                                rootNodes = rootNodes.filter(n => n.id !== targetNode.id);
+                            }
+                        }
+                    });
                 }
             });
-            
+
             // If no root nodes found, use the first node
             if (rootNodes.length === 0 && nodes.length > 0) {
                 rootNodes = [nodes[0]];
             }
-            
-            // Assign levels starting from root nodes
-            function assignLevels(nodeId, level) {
+
+            // Assign levels
+            function assignLevel(nodeId, level) {
                 if (processed.has(nodeId)) return;
                 processed.add(nodeId);
-                
+
                 if (!levelMap[level]) {
                     levelMap[level] = [];
                 }
                 levelMap[level].push(nodeId);
-                
-                // Find all connections from this node
-                const outgoingConnections = connections.filter(conn => conn.from === nodeId);
-                outgoingConnections.forEach(conn => {
-                    assignLevels(conn.to, level + 1);
-                });
-                
-                // Check for nextId
-                const nodeData = findNodeDataById(nodeId);
-                if (nodeData && nodeData.nextId && nodeData.nextId !== '') {
-                    assignLevels(nodeData.nextId, level + 1);
+
+                const node = findNodeById(nodeId);
+                if (!node) return;
+
+                // Process nextId
+                if (node.nextId) {
+                    assignLevel(node.nextId, level + 1);
                 }
-                
-                // Check for chooser options
-                if (nodeData && nodeData.options && nodeData.options.length > 0) {
-                    nodeData.options.forEach(option => {
-                        if (option.NextId && option.NextId !== '') {
-                            assignLevels(option.NextId, level + 1);
+
+                // Process options
+                if (node.options) {
+                    node.options.forEach(option => {
+                        if (option.NextId) {
+                            assignLevel(option.NextId, level + 1);
                         }
                     });
                 }
             }
-            
-            rootNodes.forEach(node => assignLevels(node.id, 0));
-            
-            // For any unprocessed nodes, assign them to level 0
+
+            rootNodes.forEach(node => assignLevel(node.id, 0));
+
+            // Any unprocessed nodes get assigned to level 0
             nodes.forEach(node => {
                 if (!processed.has(node.id)) {
                     if (!levelMap[0]) {
@@ -759,68 +1170,26 @@
                     levelMap[0].push(node.id);
                 }
             });
-            
-            // Position nodes based on their levels
+
+            // Position nodes based on levels
             Object.keys(levelMap).forEach(level => {
                 const nodesInLevel = levelMap[level];
                 const levelInt = parseInt(level);
-                
+
                 nodesInLevel.forEach((nodeId, index) => {
-                    const nodeData = findNodeDataById(nodeId);
-                    if (nodeData) {
-                        const x = index * horizSpacing + 50;
-                        const y = levelInt * vertSpacing + 50;
-                        
-                        nodeData.x = x;
-                        nodeData.y = y;
-                        nodeData.element.style.left = x + 'px';
-                        nodeData.element.style.top = y + 'px';
+                    const node = findNodeById(nodeId);
+                    if (node) {
+                        node.x = levelInt * horizSpacing + 50;
+                        node.y = index * vertSpacing + 50;
                     }
                 });
             });
-            
-            // Update connections
-            updateConnectionLines();
-            updateMinimap();
+
+            // Refresh the editor
+            refreshEditor();
         }
-        
-        function updateMinimap() {
-            // Clear minimap
-            minimapContent.innerHTML = '';
-            
-            // Calculate scale factor for minimap
-            const canvasWidth = 3000;
-            const canvasHeight = 3000;
-            const minimapWidth = minimap.clientWidth;
-            const minimapHeight = minimap.clientHeight;
-            
-            const scaleX = minimapWidth / canvasWidth;
-            const scaleY = minimapHeight / canvasHeight;
-            
-            // Add nodes to minimap
-            nodes.forEach(node => {
-                const minimapNode = document.createElement('div');
-                minimapNode.className = 'minimap-node';
-                minimapNode.style.left = (node.x * scaleX) + 'px';
-                minimapNode.style.top = (node.y * scaleY) + 'px';
-                
-                minimapContent.appendChild(minimapNode);
-            });
-            
-            // Update viewport rectangle
-            const viewportWidth = Math.min(canvasContainer.clientWidth / (zoom * canvasWidth) * minimapWidth, minimapWidth);
-            const viewportHeight = Math.min(canvasContainer.clientHeight / (zoom * canvasHeight) * minimapHeight, minimapHeight);
-            
-            // Calculate viewport position
-            const viewportX = Math.min(Math.max((-canvasOffsetX / zoom) * scaleX, 0), minimapWidth - viewportWidth);
-            const viewportY = Math.min(Math.max((-canvasOffsetY / zoom) * scaleY, 0), minimapHeight - viewportHeight);
-            
-            minimapViewport.style.width = viewportWidth + 'px';
-            minimapViewport.style.height = viewportHeight + 'px';
-            minimapViewport.style.left = viewportX + 'px';
-            minimapViewport.style.top = viewportY + 'px';
-        }
-        
+
+        // Generate JSON from nodes
         function generateJson() {
             const jsonNodes = nodes.map(node => {
                 const jsonNode = {
@@ -828,28 +1197,28 @@
                     Type: node.type,
                     Content: node.content
                 };
-                
+
                 if (node.nextId) {
                     jsonNode.NextId = node.nextId;
                 }
-                
+
                 if (node.checkpoint) {
                     jsonNode.checkpoint = true;
                 }
-                
+
                 if (node.type === 'Chooser' && node.options && node.options.length > 0) {
                     jsonNode.Options = node.options;
                 }
-                
+
                 if ((node.type === 'WriteNode' || node.type === 'Switcher') && node.variable) {
                     jsonNode.Variable = node.variable;
                 }
-                
+
                 if (node.type === 'WriteNode' && node.writeValue !== undefined) {
                     // Handle different value types
-                    if (node.writeValue.toLowerCase() === 'true') {
+                    if (node.writeValue === true || node.writeValue === 'true') {
                         jsonNode.WriteValue = true;
-                    } else if (node.writeValue.toLowerCase() === 'false') {
+                    } else if (node.writeValue === false || node.writeValue === 'false') {
                         jsonNode.WriteValue = false;
                     } else if (!isNaN(node.writeValue) && node.writeValue !== '') {
                         jsonNode.WriteValue = Number(node.writeValue);
@@ -857,325 +1226,301 @@
                         jsonNode.WriteValue = node.writeValue;
                     }
                 }
-                
+
+                if (node.type === 'Switcher') {
+                    // Add default SwitchOptions
+                    jsonNode.DefaultValue = false;
+                    jsonNode.SwitchOptions = [
+                        {
+                            DesiredValue: true,
+                            PathId: '',
+                            Domain: 'EQUAL'
+                        },
+                        {
+                            DesiredValue: false,
+                            PathId: '',
+                            Domain: 'EQUAL'
+                        }
+                    ];
+                }
+
                 return jsonNode;
             });
-            
+
             return {
                 Nodes: jsonNodes
             };
         }
-        
-        function parseJson(json) {
+
+        // Parse JSON and create nodes
+        function parseJson(jsonData) {
             try {
-                const data = typeof json === 'string' ? JSON.parse(json) : json;
-                
-                // Clear existing nodes and connections
+                // Clear existing nodes
                 nodes.forEach(node => {
-                    if (node.element.parentNode) {
-                        node.element.parentNode.removeChild(node.element);
+                    const nodeEl = document.querySelector(`.node[data-id="${node.id}"]`);
+                    if (nodeEl) {
+                        nodeEl.remove();
                     }
                 });
-                
-                connections.forEach(connection => {
-                    if (connection.element.parentNode) {
-                        connection.element.parentNode.removeChild(connection.element);
-                    }
-                });
-                
+
                 nodes = [];
-                connections = [];
-                
-                // Create new nodes
-                if (data.Nodes) {
-                    // First pass: create all nodes
-                    data.Nodes.forEach((nodeData, index) => {
-                        const x = 50 + (index % 5) * 200;
-                        const y = 50 + Math.floor(index / 5) * 150;
-                        
-                        createNode(
-                            nodeData.Id,
-                            nodeData.Type,
-                            nodeData.Content,
-                            x,
-                            y,
-                            nodeData.NextId,
-                            nodeData.checkpoint || false,
-                            nodeData.Options || [],
-                            nodeData.Variable,
-                            nodeData.WriteValue
-                        );
+
+                // Parse nodes from JSON
+                if (typeof jsonData === 'string') {
+                    jsonData = JSON.parse(jsonData);
+                }
+
+                if (jsonData.Nodes) {
+                    jsonData.Nodes.forEach((nodeData, index) => {
+                        // Create node with default position
+                        const x = 50 + (index % 5) * 250;
+                        const y = 50 + Math.floor(index / 5) * 200;
+
+                        createNode({
+                            id: nodeData.Id,
+                            type: nodeData.Type,
+                            content: nodeData.Content,
+                            nextId: nodeData.NextId,
+                            x: x,
+                            y: y,
+                            checkpoint: nodeData.checkpoint || false,
+                            variable: nodeData.Variable || '',
+                            writeValue: nodeData.WriteValue,
+                            options: nodeData.Options || []
+                        });
                     });
-                    
-                    // Second pass: create connections
-                    data.Nodes.forEach(nodeData => {
-                        if (nodeData.NextId) {
-                            const fromNode = document.querySelector(`.node[data-id="${nodeData.Id}"]`);
-                            const toNode = document.querySelector(`.node[data-id="${nodeData.NextId}"]`);
-                            
-                            if (fromNode && toNode) {
-                                createConnection(fromNode, toNode);
-                            }
-                        }
-                        
-                        if (nodeData.Options && nodeData.Options.length > 0) {
-                            nodeData.Options.forEach(option => {
-                                if (option.NextId) {
-                                    const fromNode = document.querySelector(`.node[data-id="${nodeData.Id}"]`);
-                                    const toNode = document.querySelector(`.node[data-id="${option.NextId}"]`);
-                                    
-                                    if (fromNode && toNode) {
-                                        createConnection(fromNode, toNode);
-                                    }
-                                }
-                            });
-                        }
-                    });
-                    
-                    // Auto layout the nodes
+
+                    // Auto layout nodes
                     autoLayoutNodes();
-                    
-                    // Update node list
-                    updateNodeList();
-                    
+
                     return true;
                 }
-                
+
                 return false;
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 return false;
             }
         }
-        
-        // Initialize the canvas
-        initCanvas();
-        
-        // Event listeners
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging && selectedNode) {
-                const x = (e.clientX - canvasContainer.getBoundingClientRect().left - mouseOffsetX - canvasOffsetX) / zoom;
-                const y = (e.clientY - canvasContainer.getBoundingClientRect().top - mouseOffsetY - canvasOffsetY) / zoom;
-                
-                selectedNode.style.left = x + 'px';
-                selectedNode.style.top = y + 'px';
-                
-                // Update node data
-                const nodeData = findNodeDataById(selectedNode.dataset.id);
-                if (nodeData) {
+
+        // Event handlers 
+        function setupEventListeners() {
+            // Mouse move handler
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging && selectedNode) {
+                    const nodeEl = selectedNode;
+                    const nodeData = findNodeById(nodeEl.dataset.id);
+                    if (!nodeData) return;
+
+                    // Calculate new position
+                    const x = (e.clientX - canvasContainer.getBoundingClientRect().left - mouseOffsetX - canvasOffsetX) / zoom;
+                    const y = (e.clientY - canvasContainer.getBoundingClientRect().top - mouseOffsetY - canvasOffsetY) / zoom;
+
+                    // Update node position
                     nodeData.x = x;
                     nodeData.y = y;
+                    nodeEl.style.left = x + 'px';
+                    nodeEl.style.top = y + 'px';
+
+                    // Update connections
+                    updateConnectionLines();
+                    updateMinimap();
+                } else if (isCanvasDragging) {
+                    // Drag the canvas
+                    const dx = e.clientX - lastMouseX;
+                    const dy = e.clientY - lastMouseY;
+
+                    canvasOffsetX += dx;
+                    canvasOffsetY += dy;
+
+                    lastMouseX = e.clientX;
+                    lastMouseY = e.clientY;
+
+                    updateCanvasPosition();
+                } else if (isDraggingConnection) {
+                    // Update temporary connection line
+                    updateTemporaryConnectionLine(e);
                 }
-                
-                updateConnectionLines();
-                updateMinimap();
-            } else if (isCanvasDragging) {
-                const dx = e.clientX - lastMouseX;
-                const dy = e.clientY - lastMouseY;
-                
-                canvasOffsetX += dx;
-                canvasOffsetY += dy;
-                
-                lastMouseX = e.clientX;
-                lastMouseY = e.clientY;
-                
-                updateCanvasPosition();
-            } else if (isCreatingConnection) {
-                // Draw a temporary line from the start node to the current mouse position
-                const startNode = startConnectionNode;
-                if (!startNode) return;
-                
-                const startRect = startNode.getBoundingClientRect();
-                const canvasRect = canvas.getBoundingClientRect();
-                
-                // Create or update temporary line
-                let tempLine = document.getElementById('temp-connection-line');
-                if (!tempLine) {
-                    tempLine = document.createElement('div');
-                    tempLine.id = 'temp-connection-line';
-                    tempLine.className = 'connection';
-                    tempLine.style.borderTop = '2px dashed #f00';
-                    canvas.appendChild(tempLine);
-                }
-                
-                // Calculate line position and length
-                const x1 = parseFloat(startNode.style.left) + startNode.offsetWidth / 2;
-                const y1 = parseFloat(startNode.style.top) + startNode.offsetHeight;
-                
-                const x2 = (e.clientX - canvasRect.left - canvasOffsetX) / zoom;
-                const y2 = (e.clientY - canvasRect.top - canvasOffsetY) / zoom;
-                
-                const dx = x2 - x1;
-                const dy = y2 - y1;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-                
-                tempLine.style.width = `${distance}px`;
-                tempLine.style.left = `${x1}px`;
-                tempLine.style.top = `${y1}px`;
-                tempLine.style.transform = `rotate(${angle}deg)`;
-                tempLine.style.transformOrigin = '0 0';
-            }
-        });
-        
-        document.addEventListener('mouseup', (e) => {
-            if (isDragging) {
-                isDragging = false;
-            } else if (isCanvasDragging) {
-                isCanvasDragging = false;
-            } else if (isCreatingConnection) {
-                // Check if we're hovering over another node
-                const elementUnderMouse = document.elementFromPoint(e.clientX, e.clientY);
-                const targetNode = elementUnderMouse ? elementUnderMouse.closest('.node') : null;
-                
-                if (targetNode && targetNode !== startConnectionNode) {
-                    createConnection(startConnectionNode, targetNode);
-                }
-                
-                // Remove temporary line
-                const tempLine = document.getElementById('temp-connection-line');
-                if (tempLine) {
-                    tempLine.parentNode.removeChild(tempLine);
-                }
-                
-                isCreatingConnection = false;
-                startConnectionNode = null;
-            }
-        });
-        
-        canvas.addEventListener('mousedown', (e) => {
-            if (e.target === canvas) {
-                isCanvasDragging = true;
-                lastMouseX = e.clientX;
-                lastMouseY = e.clientY;
-                e.preventDefault();
-            }
-        });
-        
-        canvasContainer.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            
-            // Calculate zoom center (mouse position)
-            const rect = canvasContainer.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-            
-            // Calculate mouse position relative to the canvas
-            const mouseCanvasX = (mouseX - canvasOffsetX) / zoom;
-            const mouseCanvasY = (mouseY - canvasOffsetY) / zoom;
-            
-            // Adjust zoom level
-            const zoomDelta = e.deltaY > 0 ? 0.9 : 1.1;
-            zoom = Math.max(0.1, Math.min(3, zoom * zoomDelta));
-            
-            // Adjust canvas offset to zoom toward mouse position
-            canvasOffsetX = mouseX - mouseCanvasX * zoom;
-            canvasOffsetY = mouseY - mouseCanvasY * zoom;
-            
-            updateCanvasPosition();
-        });
-        
-        // Form input event listeners
-        nodeIdInput.addEventListener('input', updateNodeFromForm);
-        nodeTypeSelect.addEventListener('change', updateNodeFromForm);
-        nodeContentTextarea.addEventListener('input', updateNodeFromForm);
-        nodeNextIdInput.addEventListener('input', updateNodeFromForm);
-        nodeCheckpointCheckbox.addEventListener('change', updateNodeFromForm);
-        nodeVariableInput.addEventListener('input', updateNodeFromForm);
-        nodeWriteValueInput.addEventListener('input', updateNodeFromForm);
-        
-        // Add option button
-        document.getElementById('add-option').addEventListener('click', () => {
-            if (!selectedNode || selectedNode.dataset.type !== 'Chooser') return;
-            
-            const nodeData = findNodeDataById(selectedNode.dataset.id);
-            if (!nodeData) return;
-            
-            if (!nodeData.options) {
-                nodeData.options = [];
-            }
-            
-            nodeData.options.push({
-                Name: 'New Option',
-                NextId: ''
             });
-            
-            updateNodeDetailsForm();
-        });
-        
-        // Add new node button
-        document.getElementById('new-node').addEventListener('click', () => {
-            const id = 'node_' + nextNodeId++;
-            const node = createNode(id, 'TextEvent', 'New node content', 100, 100);
-            selectNode(node);
-            updateNodeList();
-        });
-        
-        // Load JSON button
-        document.getElementById('load-json').addEventListener('click', () => {
-            jsonOutput.style.display = 'block';
-            jsonOutput.value = '';
-            jsonOutput.placeholder = 'Paste your JSON here and click "Load JSON" again';
-            
-            // Check if there's already content
-            if (jsonOutput.value.trim()) {
-                const result = parseJson(jsonOutput.value);
-                if (result) {
-                    jsonOutput.style.display = 'none';
+
+            // Mouse up handler
+            document.addEventListener('mouseup', (e) => {
+                if (isDragging) {
+                    isDragging = false;
+                    refreshEditor(); // Full refresh after dragging to ensure consistency
+                } else if (isCanvasDragging) {
+                    isCanvasDragging = false;
+                } else if (isDraggingConnection) {
+                    // Check if we're over a node
+                    const elementUnderMouse = document.elementFromPoint(e.clientX, e.clientY);
+                    const targetNodeEl = elementUnderMouse ? elementUnderMouse.closest('.node') : null;
+
+                    if (targetNodeEl) {
+                        completeConnection(targetNodeEl.dataset.id);
+                    }
+
+                    // Clean up
+                    isDraggingConnection = false;
+                    connectionStartNode = null;
+                    connectionStartPoint = null;
+
+                    // Remove temporary line
+                    const tempLine = document.getElementById('temp-connection-line');
+                    if (tempLine) {
+                        tempLine.remove();
+                    }
                 }
-            }
-        });
-        
-        // Save JSON button
-        document.getElementById('save-json').addEventListener('click', () => {
-            const json = generateJson();
-            jsonOutput.style.display = 'block';
-            jsonOutput.value = JSON.stringify(json, null, 2);
-        });
-        
-        // Auto layout button
-        document.getElementById('auto-layout').addEventListener('click', autoLayoutNodes);
-        
-        // Center view button
-        document.getElementById('center-view').addEventListener('click', () => {
-            canvasOffsetX = (canvasContainer.clientWidth - 3000 * zoom) / 2;
-            canvasOffsetY = (canvasContainer.clientHeight - 3000 * zoom) / 2;
-            updateCanvasPosition();
-        });
-        
-        // Load initial JSON if available
-        const initialJson = {
-            "Nodes": [
-                {
-                    "Id": "start",
-                    "Type": "DecoratedTextEvent",
-                    "Content": "THE ABANDONED MANSION\nA text adventure game",
-                    "NextId": "initialize_game",
-                    "checkpoint": true
-                },
-                {
-                    "Id": "initialize_game",
-                    "Type": "WriteNode",
-                    "Content": "Initializing game state...",
-                    "Variable": "has_key",
-                    "WriteValue": false,
-                    "NextId": "initialize_door"
+            });
+
+            // Canvas mouse down
+            canvas.addEventListener('mousedown', (e) => {
+                if (e.target === canvas) {
+                    isCanvasDragging = true;
+                    lastMouseX = e.clientX;
+                    lastMouseY = e.clientY;
+
+                    // Clear selection
+                    clearSelection();
+
+                    e.preventDefault();
                 }
-            ]
-        };
-        
-        parseJson(initialJson);
-        
-        // Load JSON from paste.txt if provided in the document
-        const pasteData = document.querySelector('.document_content');
-        if (pasteData && pasteData.textContent) {
-            try {
-                const jsonData = JSON.parse(pasteData.textContent);
-                parseJson(jsonData);
-            } catch (error) {
-                console.error('Error parsing the paste data:', error);
+            });
+
+            // Mouse wheel for zooming
+            canvasContainer.addEventListener('wheel', (e) => {
+                e.preventDefault();
+
+                // Calculate position relative to canvas center
+                const rect = canvasContainer.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                // Calculate position on canvas
+                const canvasX = (mouseX - canvasOffsetX) / zoom;
+                const canvasY = (mouseY - canvasOffsetY) / zoom;
+
+                // Update zoom level
+                const zoomDelta = e.deltaY > 0 ? 0.9 : 1.1; // Zoom out or in
+                zoom = Math.max(0.1, Math.min(2, zoom * zoomDelta));
+
+                // Recalculate offsets to zoom around mouse position
+                canvasOffsetX = mouseX - canvasX * zoom;
+                canvasOffsetY = mouseY - canvasY * zoom;
+
+                updateCanvasPosition();
+            });
+
+            // Button event listeners
+            document.getElementById('new-node-btn').addEventListener('click', () => {
+                const nodeData = createNode({
+                    id: `node_${nextNodeId++}`,
+                    type: 'TextEvent',
+                    content: 'New node content',
+                    x: 100,
+                    y: 100
+                });
+
+                const nodeEl = document.querySelector(`.node[data-id="${nodeData.id}"]`);
+                if (nodeEl) {
+                    selectNode(nodeEl);
+                }
+            });
+
+            document.getElementById('auto-layout-btn').addEventListener('click', autoLayoutNodes);
+
+            document.getElementById('center-view-btn').addEventListener('click', () => {
+                canvasOffsetX = (canvasContainer.clientWidth - 5000 * zoom) / 2;
+                canvasOffsetY = (canvasContainer.clientHeight - 5000 * zoom) / 2;
+                updateCanvasPosition();
+            });
+
+            document.getElementById('clear-selection-btn').addEventListener('click', clearSelection);
+
+            document.getElementById('load-json-btn').addEventListener('click', () => {
+                jsonDialog.style.display = 'flex';
+                jsonTextarea.value = '';
+                jsonTextarea.placeholder = 'Paste your JSON here';
+            });
+
+            document.getElementById('save-json-btn').addEventListener('click', () => {
+                const json = generateJson();
+                jsonDialog.style.display = 'flex';
+                jsonTextarea.value = JSON.stringify(json, null, 2);
+            });
+
+            document.getElementById('json-cancel-btn').addEventListener('click', () => {
+                jsonDialog.style.display = 'none';
+            });
+
+            document.getElementById('json-apply-btn').addEventListener('click', () => {
+                const jsonText = jsonTextarea.value;
+                if (jsonText.trim()) {
+                    parseJson(jsonText);
+                }
+                jsonDialog.style.display = 'none';
+            });
+        }
+
+        // Initialize the application
+        function initApp() {
+            initCanvas();
+            setupEventListeners();
+
+            // Load initial data if available
+            const pasteData = document.querySelector('pre.document_content');
+            if (pasteData && pasteData.textContent) {
+                try {
+                    const jsonData = JSON.parse(pasteData.textContent);
+                    parseJson(jsonData);
+                } catch (error) {
+                    console.error('Error parsing paste data:', error);
+                    // Create a sample node if parsing fails
+                    createNode({
+                        id: 'start',
+                        type: 'TextEvent',
+                        content: 'Sample node',
+                        x: 100,
+                        y: 100
+                    });
+                }
+            } else {
+                // Load from json in the code
+                try {
+                    const initialJson = {
+                        "Nodes": [
+                            {
+                                "Id": "start",
+                                "Type": "DecoratedTextEvent",
+                                "Content": "THE ABANDONED MANSION\nA text adventure game",
+                                "NextId": "initialize_game",
+                                "checkpoint": true
+                            },
+                            {
+                                "Id": "initialize_game",
+                                "Type": "WriteNode",
+                                "Content": "Initializing game state...",
+                                "Variable": "has_key",
+                                "WriteValue": false,
+                                "NextId": "entrance_hall"
+                            },
+                            {
+                                "Id": "entrance_hall",
+                                "Type": "TextEvent",
+                                "Content": "You stand in the grand entrance hall...",
+                                "NextId": "entrance_hall_options"
+                            }
+                        ]
+                    };
+                    parseJson(initialJson);
+                } catch (error) {
+                    console.error('Error loading initial data:', error);
+                }
             }
         }
+
+        // Start the application when the page is loaded
+        window.addEventListener('load', initApp);
     </script>
 </body>
+
 </html>
