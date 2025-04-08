@@ -1,3 +1,4 @@
+#nullable enable
 using System.Runtime.CompilerServices;
 
 public abstract class BaseNode{
@@ -5,7 +6,8 @@ public abstract class BaseNode{
     protected bool autoAdvance = false;
     protected bool displayProceedMessage = true;
     protected int sleepMils;
-    // This part will be implemented later
+    // This part will be implemented later (or never)
+    [Obsolete("Cannot mark nodes and replayable")]
     protected bool replayable = false;
     protected bool hasRun = false;
     protected bool checkpoint = true;
@@ -69,14 +71,15 @@ public abstract class BaseNode{
         return checkpoint;
     }
 
+    [Obsolete]
     public bool CanReplay(){
         return replayable;
     }
     /// <summary>
-    /// returns
+    /// 
     /// </summary>
     /// <param name="id"></param>
-    /// <returns></returns>
+    /// <returns>The node given an ID and that it is registered</returns>
     public static BaseNode? FindByID(string id){
         nodesById.TryGetValue(id, out BaseNode? node);
         return node;
