@@ -1,6 +1,10 @@
 This is an adventure game engine. To run the demo make sure the ReadDemoFile() method is called in Program and used to load the root of the tree.
 Press run to play (some functionality may not work or might break when running in debug).
 
+If it has trouble finding the file it may have to do with the file path. You may need to adjust the path inside of the Read method to
+open the correct path using the notation you system likes. I tried to get around this with the File class but I have not tested this on Mac.
+You have been warned.
+
 You might notice that if you run it again it takes you back to where you left off. 
 The easiest way to restart is to delete the contents of the demo_save.json file. Or by choosing the "Delete Save and replay" when the game is over.
 if you would like you can try making your own game file and load it. Make sure the file is formatted properly.
@@ -20,6 +24,7 @@ You can patter you nodes as they are below:
     }
   ]
 }
+Note: some fields have default values and do not need to be specified.
 
 "TextEvent" means the node displays it's content and then advances to the next. There is also a decorated variety that just displays
 centred content with bars on the top and bottom.
