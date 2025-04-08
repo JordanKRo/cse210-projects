@@ -115,7 +115,7 @@ public class GameState
         }
         catch
         {
-            Console.WriteLine("File cannot be parsed");
+            Console.WriteLine("Cannot parse save file (starting new save)");
             return;
         }
 
